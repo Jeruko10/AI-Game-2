@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://tytjfp0a04oh"]
+
+[ext_resource type="Script" uid="uid://bny2ymmoaqbkc" path="res://Scripts/Game/Grid.cs" id="1_r150o"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Grid" type="Node2D" parent="."]
+position = Vector2(28, 35)
+script = ExtResource("1_r150o")
+Rows = 9
+Columns = 17
+metadata/_custom_type_script = "uid://bny2ymmoaqbkc"
