@@ -1,11 +1,20 @@
-[gd_resource type="Resource" script_class="Minion" load_steps=3 format=3 uid="uid://der1cl6k57cfm"]
+[gd_resource type="Resource" script_class="MinionData" load_steps=6 format=3 uid="uid://der1cl6k57cfm"]
 
 [ext_resource type="Texture2D" uid="uid://g3v7s8i1j5gr" path="res://Sprites/WaterUnitTemplate.png" id="1_j702s"]
-[ext_resource type="Script" uid="uid://b1f3oc3feespy" path="res://Scripts/Game/MinionData.cs" id="2_v7k1c"]
+[ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="1_v7k1c"]
+[ext_resource type="Resource" uid="uid://cp1te5ttwo23a" path="res://Resources/Elements/Water.tres" id="2_1cti1"]
+[ext_resource type="Script" uid="uid://b1f3oc3feespy" path="res://Scripts/Game/Resources/MinionData.cs" id="2_v7k1c"]
+
+[sub_resource type="Resource" id="Resource_1cti1"]
+script = ExtResource("1_v7k1c")
+WaterMana = 3
+metadata/_custom_type_script = "uid://dkojvf477tj8k"
 
 [resource]
 script = ExtResource("2_v7k1c")
 Texture = ExtResource("1_j702s")
+Element = ExtResource("2_1cti1")
+Cost = SubResource("Resource_1cti1")
 Health = 90
 MovePoints = 10
 DamageArea = Array[Vector2i]([Vector2i(0, -2), Vector2i(0, -3), Vector2i(0, -4)])

@@ -51,7 +51,7 @@ public partial class SquashStretch2D : Node2D
 	}
 
 	/// <summary>Assigns a function that provides the input value for scaling.</summary>
-	public void SetSquishModulator(Func<float> modulatorGetter) => GetModulator = modulatorGetter;
+	public void SetSquashModulator(Func<float> modulatorGetter) => GetModulator = modulatorGetter;
 
 	/// <summary>Applies an impact-based deformation on the X or Y axis.</summary>
 	public void ApplyImpact(float weight, bool vertical = false)

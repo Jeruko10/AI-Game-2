@@ -24,6 +24,7 @@ public partial class Board : Node
 
 	public override void _Ready()
 	{
+		DebugDraw2D.Config.TextDefaultSize = 25;
 
 		AudioManager.SetOriginParent(Singleton);
 		AudioManager.CreateGroup("music");

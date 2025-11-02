@@ -12,10 +12,15 @@ public partial class BoardState : Node
     [Signal] public delegate void MinionAddedEventHandler(Minion minion);
     [Signal] public delegate void TileAddedEventHandler(Tile tile, Vector2I cell);
     [Signal] public delegate void FortAddedEventHandler(Fort fort);
+    [Export] Mana PlayerStartingMana = new();
+    [Export] Mana EnemyStartingMana = new();
+    
+    public Minion SelectedMinion { get; set; }
 
     readonly Dictionary<Vector2I, Tile> tiles = [];
     readonly List<Minion> minions = [];
     readonly List<Fort> forts = [];
+    Mana playerMana, enemyMana;
 
     public struct CellData(Tile tile, Minion minion, Fort fort)
     {
@@ -26,6 +31,9 @@ public partial class BoardState : Node
 
     public override void _Ready()
     {
+        playerMana = PlayerStartingMana;
+        enemyMana = EnemyStartingMana;
+
         GodotExtensions.CallDeferred(CreateBoard);
     }
 

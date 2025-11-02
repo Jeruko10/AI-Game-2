@@ -4,7 +4,7 @@ using System;
 
 namespace Game;
 
-// Minions singleton
+// Minions singleton used to store templates of custom Minions
 [GlobalClass]
 public partial class Minions : Node
 {

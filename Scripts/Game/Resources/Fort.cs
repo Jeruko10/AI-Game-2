@@ -5,7 +5,7 @@ namespace Game;
 
 public partial class Fort(Vector2I position) : Resource
 {
-	public MinionData.Elements? Element { get; set; } = null;
+    public Element Element { get; set; } = null;
     public Vector2I Position
     {
         get => pos;

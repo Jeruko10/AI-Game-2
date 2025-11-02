@@ -251,10 +251,10 @@ public partial class Grid2D : Node2D
         return GetShortestPathBFS(start, goal, blockedCells, allowDiagonals).Length > 0;
     }
 
-    /// <summary> Colors a specific cell with the given color and alpha. </summary>
-    public void ColorCell(Vector2I cell, Color color, float alpha = 0.3f)
+    /// <summary> Colors a specific cell with the given color. </summary>
+    public void ColorCell(Vector2I cell, Color color)
     {
-        coloredCells[cell] = new Color(color.R, color.G, color.B, alpha);
+        coloredCells[cell] = color;
         QueueRedraw();
     }
 
@@ -271,6 +271,9 @@ public partial class Grid2D : Node2D
         coloredCells.Clear();
         QueueRedraw();
     }
+
+    /// <summary> Returns the cell that mouse is currently hovering over. </summary>
+    public Vector2I? GetHoveredCell() => hoveredCell;
 
     /// <summary> Draws an overlay for a specific cell with the given color. </summary>
     void DrawCellOverlay(Vector2I cell, Color color)

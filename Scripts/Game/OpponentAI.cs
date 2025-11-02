@@ -4,7 +4,7 @@ using System;
 namespace Game;
 
 [GlobalClass]
-public partial class EnemyAI : Node
+public partial class OpponentAI : Node
 {
 	public override void _Ready()
 	{

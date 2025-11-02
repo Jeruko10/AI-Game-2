@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="Tile" load_steps=3 format=3 uid="uid://cgyflruq4myop"]
 
 [ext_resource type="Texture2D" uid="uid://0hehywsswamw" path="res://Sprites/FireTile.png" id="1_q8060"]
-[ext_resource type="Script" uid="uid://pppabphqhcv4" path="res://Scripts/Game/Tile.cs" id="1_wvb4q"]
+[ext_resource type="Script" uid="uid://pppabphqhcv4" path="res://Scripts/Game/Resources/Tile.cs" id="1_wvb4q"]
 
 [resource]
 script = ExtResource("1_wvb4q")

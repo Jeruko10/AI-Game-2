@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c8fsl6fi7t553"
-path="res://.godot/imported/PlantFort.png-2dd5fe05c2449469135be8e5a57d110c.ctex"
+uid="uid://bwyl8mj8bcdsi"
+path="res://.godot/imported/Fort.png-655a18d9c0b4938651454d2b8cbb614d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/PlantFort.png"
-dest_files=["res://.godot/imported/PlantFort.png-2dd5fe05c2449469135be8e5a57d110c.ctex"]
+source_file="res://Sprites/Fort.png"
+dest_files=["res://.godot/imported/Fort.png-655a18d9c0b4938651454d2b8cbb614d.ctex"]
 
 [params]
 

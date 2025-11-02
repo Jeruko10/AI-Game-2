@@ -4,7 +4,7 @@ using System;
 
 namespace Game;
 
-// Tiles singleton
+// Tiles singleton used to store templates of custom Tiles
 [GlobalClass]
 public partial class Tiles : Node
 {

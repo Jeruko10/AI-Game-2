@@ -1,6 +1,6 @@
 using Godot;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using Utility;
 
 namespace Game;
@@ -8,98 +8,156 @@ namespace Game;
 [GlobalClass]
 public partial class BoardDisplay : Node2D
 {
-	[Export] Vector2 tileTextureScale = Vector2.One;
+	[ExportSubgroup("Gizmos")]
+	[Export] Color MovementPathColor { get; set; } = Colors.SkyBlue;
 
-	[ExportSubgroup("Fort Sprites")]
-	[Export] Texture2D emptyFortTexture;
-	[Export] Texture2D fireFortTexture;
-	[Export] Texture2D waterFortTexture;
-	[Export] Texture2D plantFortTexture;
+	[ExportSubgroup("Squash Animation")]
+	[Export] public float SquashAnimationSpeed { get; set; } = 0.7f;
+	[Export] public float SquashFactor { get; set; } = 0.2f;
+	[Export] public float SquashImpactDecay { get; set; } = 25f;
+	[Export] public float SpawnSquashImpact { get; set; } = 0.7f;
+	[Export] public float OnSelectSquashImpact { get; set; } = 0.7f;
 
-	readonly Dictionary<Vector2I, Sprite2D> tileSprites = [];
-    readonly Dictionary<Minion, Sprite2D> minionSprites = [];
-    readonly Dictionary<Fort, Sprite2D> fortSprites = [];
+	[ExportSubgroup("Textures")]
+	[Export] float tileTextureScale = 1f;
+	[Export] float minionTextureScale = 1f;
+	[Export] float fortTextureScale = 1f;
+	[Export] Texture2D fortTexture;
+
+	readonly Dictionary<Vector2I, Node2D> tileVisuals = [];
+    readonly Dictionary<Minion, Node2D> minionVisuals = [];
+    readonly Dictionary<Fort, Node2D> fortVisuals = [];
 	Node2D tilesGroup, fortsGroup, minionsGroup;
 
 	public override void _Ready()
 	{
 		CreateChildGroups();
 
-		Board.State.MinionAdded += OnMinionAdded;
-		Board.State.FortAdded += OnFortAdded;
-		Board.State.TileAdded += OnTileAdded;
+		Board.State.MinionAdded += CreateMinionVisual;
+		Board.State.FortAdded += CreateFortVisual;
+		Board.State.TileAdded += CreateTileVisual;
 
 		Board.Grid.GlobalPosition = GlobalPosition;
 	}
 
-    public override void _Process(double delta)
-    {
+	public override void _Process(double delta)
+	{
 		UpdateSprites();
-    }
+		UpdateGizmos();
+	}
 
-    void OnTileAdded(Tile tile, Vector2I cell)
+	public void OnMinionSelected(Minion minion)
     {
-		Sprite2D tileSprite = CreateSprite(cell, tile.Texture, "Tile");
-		tileSprites.Add(cell, tileSprite);
-		tilesGroup.AddChild(tileSprite);
-    }
+		Node2D visual = minionVisuals[minion];
+		SquashAnimator animator = visual.GetChildrenOfType<SquashAnimator>().First();
 
-    void OnFortAdded(Fort fort)
-    {
-		Sprite2D fortSprite = CreateSprite(fort.Position, emptyFortTexture, "Fort");
-		fortSprites.Add(fort, fortSprite);
-		fortsGroup.AddChild(fortSprite);
+		animator.ApplyImpact(OnSelectSquashImpact);
     }
-
-    void OnMinionAdded(Minion minion)
-    {
-		Sprite2D minionSprite = CreateSprite(minion.Position, minion.Texture, "Minion", false);
-		minionSprites.Add(minion, minionSprite);
-		minionsGroup.AddChild(minionSprite);
-    }
-
+	
 	void UpdateSprites()
 	{
 		foreach (Vector2I cell in Board.Grid.GetAllCells())
-        {
-			var data = Board.State.GetCellData(cell);
+		{
+			var cellData = Board.State.GetCellData(cell);
+			Fort fort = cellData.Fort;
+			Tile tile = cellData.Tile;
+			Minion minion = cellData.Minion;
 
-			if (data.Tile != null)
+			if (tile != null)
 			{
-				Sprite2D tileSprite = tileSprites[cell];
-				tileSprite.Texture = data.Tile.Texture;
+				if (tileVisuals[cell] is not Sprite2D tileSprite) return;
+				tileSprite.Texture = tile.Texture;
 			}
-			if (data.Minion != null)
+			if (minion != null)
 			{
-				minionSprites[data.Minion].Position = CellToPos(data.Minion.Position);
+				minionVisuals[minion].Position = CellToPos(minion.Position);
 			}
-			if (data.Fort != null)
+			if (fort != null)
 			{
-				Sprite2D fortSprite = fortSprites[data.Fort];
-				fortSprites[data.Fort].Position = CellToPos(data.Fort.Position);
+				fortVisuals[fort].Position = CellToPos(fort.Position);
+				fortVisuals[fort].Modulate = (fort.Element == null) ? Colors.White : fort.Element.Color;
+			}
+		}
+	}
+	
+	void UpdateGizmos()
+	{
+		Board.Grid.ClearAll();
 
-				if (data.Fort.Element == MinionData.Elements.Fire) fortSprite.Texture = fireFortTexture;
-				else if (data.Fort.Element == MinionData.Elements.Water) fortSprite.Texture = waterFortTexture;
-				else if (data.Fort.Element == MinionData.Elements.Plant) fortSprite.Texture = plantFortTexture;
-			}
-        }
+		Vector2I[] pathToCursor = [];
+		Minion selected = Board.State.SelectedMinion;
+		
+		if (selected != null) pathToCursor = InputHandler.GetPathToCursor(selected.Position);
+
+		foreach (Vector2I cell in pathToCursor)
+			Board.Grid.ColorCell(cell, MovementPathColor);
+    }
+
+    void CreateTileVisual(Tile tile, Vector2I cell)
+    {
+		Sprite2D tileSprite = CreateSprite(cell, tile.Texture, "Tile");
+		tileSprite.Scale *= tileTextureScale;
+		tileVisuals.Add(cell, tileSprite);
+		tilesGroup.AddChild(tileSprite);
+    }
+
+    void CreateFortVisual(Fort fort)
+    {
+		Sprite2D fortSprite = CreateSprite(fort.Position, fortTexture, "Fort");
+		fortSprite.Scale *= fortTextureScale;
+		fortVisuals.Add(fort, fortSprite);
+		fortsGroup.AddChild(fortSprite);
+    }
+
+    void CreateMinionVisual(Minion minion)
+	{
+		Sprite2D minionSprite = CreateSprite(minion.Position, minion.Texture, "MinionSprite", false);
+		SquashAnimator minionAnimation = CreateSquashAnimation();
+		Node2D minionVisual = new() { Name = $"Minion {minionVisuals.Count + 1}" };
+
+		minionsGroup.AddChild(minionVisual);
+		minionVisual.AddChild(minionAnimation);
+		minionAnimation.AddChild(minionSprite);
+
+		minionVisual.Scale *= minionTextureScale;
+		minionVisual.Position = minionSprite.Position;
+		minionSprite.Position = Vector2.Zero;
+		minionVisuals.Add(minion, minionVisual);
+		minionAnimation.ApplyImpact(SpawnSquashImpact);
     }
 
 	Sprite2D CreateSprite(Vector2I cell, Texture2D texture, string nodeName, bool showCords = true)
 	{
 		Vector2 cellSize = Board.Grid.CellSize * Vector2.One;
 		string finalName = showCords ? $"{nodeName} {cell}" : nodeName;
-		
+
 		Sprite2D sprite = new()
 		{
 			Texture = texture,
 			Centered = true,
-			Scale = cellSize / texture.GetSize() * tileTextureScale,
+			Scale = cellSize / texture.GetSize(),
 			Position = CellToPos(cell),
 			Name = finalName
 		};
 
 		return sprite;
+	}
+	
+	public SquashAnimator CreateSquashAnimation()
+	{
+		SquashAnimator animator = new()
+		{
+			ImpactFactor = 1f,
+			MaxValueThreshold = 1.2f,
+			MinValueThreshold = -1.2f,
+			DeadZone = 0f,
+			SquashFactor = SquashFactor,
+			AnimationSpeed = SquashAnimationSpeed,
+			ImpactDecay = SquashImpactDecay,
+			Name = "Animator"
+		};
+
+		return animator;
 	}
 
 	void CreateChildGroups()

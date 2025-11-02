@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Element" load_steps=2 format=3 uid="uid://b1u2b1vwy56fi"]
+
+[ext_resource type="Script" uid="uid://c0fc8opavw5h2" path="res://Scripts/Game/Resources/Element.cs" id="1_tl62x"]
+
+[resource]
+script = ExtResource("1_tl62x")
+Tag = 2
+Color = Color(0.5170717, 0.803056, 0.17145163, 1)
+metadata/_custom_type_script = "uid://c0fc8opavw5h2"
