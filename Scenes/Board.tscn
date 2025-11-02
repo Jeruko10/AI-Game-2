@@ -1,0 +1,45 @@
+[gd_scene load_steps=9 format=3 uid="uid://yhyivokbyjr0"]
+
+[ext_resource type="Texture2D" uid="uid://bwyl8mj8bcdsi" path="res://Sprites/EmptyFort.png" id="2_m454s"]
+[ext_resource type="Script" uid="uid://bpoclqr2f21y2" path="res://Scripts/Game/BoardDisplay.cs" id="3_4r2x2"]
+[ext_resource type="Texture2D" uid="uid://ckcah4cktekjt" path="res://Sprites/FireFort.png" id="3_rd1f7"]
+[ext_resource type="Texture2D" uid="uid://cna1ns542ugwh" path="res://Sprites/WaterFort.png" id="4_4r2x2"]
+[ext_resource type="Script" uid="uid://u4ode5mopgro" path="res://Scripts/Game/Board.cs" id="4_x4kv2"]
+[ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="5_fx0ao"]
+[ext_resource type="Texture2D" uid="uid://c8fsl6fi7t553" path="res://Sprites/PlantFort.png" id="5_x4kv2"]
+[ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Game/Grid2D.cs" id="6_10vug"]
+
+[node name="Board" type="Node2D"]
+
+[node name="BoardDisplay" type="Node2D" parent="." node_paths=PackedStringArray("tilesGroup", "fortsGroup", "minionsGroup")]
+position = Vector2(60, 35)
+script = ExtResource("3_4r2x2")
+tilesGroup = NodePath("")
+fortsGroup = NodePath("")
+minionsGroup = NodePath("")
+emptyFortTexture = ExtResource("2_m454s")
+fireFortTexture = ExtResource("3_rd1f7")
+waterFortTexture = ExtResource("4_4r2x2")
+plantFortTexture = ExtResource("5_x4kv2")
+metadata/_custom_type_script = "uid://bpoclqr2f21y2"
+metadata/_edit_lock_ = true
+
+[node name="BoardData" type="Node" parent="." node_paths=PackedStringArray("gridReference", "stateReference")]
+script = ExtResource("4_x4kv2")
+gridReference = NodePath("BoardGrid")
+stateReference = NodePath("BoardState")
+metadata/_custom_type_script = "uid://u4ode5mopgro"
+
+[node name="BoardState" type="Node" parent="BoardData"]
+script = ExtResource("5_fx0ao")
+metadata/_custom_type_script = "uid://cwd71a6sseflj"
+
+[node name="BoardGrid" type="Node2D" parent="BoardData"]
+position = Vector2(60, 35)
+script = ExtResource("6_10vug")
+Size = Vector2i(18, 10)
+CellSize = 100.0
+gridColor = Color(0.79607844, 0.79607844, 0.79607844, 0.24705882)
+hoverColor = Color(0.85490197, 0.7019608, 0, 0.24313726)
+metadata/_custom_type_script = "uid://dq36qu2o3hfpu"
+metadata/_edit_lock_ = true

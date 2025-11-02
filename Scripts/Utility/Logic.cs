@@ -71,4 +71,13 @@ public static class Logic
         int wrapped = ((relative % range) + range) % range;
         return min + wrapped;
     }
+
+    public static void GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
+    {
+        if (!dict.TryGetValue(key, out var v))
+        {
+            v = value;
+            dict[key] = value;
+        }
+    }
 }

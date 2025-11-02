@@ -3,28 +3,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-[GlobalClass]
-public partial class Grid : Node2D
+namespace Game;
+
+[GlobalClass][Tool]
+public partial class Grid2D : Node2D
 {
-    [Export] public int Rows { get; private set; } = 5;
-    [Export] public int Columns { get; private set; } = 5;
-    [Export] public float CellSize { get; set; } = 64f;
+    [Export] public Vector2I Size { get; private set; }
+    [Export] public float CellSize  { get; private set; } = 64f;
 
     [ExportGroup("Debugging")]
-    [Export] private bool drawGrid = true;
-    [Export] private Color gridColor = Colors.Gray;
+    [Export] bool drawGrid = true;
+    [Export] Color gridColor = Colors.Gray;
     
     [Export(PropertyHint.Range, "0,0.001,or_greater,hide_slider")]
-    private float lineWidth = 1f;
-    [Export] private bool mouseHover = true;
-    [Export] private Color hoverColor = new(1, 1, 1, 0.2f);
+    float lineWidth = 1f;
+    [Export] bool mouseHover = true;
+    [Export] Color hoverColor = new(1, 1, 1, 0.2f);
 
     [Signal] public delegate void CellLeftClickedEventHandler(Vector2I cell);
     [Signal] public delegate void CellRightClickedEventHandler(Vector2I cell);
 
-    private Vector2I? hoveredCell;
-    private readonly Dictionary<Vector2I, Color> coloredCells = [];
-    private const bool antialiasing = true;
+    Vector2I? hoveredCell;
+    readonly Dictionary<Vector2I, Color> coloredCells = [];
+    const bool antialiasing = true;
+
+    public override void _Process(double delta)
+    {
+        if (Engine.IsEditorHint())
+            QueueRedraw();
+    }
 
     public override void _Input(InputEvent @event)
     {
@@ -50,11 +57,11 @@ public partial class Grid : Node2D
     {
         if (drawGrid)
         {
-            for (int y = 0; y <= Rows; y++)
-                DrawLine(new Vector2(0, y * CellSize), new Vector2(Columns * CellSize, y * CellSize), gridColor, lineWidth, antialiasing);
+            for (int y = 0; y <= Size.Y; y++)
+                DrawLine(new Vector2(0, y * CellSize), new Vector2(Size.X * CellSize, y * CellSize), gridColor, lineWidth, antialiasing);
 
-            for (int x = 0; x <= Columns; x++)
-                DrawLine(new Vector2(x * CellSize, 0), new Vector2(x * CellSize, Rows * CellSize), gridColor, lineWidth, antialiasing);
+            for (int x = 0; x <= Size.X; x++)
+                DrawLine(new Vector2(x * CellSize, 0), new Vector2(x * CellSize, Size.Y * CellSize), gridColor, lineWidth, antialiasing);
         }
 
         foreach (var kv in coloredCells)
@@ -64,11 +71,10 @@ public partial class Grid : Node2D
             DrawCellOverlay(hoveredCell.Value, hoverColor);
     }
 
-    /// <summary> Resizes the grid to the specified number of rows and columns. </summary>
-    public void ResizeGrid(int rows, int columns)
+    /// <summary> Resizes the grid to the specified number of size.Y and size.X. </summary>
+    public void SetSize(Vector2I size)
     {
-        Rows = rows;
-        Columns = columns;
+        Size = size;
         QueueRedraw();
     }
 
@@ -95,15 +101,15 @@ public partial class Grid : Node2D
     {
         if (!IsInsideGrid(cellPosition))
             throw new ArgumentOutOfRangeException(nameof(cellPosition), "Cell position is out of bounds for the grid.");
-        return cellPosition.Y * Columns + cellPosition.X;
+        return cellPosition.Y * Size.X + cellPosition.X;
     }
 
     /// <summary> Gets the cell position from a flat array index. </summary>
     public Vector2I GetCellPosition(int index)
     {
-        if (index < 0 || index >= Rows * Columns)
+        if (index < 0 || index >= Size.Y * Size.X)
             throw new ArgumentOutOfRangeException(nameof(index), "Index is out of bounds for the grid.");
-        return new Vector2I(index % Columns, index / Columns);
+        return new Vector2I(index % Size.X, index / Size.X);
     }
 
     /// <summary> Calculates the distance between two grid cells. </summary>
@@ -118,7 +124,7 @@ public partial class Grid : Node2D
     /// <summary> Checks if a grid cell is within the grid bounds. </summary>
     public bool IsInsideGrid(Vector2I cell)
     {
-        return cell.X >= 0 && cell.Y >= 0 && cell.X < Columns && cell.Y < Rows;
+        return cell.X >= 0 && cell.Y >= 0 && cell.X < Size.X && cell.Y < Size.Y;
     }
 
     /// <summary> Returns an array of adjacent cells to the specified cell. </summary> 
@@ -135,15 +141,15 @@ public partial class Grid : Node2D
     /// <summary> Returns an array of cells in a specific row. </summary>
     public Vector2I[] GetRow(int row)
     {
-        if (row < 0 || row >= Rows) return [];
-        return Enumerable.Range(0, Columns).Select(x => new Vector2I(x, row)).ToArray();
+        if (row < 0 || row >= Size.Y) return [];
+        return Enumerable.Range(0, Size.X).Select(x => new Vector2I(x, row)).ToArray();
     }
 
     /// <summary> Gets an array of cells in a specific column. </summary>
     public Vector2I[] GetColumn(int column)
     {
-        if (column < 0 || column >= Columns) return [];
-        return Enumerable.Range(0, Rows).Select(y => new Vector2I(column, y)).ToArray();
+        if (column < 0 || column >= Size.X) return [];
+        return Enumerable.Range(0, Size.Y).Select(y => new Vector2I(column, y)).ToArray();
     }
 
     /// <summary> Returns an array of all cells in the grid. </summary>
@@ -151,8 +157,8 @@ public partial class Grid : Node2D
     {
         List<Vector2I> cells = [];
 
-        for (int y = 0; y < Rows; y++)
-            for (int x = 0; x < Columns; x++)
+        for (int y = 0; y < Size.Y; y++)
+            for (int x = 0; x < Size.X; x++)
                 cells.Add(new Vector2I(x, y));
 
         return cells.ToArray();
@@ -267,7 +273,7 @@ public partial class Grid : Node2D
     }
 
     /// <summary> Draws an overlay for a specific cell with the given color. </summary>
-    private void DrawCellOverlay(Vector2I cell, Color color)
+    void DrawCellOverlay(Vector2I cell, Color color)
     {
         Vector2 pos = new(cell.X * CellSize, cell.Y * CellSize);
         DrawRect(new Rect2(pos, new Vector2(CellSize, CellSize)), color);
