@@ -1,18 +1,23 @@
-[gd_scene load_steps=14 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=19 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
 [ext_resource type="Resource" uid="uid://bwq44820bcf61" path="res://Resources/Tiles/GroundTile.tres" id="2_3so38"]
 [ext_resource type="Script" uid="uid://cgdtthefjt0bb" path="res://Scripts/Game/Minions.cs" id="2_j5yw3"]
 [ext_resource type="Resource" uid="uid://cwa7gma4l002d" path="res://Resources/Tiles/WallTile.tres" id="3_3cx6b"]
-[ext_resource type="Resource" uid="uid://ddjxxepck0qec" path="res://Resources/Minions/FireKnight.tres" id="3_fgofq"]
-[ext_resource type="PackedScene" uid="uid://yhyivokbyjr0" path="res://Scenes/Board.tscn" id="3_j5yw3"]
 [ext_resource type="Script" uid="uid://cu3r71iskihyv" path="res://Scripts/Game/TurnManager.cs" id="3_kldst"]
 [ext_resource type="Resource" uid="uid://der1cl6k57cfm" path="res://Resources/Minions/WaterKnight.tres" id="4_2irst"]
 [ext_resource type="Texture2D" uid="uid://j555pvmnhvpl" path="res://Sprites/EndTurnTemplate.png" id="4_b2bpf"]
 [ext_resource type="Resource" uid="uid://cgyflruq4myop" path="res://Resources/Tiles/FireTile.tres" id="4_wxwew"]
 [ext_resource type="Resource" uid="uid://bvylj8fneatts" path="res://Resources/Minions/PlantKnight.tres" id="5_2irst"]
 [ext_resource type="Resource" uid="uid://cxkqasn5gq6mj" path="res://Resources/Tiles/WaterTile.tres" id="5_acvyw"]
+[ext_resource type="Script" uid="uid://bpoclqr2f21y2" path="res://Scripts/Game/Display/BoardDisplay.cs" id="13_8r6kd"]
+[ext_resource type="PackedScene" uid="uid://bcookw6uqteh7" path="res://Scenes/MinionDisplay.tscn" id="14_tfod6"]
+[ext_resource type="PackedScene" uid="uid://drjycecp44mo7" path="res://Scenes/FortDisplay.tscn" id="15_rajel"]
+[ext_resource type="PackedScene" uid="uid://b87vvghkw306d" path="res://Scenes/TileDisplay.tscn" id="16_vvhu1"]
+[ext_resource type="Script" uid="uid://u4ode5mopgro" path="res://Scripts/Game/Board.cs" id="17_lbihj"]
+[ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
+[ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Game/Grid2D.cs" id="19_8e0uq"]
 
 [node name="Game" type="Node2D"]
 metadata/_edit_lock_ = true
@@ -44,14 +49,12 @@ metadata/_custom_type_script = "uid://c2vxjlf16t6t5"
 
 [node name="Minion Library" type="Node" parent="."]
 script = ExtResource("2_j5yw3")
-fireKnightData = ExtResource("3_fgofq")
 waterKnightData = ExtResource("4_2irst")
 plantKnightData = ExtResource("5_2irst")
 metadata/_custom_type_script = "uid://cgdtthefjt0bb"
 
 [node name="TurnManager" type="Node" parent="."]
 script = ExtResource("3_kldst")
-enemyTurnColorFilter = Color(1, 0.7212088, 0.6773208, 1)
 metadata/_custom_type_script = "uid://cu3r71iskihyv"
 
 [node name="Button" type="Button" parent="TurnManager"]
@@ -61,6 +64,42 @@ offset_right = 1837.0
 offset_bottom = 104.0
 icon = ExtResource("4_b2bpf")
 
-[node name="Board" parent="." instance=ExtResource("3_j5yw3")]
+[node name="Board" type="Node2D" parent="."]
 
+[node name="BoardDisplay" type="Node2D" parent="Board"]
+position = Vector2(60, 35)
+script = ExtResource("13_8r6kd")
+minionDisplayTscn = ExtResource("14_tfod6")
+fortDisplayTscn = ExtResource("15_rajel")
+tileDisplayTscn = ExtResource("16_vvhu1")
+enemyTurnColorFilter = Color(1, 0.5503012, 0.4864729, 1)
+onSelectColor = Color(0.99999994, 0.8838739, 0.4130361, 1)
+movementPathColor = Color(0.98, 0.7023334, 0, 0.16470589)
+damageZoneColor = Color(1, 0, 0, 0.15294118)
+minionTextureScale = 0.9
+metadata/_custom_type_script = "uid://bpoclqr2f21y2"
+metadata/_edit_lock_ = true
+
+[node name="BoardData" type="Node" parent="Board" node_paths=PackedStringArray("gridReference", "stateReference")]
+script = ExtResource("17_lbihj")
+gridReference = NodePath("BoardGrid")
+stateReference = NodePath("BoardState")
+metadata/_custom_type_script = "uid://u4ode5mopgro"
+
+[node name="BoardState" type="Node" parent="Board/BoardData"]
+script = ExtResource("18_raj38")
+metadata/_custom_type_script = "uid://cwd71a6sseflj"
+
+[node name="BoardGrid" type="Node2D" parent="Board/BoardData"]
+position = Vector2(60, 35)
+script = ExtResource("19_8e0uq")
+Size = Vector2i(18, 10)
+CellSize = 100.0
+gridColor = Color(0.79607844, 0.79607844, 0.79607844, 0.24705882)
+hoverColor = Color(1, 1, 1, 0.05490196)
+metadata/_custom_type_script = "uid://dq36qu2o3hfpu"
+metadata/_edit_lock_ = true
+
+[connection signal="MinionSelected" from="InputHandler" to="Board/BoardDisplay" method="OnMinionSelected"]
+[connection signal="TurnEnded" from="TurnManager" to="Board/BoardDisplay" method="OnTurnEnded"]
 [connection signal="pressed" from="TurnManager/Button" to="TurnManager" method="PassTurn"]

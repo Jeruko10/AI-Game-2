@@ -12,5 +12,5 @@ public partial class Tile : Resource
     [Export(PropertyHint.Range, positiveHint)] public int MoveCost { get; private set; }
     [Export(PropertyHint.Range, positiveHint)] public int Damage { get; private set; }
 
-    const string positiveHint = "0, 1, or_greater";
+    const string positiveHint = "0, 1, or_greater, hide_slider";
 }

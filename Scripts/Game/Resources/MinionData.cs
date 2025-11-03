@@ -15,5 +15,5 @@ public partial class MinionData : Resource
     [Export(PropertyHint.Range, positiveHint)] public int MovePoints { get; private set; } = 5;
     [Export] public Array<Vector2I> DamageArea { get; private set; } // Define this as if the minion was facing upwards
 
-    const string positiveHint = "0, 1, or_greater";
+    const string positiveHint = "0, 1, or_greater, hide_slider";
 }

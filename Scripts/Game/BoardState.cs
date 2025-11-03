@@ -16,6 +16,7 @@ public partial class BoardState : Node
     [Export] Mana EnemyStartingMana = new();
     
     public Minion SelectedMinion { get; set; }
+    public bool IsPlayerTurn { get; set; }
 
     readonly Dictionary<Vector2I, Tile> tiles = [];
     readonly List<Minion> minions = [];

@@ -8,22 +8,30 @@ namespace Game;
 [GlobalClass]
 public partial class TurnManager : Node
 {
-	[Export(PropertyHint.ColorNoAlpha)] Color enemyTurnColorFilter = Colors.White;
-
-	public int TurnIndex { get; private set; } = 1;
-	public bool IsPlayerTurn { get => TurnIndex % 2 != 0; } // Odd turn inedex => Player's turn
-
+	[Signal] public delegate void TurnEndedEventHandler();
+	
+	bool IsPlayerTurn { get => turnIndex % 2 != 0; } // Odd turn inedex => Player's turn
+	int turnIndex = 0;
 	BoardDisplay boardDisplay;
 
     public override void _Ready()
-    {
+	{
+		PassTurn();
 		boardDisplay = GetTree().Root.GetChildrenOfType<BoardDisplay>(true).First();
     }
 
 	public void PassTurn()
 	{
-		TurnIndex++;
-		if (IsPlayerTurn) boardDisplay.Modulate = Colors.White;
-		else boardDisplay.Modulate = enemyTurnColorFilter;
+		turnIndex++;
+		Board.State.IsPlayerTurn = IsPlayerTurn;
+		EmitSignal(SignalName.TurnEnded);
+
+		if (IsPlayerTurn)
+		{
+		}
+		else
+		{
+			Board.State.SelectedMinion = null;
+		}
 	}
 }

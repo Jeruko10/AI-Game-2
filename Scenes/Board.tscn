@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://yhyivokbyjr0"]
+[gd_scene load_steps=8 format=3 uid="uid://d34fwnyfry6b8"]
 
-[ext_resource type="Texture2D" uid="uid://bwyl8mj8bcdsi" path="res://Sprites/Fort.png" id="2_ekcd8"]
-[ext_resource type="Script" uid="uid://bpoclqr2f21y2" path="res://Scripts/Game/BoardDisplay.cs" id="3_4r2x2"]
+[ext_resource type="PackedScene" uid="uid://bcookw6uqteh7" path="res://Scenes/MinionDisplay.tscn" id="2_m454s"]
+[ext_resource type="Script" uid="uid://bpoclqr2f21y2" path="res://Scripts/Game/Display/BoardDisplay.cs" id="3_4r2x2"]
+[ext_resource type="PackedScene" uid="uid://drjycecp44mo7" path="res://Scenes/FortDisplay.tscn" id="3_rd1f7"]
+[ext_resource type="PackedScene" uid="uid://b87vvghkw306d" path="res://Scenes/TileDisplay.tscn" id="4_4r2x2"]
 [ext_resource type="Script" uid="uid://u4ode5mopgro" path="res://Scripts/Game/Board.cs" id="4_x4kv2"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="5_fx0ao"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Game/Grid2D.cs" id="6_10vug"]
@@ -11,9 +13,12 @@
 [node name="BoardDisplay" type="Node2D" parent="."]
 position = Vector2(60, 35)
 script = ExtResource("3_4r2x2")
-MovementPathColor = Color(0.91, 0.7431667, 0, 0.15686275)
+minionDisplayTscn = ExtResource("2_m454s")
+fortDisplayTscn = ExtResource("3_rd1f7")
+tileDisplayTscn = ExtResource("4_4r2x2")
+movementPathColor = Color(0.98, 0.7023334, 0, 0.16470589)
+damageZoneColor = Color(1, 0, 0, 0.15294118)
 minionTextureScale = 0.9
-fortTexture = ExtResource("2_ekcd8")
 metadata/_custom_type_script = "uid://bpoclqr2f21y2"
 metadata/_edit_lock_ = true
 

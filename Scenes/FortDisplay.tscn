@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://drjycecp44mo7"]
+
+[ext_resource type="Script" uid="uid://ccd44coci0nah" path="res://Scripts/Game/Display/FortDisplay.cs" id="1_ig1bj"]
+[ext_resource type="Texture2D" uid="uid://bwyl8mj8bcdsi" path="res://Sprites/Fort.png" id="2_edmu7"]
+
+[node name="Fort" type="Node2D" node_paths=PackedStringArray("Sprite")]
+script = ExtResource("1_ig1bj")
+Sprite = NodePath("Sprite2D")
+metadata/_edit_lock_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_edmu7")
+metadata/_edit_lock_ = true

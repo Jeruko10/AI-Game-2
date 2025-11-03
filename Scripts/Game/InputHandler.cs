@@ -9,16 +9,19 @@ namespace Game;
 [GlobalClass]
 public partial class InputHandler : Node
 {
+    [Signal] public delegate void MinionSelectedEventHandler(Minion minion);
+    
     BoardDisplay boardDisplay;
 
     public override void _Ready()
     {
         Board.Grid.CellLeftClicked += OnCellLeftClicked;
         Board.Grid.CellRightClicked += OnCellRightClicked;
+        MinionSelected += OnMinionSelected;
 
         boardDisplay = GetTree().Root.GetChildrenOfType<BoardDisplay>(true).First();
     }
-    
+
     public static Vector2I[] GetPathToCursor(Vector2I origin)
     {
         HashSet<Vector2I> blockedCells = [];
@@ -51,21 +54,23 @@ public partial class InputHandler : Node
         SpawnRandomMinion(cell);
     }
 
-    void OnMinionClicked(Minion clickedMinion) // This method is only for debugging
+    void OnMinionClicked(Minion clickedMinion)
     {
-        if (clickedMinion.Owner == Minion.Owners.Player && Board.State.SelectedMinion == null)
-        {
-            // Select the minion
-            boardDisplay.OnMinionSelected(clickedMinion);
-            Board.State.SelectedMinion = clickedMinion;
-        }
+        if (clickedMinion.Owner == Board.Entities.Player && Board.State.SelectedMinion == null && Board.State.IsPlayerTurn)
+            EmitSignal(SignalName.MinionSelected, clickedMinion);
     }
 
-    static void SpawnRandomMinion(Vector2I cell)
+    void OnMinionSelected(Minion selectedMinion)
+    {
+        Board.State.SelectedMinion = selectedMinion;
+    }
+
+    static void SpawnRandomMinion(Vector2I cell) // This method is only for debugging
     {
         MinionData[] templates = [Minions.FireKnight, Minions.WaterKnight, Minions.PlantKnight];
+        MinionData randomTemplate = templates.GetRandomElement();
 
         if (Board.State.GetCellData(cell).Minion == null)
-            Board.State.AddMinion(new(templates.GetRandomElement(), cell, Minion.Owners.Player));
+            Board.State.AddMinion(new(randomTemplate, cell, Board.Entities.Player));
     }
 }

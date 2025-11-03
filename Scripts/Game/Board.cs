@@ -8,6 +8,8 @@ namespace Game;
 [GlobalClass]
 public partial class Board : Node
 {
+	public enum Entities { Player, Opponent };
+	
 	[Export] Grid2D gridReference;
 	[Export] BoardState stateReference;
 

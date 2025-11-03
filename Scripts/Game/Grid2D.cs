@@ -254,6 +254,7 @@ public partial class Grid2D : Node2D
     /// <summary> Colors a specific cell with the given color. </summary>
     public void ColorCell(Vector2I cell, Color color)
     {
+        if (!IsInsideGrid(cell)) return;
         coloredCells[cell] = color;
         QueueRedraw();
     }
