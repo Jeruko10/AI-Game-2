@@ -21,14 +21,16 @@ public partial class BoardDisplay : Node2D
 	[Export] RichTextLabel plantManaCounter;
 
 	[ExportSubgroup("Animations")]
+	[Export] Control turnInformer;
+	[Export] float turnInformerAnimationSpeed = 1f;
 	[Export] float minionMoveAnimationSpeed = 1f;
 	[Export] float minionDeathAnimationSpeed = 1f;
 	[Export] ScreenFlashModule screenFlash;
 
 	[ExportSubgroup("Colors")]
-	[Export(PropertyHint.ColorNoAlpha)] Color playerColor = Colors.SkyBlue;
-	[Export(PropertyHint.ColorNoAlpha)] Color opponentColor = Colors.Red;
 	[Export] float colorFilterIntensity = 0.3f;
+	[Export(PropertyHint.ColorNoAlpha)] Color player1Color = Colors.SkyBlue;
+	[Export(PropertyHint.ColorNoAlpha)] Color player2Color = Colors.Red;
 	[Export(PropertyHint.ColorNoAlpha)] Color onMinionRestoredColor = Colors.Lime;
 	[Export(PropertyHint.ColorNoAlpha)] Color onMinionSelectedColor = Colors.White;
 	[Export(PropertyHint.ColorNoAlpha)] Color onMinionDamagedColor = Colors.Red;
@@ -45,6 +47,7 @@ public partial class BoardDisplay : Node2D
     readonly Dictionary<Minion, MinionDisplay> minionVisuals = [];
     readonly Dictionary<Fort, FortDisplay> fortVisuals = [];
 	Node2D tilesGroup, fortsGroup, minionsGroup;
+	Vector2I? hoveredCell = null;
 
 	public override void _Ready()
 	{
@@ -60,6 +63,8 @@ public partial class BoardDisplay : Node2D
 		Board.State.MinionAttack += OnMinionAttack;
 		Board.State.MinionDamaged += OnMinionDamaged;
 		Board.State.MinionDeath += OnMinionDeath;
+		Board.State.TurnStarted += OnTurnStarted;
+		Board.State.CellHovered += OnCellHovered;
 
 		Board.Grid.GlobalPosition = GlobalPosition;
 	}
@@ -72,9 +77,9 @@ public partial class BoardDisplay : Node2D
 	
 	void UpdateHUD()
     {
-		fireManaCounter.Text = Board.State.PlayerMana.FireMana.ToString();
-		waterManaCounter.Text = Board.State.PlayerMana.WaterMana.ToString();
-		plantManaCounter.Text = Board.State.PlayerMana.PlantMana.ToString();
+		fireManaCounter.Text = Board.State.Player1Mana.FireMana.ToString();
+		waterManaCounter.Text = Board.State.Player1Mana.WaterMana.ToString();
+		plantManaCounter.Text = Board.State.Player1Mana.PlantMana.ToString();
     }
 
 	void UpdateGizmos()
@@ -125,7 +130,7 @@ public partial class BoardDisplay : Node2D
 
 		fortVisuals[fort].Position = CellToWorld(fort.Position);
 		fortVisuals[fort].Modulate = (fort.Element == null) ? Colors.White : fort.Element.Color;
-		fortVisuals[fort].OutlineModule.OutlineColor = GetRivalColor(fort.Owner);
+		fortVisuals[fort].OutlineModule.OutlineColor = GetPlayerColor(fort.Owner);
 	}
 
 	async void OnFortDominated(Fort fort, Minion dominator)
@@ -133,15 +138,17 @@ public partial class BoardDisplay : Node2D
 		await ToSignal(dominator, Minion.SignalName.SelectionAvailable);
 
 		fortVisuals[fort].Sprite.Modulate = dominator.Element.Color;
-		fortVisuals[fort].OutlineModule.OutlineColor = GetRivalColor(dominator.Owner);
+		fortVisuals[fort].OutlineModule.OutlineColor = GetPlayerColor(dominator.Owner);
 		fortVisuals[fort].SquashAnimator.ApplyImpact(1f);
 	}
-	
-    void OnFortHarvested(Fort fort)
+
+	void OnFortHarvested(Fort fort)
 	{
 		GD.Print("daw");
 		fortVisuals[fort].SquashAnimator.ApplyImpact(1f);
-    }
+	}
+	
+    void OnCellHovered(Vector2I cell) => hoveredCell = cell;
 
 	void OnMinionAdded(Minion minion)
 	{
@@ -149,7 +156,7 @@ public partial class BoardDisplay : Node2D
 
 		minionVisuals[minion].Position = CellToWorld(minion.Position);
 		minionVisuals[minion].Sprite.Texture = minion.Texture;
-		minionVisuals[minion].OutlineModule.OutlineColor = (minion.Owner == Board.Rivals.Player) ? playerColor : opponentColor;
+		minionVisuals[minion].OutlineModule.OutlineColor = (minion.Owner == Board.Players.Player1) ? player1Color : player2Color;
 	}
 
     async void OnMinionDeath(Minion minion)
@@ -223,11 +230,24 @@ public partial class BoardDisplay : Node2D
 		minion.Selectable = true;
 	}
 
-	async void OnTurnStarted(Board.Rivals turnOwner)
+	async void OnTurnStarted(Board.Players turnOwner)
 	{
-		Modulate = (turnOwner == Board.Rivals.Player) ? playerColor.Lightened(1 - colorFilterIntensity) : opponentColor.Lightened(1 - colorFilterIntensity);
+		Tween bannerTween;
 
-		await screenFlash.PlayFlash(0f, 0f, 0.5f, 0.5f, GetRivalColor(turnOwner));
+		Modulate = (turnOwner == Board.Players.Player1) ? player1Color.Lightened(1 - colorFilterIntensity) : player2Color.Lightened(1 - colorFilterIntensity);
+		await screenFlash.PlayFlash(0f, 0f, 0.5f, 0.5f, GetPlayerColor(turnOwner));
+
+		turnInformer.Show();
+		RichTextLabel label = turnInformer.GetChildrenOfType<RichTextLabel>().First();
+
+		label.Text = $"{turnOwner}'s Turn";
+		bannerTween = CreateTween();
+		bannerTween.TweenDelegate(v => turnInformer.Position = new(v, turnInformer.Position.Y), -2577f, 2557f, 1 / turnInformerAnimationSpeed)
+		.SetEase(Tween.EaseType.OutIn).SetTrans(Tween.TransitionType.Elastic);
+
+		await ToSignal(bannerTween, Tween.SignalName.Finished);
+
+		InputHandler.InteractionEnabled = true;
 	}
 
 	Vector2 CellToWorld(Vector2I cell) => Board.Grid.GridToWorld(cell) - GlobalPosition + Board.Grid.CellSize * Vector2.One / 2;
@@ -268,11 +288,11 @@ public partial class BoardDisplay : Node2D
 		sprite.Scale = cellSize / sprite.Texture.GetSize();
 	}
 	
-	Color GetRivalColor(Board.Rivals? rival)
+	Color GetPlayerColor(Board.Players? player)
     {
-		if (rival == null) return Colors.White;
-		if (rival == Board.Rivals.Player) return playerColor;
-		if (rival == Board.Rivals.Opponent) return opponentColor;
+		if (player == null) return Colors.White;
+		if (player == Board.Players.Player1) return player1Color;
+		if (player == Board.Players.Player2) return player2Color;
 		return Colors.Black;
     }
 }

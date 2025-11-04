@@ -10,47 +10,16 @@ public partial class Grid2D : Node2D
 {
     [Export] public Vector2I Size { get; private set; }
     [Export] public float CellSize  { get; private set; } = 64f;
-
-    [ExportGroup("Debugging")]
     [Export] bool drawGrid = true;
     [Export] Color gridColor = Colors.Gray;
-    
-    [Export(PropertyHint.Range, "0,0.001,or_greater,hide_slider")]
-    float lineWidth = 1f;
-    [Export] bool mouseHover = true;
-    [Export] Color hoverColor = new(1, 1, 1, 0.2f);
+    [Export(PropertyHint.Range, "0,0.001,or_greater,hide_slider")] float lineWidth = 1f;
 
-    [Signal] public delegate void CellLeftClickedEventHandler(Vector2I cell);
-    [Signal] public delegate void CellRightClickedEventHandler(Vector2I cell);
-
-    Vector2I? hoveredCell;
     readonly Dictionary<Vector2I, Color> coloredCells = [];
     const bool antialiasing = true;
 
     public override void _Process(double delta)
     {
-        if (Engine.IsEditorHint())
-            QueueRedraw();
-    }
-
-    public override void _Input(InputEvent @event)
-    {
-        Vector2I cell = WorldToGrid(GetGlobalMousePosition());
-        bool insideGrid = IsInsideGrid(cell);
-
-        if (mouseHover && @event is InputEventMouseMotion)
-        {
-            hoveredCell = insideGrid ? cell : null;
-            QueueRedraw();
-        }
-
-        if (@event is InputEventMouseButton click && click.Pressed && insideGrid)
-        {
-            if (click.ButtonIndex == MouseButton.Left)
-                EmitSignal(SignalName.CellLeftClicked, cell);
-            else if (click.ButtonIndex == MouseButton.Right)
-                EmitSignal(SignalName.CellRightClicked, cell);
-        }
+        if (Engine.IsEditorHint()) QueueRedraw();
     }
 
     public override void _Draw()
@@ -66,9 +35,6 @@ public partial class Grid2D : Node2D
 
         foreach (var kv in coloredCells)
             DrawCellOverlay(kv.Key, kv.Value);
-
-        if (mouseHover && hoveredCell != null)
-            DrawCellOverlay(hoveredCell.Value, hoverColor);
     }
 
     /// <summary> Resizes the grid to the specified number of size.Y and size.X. </summary>
@@ -209,8 +175,24 @@ public partial class Grid2D : Node2D
         QueueRedraw();
     }
 
-    /// <summary> Returns the cell that mouse is currently hovering over. </summary>
-    public Vector2I? GetHoveredCell() => hoveredCell;
+    /// <summary> Returns the cell that is currently being hovered by the mouse, if there is one. </summary>
+    public Vector2I? GetHoveredCell()
+    {
+        Vector2I? cell = null;
+        Vector2I candidate = WorldToGrid(GetViewport().GetMousePosition());
+
+        if (IsInsideGrid(candidate)) cell = candidate;
+
+        return cell;
+    }
+
+    /// <summary> Returns true if the mouse is currently touching the cell. </summary>
+    public bool IsMouseOverCell(Vector2I cell)
+    {
+        Vector2 mousePos = GetViewport().GetMousePosition();
+        Vector2I hoveredCell = WorldToGrid(mousePos);
+        return hoveredCell == cell;
+    }
 
     /// <summary> Draws an overlay for a specific cell with the given color. </summary>
     void DrawCellOverlay(Vector2I cell, Color color)

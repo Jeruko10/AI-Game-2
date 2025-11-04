@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://b7dnsajjukbbr"
-path="res://.godot/imported/Vaseline Extra.ttf-a38d922ab90c12dcd9a9672b5080db5c.fontdata"
+path="res://.godot/imported/VaselineExtra.ttf-8dbdb233f86f5cf456f51045743ffcc6.fontdata"
 
 [deps]
 
-source_file="res://Resources/Text/Vaseline Extra.ttf"
-dest_files=["res://.godot/imported/Vaseline Extra.ttf-a38d922ab90c12dcd9a9672b5080db5c.fontdata"]
+source_file="res://Resources/Text/VaselineExtra.ttf"
+dest_files=["res://.godot/imported/VaselineExtra.ttf-8dbdb233f86f5cf456f51045743ffcc6.fontdata"]
 
 [params]
 
