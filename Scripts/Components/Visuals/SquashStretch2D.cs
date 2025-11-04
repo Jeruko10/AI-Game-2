@@ -40,7 +40,7 @@ public partial class SquashStretch2D : Node2D
 	}
 
 	const string positveHint = "0,1, or_greater, hide_slider", factorHint = "0,1";
-	Func<float> GetModulator;
+	Func<float> GetModulator = () => 0f;
 	float lastValue = 0f;
 	bool enabled = true;
 	Vector2 impactScaleFactor = Vector2.Zero, manualImpactWeight = Vector2.Zero;
@@ -51,7 +51,7 @@ public partial class SquashStretch2D : Node2D
 	}
 
 	/// <summary>Assigns a function that provides the input value for scaling.</summary>
-	public void SetSquishModulator(Func<float> modulatorGetter) => GetModulator = modulatorGetter;
+	public void SetSquashModulator(Func<float> modulatorGetter) => GetModulator = modulatorGetter;
 
 	/// <summary>Applies an impact-based deformation on the X or Y axis.</summary>
 	public void ApplyImpact(float weight, bool vertical = false)

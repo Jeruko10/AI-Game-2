@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://drjycecp44mo7"]
+
+[ext_resource type="Script" uid="uid://ccd44coci0nah" path="res://Scripts/Game/Display/FortDisplay.cs" id="1_ig1bj"]
+[ext_resource type="Texture2D" uid="uid://bwyl8mj8bcdsi" path="res://Sprites/Fort.png" id="2_edmu7"]
+[ext_resource type="Script" uid="uid://lpcmsp8qjbfa" path="res://Scripts/Components/Visuals/SquashStretch2D.cs" id="2_gy725"]
+[ext_resource type="Script" uid="uid://ccsf7mfhim8f2" path="res://Scripts/Components/Visuals/OutlineModule.cs" id="3_o86m0"]
+
+[node name="Fort" type="Node2D" node_paths=PackedStringArray("Sprite", "outlineSprite", "OutlineModule", "SquashAnimator")]
+script = ExtResource("1_ig1bj")
+Sprite = NodePath("SquashStretch2D/Sprite2D")
+outlineSprite = NodePath("SquashStretch2D/OutlineSprite")
+OutlineModule = NodePath("OutlineModule")
+SquashAnimator = NodePath("SquashStretch2D")
+metadata/_edit_lock_ = true
+
+[node name="SquashStretch2D" type="Node2D" parent="."]
+script = ExtResource("2_gy725")
+SquashFactor = 0.2
+MaxValueThreshold = 1.0
+MinValueThreshold = -1.0
+DeadZone = 0.0
+ImpactFactor = 1.0
+ImpactDecay = 25.0
+metadata/_custom_type_script = "uid://lpcmsp8qjbfa"
+metadata/_edit_lock_ = true
+
+[node name="OutlineSprite" type="Sprite2D" parent="SquashStretch2D"]
+texture = ExtResource("2_edmu7")
+metadata/_edit_lock_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="SquashStretch2D"]
+texture = ExtResource("2_edmu7")
+metadata/_edit_lock_ = true
+
+[node name="OutlineModule" type="Node" parent="." node_paths=PackedStringArray("TargetNode")]
+script = ExtResource("3_o86m0")
+TargetNode = NodePath("../SquashStretch2D/OutlineSprite")
+OutlineThickness = 1.5
+metadata/_custom_type_script = "uid://ccsf7mfhim8f2"

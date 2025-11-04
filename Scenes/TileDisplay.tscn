@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://b87vvghkw306d"]
+
+[ext_resource type="Script" uid="uid://elglbah2ea6m" path="res://Scripts/Game/Display/TileDisplay.cs" id="1_ju6pf"]
+[ext_resource type="Texture2D" uid="uid://bbcd0cgw5eykt" path="res://Sprites/PlantTile.png" id="2_dw7br"]
+
+[node name="Tile" type="Node2D" node_paths=PackedStringArray("Sprite")]
+script = ExtResource("1_ju6pf")
+Sprite = NodePath("Sprite2D")
+metadata/_edit_lock_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_dw7br")
+metadata/_edit_lock_ = true

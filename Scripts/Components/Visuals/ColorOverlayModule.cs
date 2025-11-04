@@ -27,6 +27,7 @@ public partial class ColorOverlayModule : Node
         isActive = true;
         material.SetShaderParameter(ShaderParamOverlayColor, color ?? Colors.White);
         void setter(float value) => material?.SetShaderParameter(ShaderParamFadeValue, value);
+        tween = CreateTween();
 
         tween.TweenDelegate(setter, 0f, fade.Intensity, fade.FadeInTime);
         tween.TweenInterval(fade.PeakTime);

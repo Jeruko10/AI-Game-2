@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Tile" load_steps=3 format=3 uid="uid://cxkqasn5gq6mj"]
+
+[ext_resource type="Script" uid="uid://pppabphqhcv4" path="res://Scripts/Game/Resources/Tile.cs" id="1_c3rrr"]
+[ext_resource type="Texture2D" uid="uid://st0b5vmbtsu1" path="res://Sprites/WaterTile.png" id="1_ca6wq"]
+
+[resource]
+script = ExtResource("1_c3rrr")
+Texture = ExtResource("1_ca6wq")
+MoveCost = 2
+metadata/_custom_type_script = "uid://pppabphqhcv4"

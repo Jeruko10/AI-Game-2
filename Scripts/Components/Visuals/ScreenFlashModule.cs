@@ -35,7 +35,7 @@ public partial class ScreenFlashModule : ColorRect
         float alphaVal = alpha ?? DefaultAlpha;
         Color flashColor = color ?? DefaultColor;
 
-        void setter(float value) => Modulate = new(DefaultColor, value);
+        void setter(float value) => Modulate = new(flashColor, value);
         
         tween = CreateTween();
         tween.TweenDelegate(setter, 0f, alphaVal, fadeInVal);

@@ -5,7 +5,7 @@ namespace Utility;
 
 public static class Logic
 {
-    private static readonly Random RandomInstance = new();
+    static readonly Random RandomInstance = new();
 
     /// <summary>
     /// Returns a random element from the specified generic list.
@@ -70,5 +70,14 @@ public static class Logic
         int relative = value - min;
         int wrapped = ((relative % range) + range) % range;
         return min + wrapped;
+    }
+
+    public static void GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
+    {
+        if (!dict.TryGetValue(key, out var v))
+        {
+            v = value;
+            dict[key] = value;
+        }
     }
 }
