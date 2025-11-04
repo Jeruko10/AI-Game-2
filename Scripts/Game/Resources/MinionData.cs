@@ -7,6 +7,7 @@ namespace Game;
 [GlobalClass]
 public partial class MinionData : Resource
 {
+    [Export] public string Name { get; private set; } = "Nameless";
     [Export] public Texture2D Texture { get; private set; }
     [Export] public Element Element { get; private set; }
     [Export(PropertyHint.Range, positiveHint)] public Mana Cost { get; private set; } = new();
@@ -16,4 +17,6 @@ public partial class MinionData : Resource
     [Export] public Array<Vector2I> DamageArea { get; private set; } // Define this as if the minion was facing upwards
 
     const string positiveHint = "0, 1, or_greater, hide_slider";
+
+    public bool IsAffordable(Mana availableMana) => availableMana - Cost >= Mana.Zero;
 }

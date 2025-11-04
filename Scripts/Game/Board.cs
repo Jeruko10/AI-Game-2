@@ -8,35 +8,28 @@ namespace Game;
 [GlobalClass]
 public partial class Board : Node
 {
-	public enum Entities { Player, Opponent };
+	public enum Rivals { Player, Opponent };
 	
 	[Export] Grid2D gridReference;
 	[Export] BoardState stateReference;
 
-	public static Board Singleton { get; private set; }
-	public static Grid2D Grid { get; private set; }
-	public static BoardState State { get; private set; }
+	static Board singleton;
+	public static Grid2D Grid => singleton.gridReference;
+	public static BoardState State => singleton.stateReference;
 
-	public override void _EnterTree() => StoreStaticData();
+	public override void _EnterTree() => singleton ??= this;
 
 	public override void _ExitTree()
 	{
-		if (Singleton == this) Singleton = null;
+		if (singleton == this) singleton = null;
 	}
 
 	public override void _Ready()
 	{
 		DebugDraw2D.Config.TextDefaultSize = 25;
 
-		AudioManager.SetOriginParent(Singleton);
+		AudioManager.SetOriginParent(singleton);
 		AudioManager.CreateGroup("music");
 		AudioManager.CreateGroup("sounds");
-	}
-
-	void StoreStaticData()
-	{
-		Singleton ??= this;
-		Grid ??= gridReference;
-		State ??= stateReference;
 	}
 }

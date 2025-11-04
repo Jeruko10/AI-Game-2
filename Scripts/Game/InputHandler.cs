@@ -22,25 +22,33 @@ public partial class InputHandler : Node
         boardDisplay = GetTree().Root.GetChildrenOfType<BoardDisplay>(true).First();
     }
 
-    public static Vector2I[] GetPathToCursor(Vector2I origin)
-    {
-        HashSet<Vector2I> blockedCells = [];
-        Vector2I[] path = [];
-        Vector2I? hoveredCell = Board.Grid.GetHoveredCell();
-
-        if (hoveredCell == null) return path;
-
-        path = Board.Grid.GetShortestPathBFS(origin, hoveredCell.Value, blockedCells);
-        return path;
-    }
-
     void OnCellLeftClicked(Vector2I cell)
     {
         var data = Board.State.GetCellData(cell);
         Minion clickedMinion = data.Minion;
 
-        if (clickedMinion != null)
-            OnMinionClicked(clickedMinion);
+        bool minionIsAvailable = clickedMinion != null && clickedMinion.MovePoints != 0 &&
+            clickedMinion.Owner == Board.Rivals.Player && Board.State.SelectedMinion == null &&
+            Board.State.IsPlayerTurn && GridNavigation.GetReachableCells(clickedMinion).Length > 0;
+
+        if (minionIsAvailable)
+        {
+            EmitSignal(SignalName.MinionSelected, clickedMinion);
+            return;
+        }
+
+        // If minion was not clicked, then a tile must have been clicked
+        if (Board.State.SelectedMinion != null)
+        {
+            if (GridNavigation.IsReachableByMinion(Board.State.SelectedMinion, cell))
+            {
+                Vector2I[] minionPath = GridNavigation.GetPathToCursor(Board.State.SelectedMinion);
+                
+                Board.State.MoveMinion(Board.State.SelectedMinion, minionPath);
+            }
+            else
+                Board.State.SelectedMinion = null; // Unselect minion
+        }
     }
 
     void OnCellRightClicked(Vector2I cell)
@@ -54,12 +62,6 @@ public partial class InputHandler : Node
         SpawnRandomMinion(cell);
     }
 
-    void OnMinionClicked(Minion clickedMinion)
-    {
-        if (clickedMinion.Owner == Board.Entities.Player && Board.State.SelectedMinion == null && Board.State.IsPlayerTurn)
-            EmitSignal(SignalName.MinionSelected, clickedMinion);
-    }
-
     void OnMinionSelected(Minion selectedMinion)
     {
         Board.State.SelectedMinion = selectedMinion;
@@ -69,8 +71,9 @@ public partial class InputHandler : Node
     {
         MinionData[] templates = [Minions.FireKnight, Minions.WaterKnight, Minions.PlantKnight];
         MinionData randomTemplate = templates.GetRandomElement();
+        Mana availableMana = Board.State.GetActiveRivalMana();
 
-        if (Board.State.GetCellData(cell).Minion == null)
-            Board.State.AddMinion(new(randomTemplate, cell, Board.Entities.Player));
+        if (Board.State.GetCellData(cell).Minion == null && randomTemplate.IsAffordable(availableMana))
+            Board.State.PlayMinion(randomTemplate, cell);
     }
 }

@@ -5,7 +5,7 @@ namespace Utility;
 
 public static class Logic
 {
-    private static readonly Random RandomInstance = new();
+    static readonly Random RandomInstance = new();
 
     /// <summary>
     /// Returns a random element from the specified generic list.

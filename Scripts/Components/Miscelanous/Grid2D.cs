@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Game;
+namespace Components;
 
 [GlobalClass][Tool]
 public partial class Grid2D : Node2D
@@ -185,70 +185,6 @@ public partial class Grid2D : Node2D
             }
 
         return result.ToArray();
-    }
-
-    /// <summary> Returns the shortest path between two cells using BFS. </summary>
-    public Vector2I[] GetShortestPathBFS(Vector2I start, Vector2I goal, HashSet<Vector2I> blockedCells, bool allowDiagonals = false)
-    {
-        if (start == goal) return [start];
-
-        if (!IsInsideGrid(start) || !IsInsideGrid(goal) || blockedCells.Contains(start) || blockedCells.Contains(goal))
-            return [];
-
-        Queue<Vector2I> frontier = new();
-        Dictionary<Vector2I, Vector2I> cameFrom = [];
-
-        frontier.Enqueue(start);
-        cameFrom[start] = start;
-
-        Vector2I[] directions = allowDiagonals ?
-            [new(1, 0), new(-1, 0), new(0, 1), new(0, -1), new(1, 1), new(-1, -1), new(1, -1), new(-1, 1)] :
-            [new(1, 0), new(-1, 0), new(0, 1), new(0, -1)];
-
-        while (frontier.Count > 0)
-        {
-            Vector2I current = frontier.Dequeue();
-
-            foreach (Vector2I dir in directions)
-            {
-                Vector2I next = current + dir;
-
-                if (!IsInsideGrid(next) || blockedCells.Contains(next) || cameFrom.ContainsKey(next)) continue;
-
-                frontier.Enqueue(next);
-                cameFrom[next] = current;
-
-                if (next == goal) break;
-            }
-        }
-
-        if (!cameFrom.ContainsKey(goal)) return [];
-
-        List<Vector2I> path = [];
-        Vector2I step = goal;
-
-        while (step != start)
-        {
-            path.Add(step);
-            step = cameFrom[step];
-        }
-
-        path.Add(start);
-        path.Reverse();
-        return path.ToArray();
-    }
-
-    /// <summary> Returns the shortest path between two cells using A*. </summary>
-    public Vector2I[] GetShortestPathAStar(Vector2I start, Vector2I goal, HashSet<Vector2I> blockedCells, bool allowDiagonals = false)
-    {
-        // TODO
-        return null;
-    }
-
-    /// <summary> Checks if a path exists between two cells, considering blocked cells. </summary>
-    public bool IsReachable(Vector2I start, Vector2I goal, HashSet<Vector2I> blockedCells, bool allowDiagonals = false)
-    {
-        return GetShortestPathBFS(start, goal, blockedCells, allowDiagonals).Length > 0;
     }
 
     /// <summary> Colors a specific cell with the given color. </summary>

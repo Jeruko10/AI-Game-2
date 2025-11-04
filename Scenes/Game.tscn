@@ -1,39 +1,177 @@
-[gd_scene load_steps=19 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=27 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
+[ext_resource type="Theme" uid="uid://mx3t0l4mt7vv" path="res://Resources/Text/GameFontStyle.tres" id="1_tfod6"]
 [ext_resource type="Resource" uid="uid://bwq44820bcf61" path="res://Resources/Tiles/GroundTile.tres" id="2_3so38"]
 [ext_resource type="Script" uid="uid://cgdtthefjt0bb" path="res://Scripts/Game/Minions.cs" id="2_j5yw3"]
+[ext_resource type="Texture2D" uid="uid://c1cllrx0lx67p" path="res://Sprites/FireSymbol.png" id="2_rajel"]
 [ext_resource type="Resource" uid="uid://cwa7gma4l002d" path="res://Resources/Tiles/WallTile.tres" id="3_3cx6b"]
+[ext_resource type="Resource" uid="uid://ddjxxepck0qec" path="res://Resources/Minions/FireKnight.tres" id="3_fgofq"]
 [ext_resource type="Script" uid="uid://cu3r71iskihyv" path="res://Scripts/Game/TurnManager.cs" id="3_kldst"]
+[ext_resource type="Texture2D" uid="uid://w4p0tsentu6k" path="res://Sprites/WaterSymbol.png" id="3_lbihj"]
 [ext_resource type="Resource" uid="uid://der1cl6k57cfm" path="res://Resources/Minions/WaterKnight.tres" id="4_2irst"]
-[ext_resource type="Texture2D" uid="uid://j555pvmnhvpl" path="res://Sprites/EndTurnTemplate.png" id="4_b2bpf"]
+[ext_resource type="Texture2D" uid="uid://b3sp5x3r3jge7" path="res://Sprites/PlantSymbol.png" id="4_raj38"]
 [ext_resource type="Resource" uid="uid://cgyflruq4myop" path="res://Resources/Tiles/FireTile.tres" id="4_wxwew"]
 [ext_resource type="Resource" uid="uid://bvylj8fneatts" path="res://Resources/Minions/PlantKnight.tres" id="5_2irst"]
 [ext_resource type="Resource" uid="uid://cxkqasn5gq6mj" path="res://Resources/Tiles/WaterTile.tres" id="5_acvyw"]
+[ext_resource type="Script" uid="uid://dwaiexaedy04n" path="res://Scripts/Components/Visuals/ScreenFlashModule.cs" id="5_lbihj"]
 [ext_resource type="Script" uid="uid://bpoclqr2f21y2" path="res://Scripts/Game/Display/BoardDisplay.cs" id="13_8r6kd"]
 [ext_resource type="PackedScene" uid="uid://bcookw6uqteh7" path="res://Scenes/MinionDisplay.tscn" id="14_tfod6"]
 [ext_resource type="PackedScene" uid="uid://drjycecp44mo7" path="res://Scenes/FortDisplay.tscn" id="15_rajel"]
 [ext_resource type="PackedScene" uid="uid://b87vvghkw306d" path="res://Scenes/TileDisplay.tscn" id="16_vvhu1"]
 [ext_resource type="Script" uid="uid://u4ode5mopgro" path="res://Scripts/Game/Board.cs" id="17_lbihj"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
-[ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Game/Grid2D.cs" id="19_8e0uq"]
+[ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
+[ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
+
+[sub_resource type="Resource" id="Resource_8e0uq"]
+script = ExtResource("23_raj38")
+FireMana = 10
+WaterMana = 10
+PlantMana = 10
+metadata/_custom_type_script = "uid://dkojvf477tj8k"
+
+[sub_resource type="Resource" id="Resource_i0vto"]
+script = ExtResource("23_raj38")
+FireMana = 10
+WaterMana = 10
+PlantMana = 10
+metadata/_custom_type_script = "uid://dkojvf477tj8k"
 
 [node name="Game" type="Node2D"]
 metadata/_edit_lock_ = true
 
-[node name="Background" type="CanvasLayer" parent="."]
+[node name="Background Layer" type="CanvasLayer" parent="."]
 layer = -1000
 
-[node name="ColorRect" type="ColorRect" parent="Background"]
+[node name="ColorRect" type="ColorRect" parent="Background Layer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.05788654, 0.053803183, 0.06808382, 1)
+color = Color(0.17611885, 0.16417989, 0.23555094, 1)
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
+
+[node name="Interface Layer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="HUD" type="Control" parent="Interface Layer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="ManaCounters" type="HBoxContainer" parent="Interface Layer/HUD"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.054166667
+anchor_top = 0.912963
+anchor_right = 0.26770833
+anchor_bottom = 0.98703706
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="FireMana" type="HBoxContainer" parent="Interface Layer/HUD/ManaCounters"]
+layout_mode = 2
+size_flags_horizontal = 2
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Amount" type="RichTextLabel" parent="Interface Layer/HUD/ManaCounters/FireMana"]
+custom_minimum_size = Vector2(60, 80)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+focus_neighbor_right = NodePath("../../WaterMana/Amount")
+theme = ExtResource("1_tfod6")
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Symbol" type="TextureRect" parent="Interface Layer/HUD/ManaCounters/FireMana"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+size_flags_horizontal = 6
+texture = ExtResource("2_rajel")
+stretch_mode = 5
+metadata/_edit_lock_ = true
+
+[node name="WaterMana" type="HBoxContainer" parent="Interface Layer/HUD/ManaCounters"]
+layout_mode = 2
+size_flags_horizontal = 6
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Amount" type="RichTextLabel" parent="Interface Layer/HUD/ManaCounters/WaterMana"]
+custom_minimum_size = Vector2(60, 80)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+focus_neighbor_left = NodePath("../../FireMana/Amount")
+focus_neighbor_right = NodePath("../../PlantMana/Amount")
+theme = ExtResource("1_tfod6")
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Symbol" type="TextureRect" parent="Interface Layer/HUD/ManaCounters/WaterMana"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+size_flags_horizontal = 6
+texture = ExtResource("3_lbihj")
+stretch_mode = 5
+metadata/_edit_lock_ = true
+
+[node name="PlantMana" type="HBoxContainer" parent="Interface Layer/HUD/ManaCounters"]
+layout_mode = 2
+size_flags_horizontal = 10
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Amount" type="RichTextLabel" parent="Interface Layer/HUD/ManaCounters/PlantMana"]
+custom_minimum_size = Vector2(60, 80)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+focus_neighbor_left = NodePath("../../WaterMana/Amount")
+theme = ExtResource("1_tfod6")
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Symbol" type="TextureRect" parent="Interface Layer/HUD/ManaCounters/PlantMana"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+size_flags_horizontal = 6
+texture = ExtResource("4_raj38")
+stretch_mode = 5
+metadata/_edit_lock_ = true
+
+[node name="ScreenFlashModule" type="ColorRect" parent="Interface Layer/HUD"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.414314, 0.69606227, 0.989345, 1)
+script = ExtResource("5_lbihj")
+DefaultFadeIn = 0.0
+DefaultDuration = 0.0
+DefaultFadeOut = 0.3
+metadata/_custom_type_script = "uid://dwaiexaedy04n"
+metadata/_edit_use_anchors_ = true
 
 [node name="InputHandler" type="Node" parent="."]
 script = ExtResource("1_3cx6b")
@@ -49,6 +187,7 @@ metadata/_custom_type_script = "uid://c2vxjlf16t6t5"
 
 [node name="Minion Library" type="Node" parent="."]
 script = ExtResource("2_j5yw3")
+fireKnightData = ExtResource("3_fgofq")
 waterKnightData = ExtResource("4_2irst")
 plantKnightData = ExtResource("5_2irst")
 metadata/_custom_type_script = "uid://cgdtthefjt0bb"
@@ -57,26 +196,25 @@ metadata/_custom_type_script = "uid://cgdtthefjt0bb"
 script = ExtResource("3_kldst")
 metadata/_custom_type_script = "uid://cu3r71iskihyv"
 
-[node name="Button" type="Button" parent="TurnManager"]
-offset_left = 1761.0
-offset_top = 57.0
-offset_right = 1837.0
-offset_bottom = 104.0
-icon = ExtResource("4_b2bpf")
-
 [node name="Board" type="Node2D" parent="."]
 
-[node name="BoardDisplay" type="Node2D" parent="Board"]
-position = Vector2(60, 35)
+[node name="BoardDisplay" type="Node2D" parent="Board" node_paths=PackedStringArray("fireManaCounter", "waterManaCounter", "plantManaCounter", "screenFlash")]
+position = Vector2(104, 57)
 script = ExtResource("13_8r6kd")
 minionDisplayTscn = ExtResource("14_tfod6")
 fortDisplayTscn = ExtResource("15_rajel")
 tileDisplayTscn = ExtResource("16_vvhu1")
-enemyTurnColorFilter = Color(1, 0.5503012, 0.4864729, 1)
-onSelectColor = Color(0.99999994, 0.8838739, 0.4130361, 1)
-movementPathColor = Color(0.98, 0.7023334, 0, 0.16470589)
+fireManaCounter = NodePath("../../Interface Layer/HUD/ManaCounters/FireMana/Amount")
+waterManaCounter = NodePath("../../Interface Layer/HUD/ManaCounters/WaterMana/Amount")
+plantManaCounter = NodePath("../../Interface Layer/HUD/ManaCounters/PlantMana/Amount")
+minionMoveAnimationSpeed = 20.0
+minionDeathAnimationSpeed = 5.0
+screenFlash = NodePath("../../Interface Layer/HUD/ScreenFlashModule")
+movementRangeColor = Color(0.20999998, 0.3811667, 1, 0.21960784)
+movementPathColor = Color(0.98, 0.7023334, 0, 0.24705882)
 damageZoneColor = Color(1, 0, 0, 0.15294118)
-minionTextureScale = 0.9
+minionTextureScale = 0.7
+fortTextureScale = 1.7
 metadata/_custom_type_script = "uid://bpoclqr2f21y2"
 metadata/_edit_lock_ = true
 
@@ -88,12 +226,14 @@ metadata/_custom_type_script = "uid://u4ode5mopgro"
 
 [node name="BoardState" type="Node" parent="Board/BoardData"]
 script = ExtResource("18_raj38")
+PlayerStartingMana = SubResource("Resource_8e0uq")
+EnemyStartingMana = SubResource("Resource_i0vto")
 metadata/_custom_type_script = "uid://cwd71a6sseflj"
 
 [node name="BoardGrid" type="Node2D" parent="Board/BoardData"]
-position = Vector2(60, 35)
+position = Vector2(104, 57)
 script = ExtResource("19_8e0uq")
-Size = Vector2i(18, 10)
+Size = Vector2i(17, 9)
 CellSize = 100.0
 gridColor = Color(0.79607844, 0.79607844, 0.79607844, 0.24705882)
 hoverColor = Color(1, 1, 1, 0.05490196)
@@ -101,5 +241,5 @@ metadata/_custom_type_script = "uid://dq36qu2o3hfpu"
 metadata/_edit_lock_ = true
 
 [connection signal="MinionSelected" from="InputHandler" to="Board/BoardDisplay" method="OnMinionSelected"]
-[connection signal="TurnEnded" from="TurnManager" to="Board/BoardDisplay" method="OnTurnEnded"]
-[connection signal="pressed" from="TurnManager/Button" to="TurnManager" method="PassTurn"]
+[connection signal="TurnEnded" from="TurnManager" to="Board/BoardData/BoardState" method="OnTurnEnded"]
+[connection signal="TurnStarted" from="TurnManager" to="Board/BoardDisplay" method="OnTurnStarted"]

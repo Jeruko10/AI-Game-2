@@ -12,6 +12,7 @@ metadata/_custom_type_script = "uid://dkojvf477tj8k"
 
 [resource]
 script = ExtResource("2_v7k1c")
+Name = "Water Knight"
 Texture = ExtResource("1_j702s")
 Element = ExtResource("2_1cti1")
 Cost = SubResource("Resource_1cti1")

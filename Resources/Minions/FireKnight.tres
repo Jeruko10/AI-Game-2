@@ -12,6 +12,7 @@ metadata/_custom_type_script = "uid://dkojvf477tj8k"
 
 [resource]
 script = ExtResource("4_wcb8a")
+Name = "Fire Knight"
 Texture = ExtResource("1_vdgme")
 Element = ExtResource("2_b83fc")
 Cost = SubResource("Resource_b83fc")

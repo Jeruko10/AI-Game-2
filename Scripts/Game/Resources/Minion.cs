@@ -4,10 +4,13 @@ using Godot;
 
 namespace Game;
 
-public partial class Minion(MinionData data, Vector2I position, Board.Entities owner) : Resource
+public partial class Minion(MinionData data, Vector2I position) : Resource
 {
+    [Signal] public delegate void SelectionAvailableEventHandler();
+    
+    public string Name = data.Name;
     public Texture2D Texture { get; set; } = data.Texture;
-    public Board.Entities Owner { get; set; } = owner;
+    public Board.Rivals Owner { get; set; } = Board.State.IsPlayerTurn ? Board.Rivals.Player : Board.Rivals.Opponent;
     public int MaxHealth { get; } = data.Health;
     public int Health { get; set; } = data.Health;
     public int MaxMovePoints { get; } = data.MovePoints;
@@ -15,6 +18,16 @@ public partial class Minion(MinionData data, Vector2I position, Board.Entities o
     public Vector2I[] DamageArea { get; } = data.DamageArea.ToArray();
     public int Damage { get; } = data.Damage;
     public Element Element { get; } = data.Element;
+    public bool Selectable
+    {
+        get => selectable;
+        set
+        {
+            selectable = value;
+            if (selectable) EmitSignal(SignalName.SelectionAvailable);
+        }
+    }
+    
     public Vector2I Position
     {
         get => pos;
@@ -26,4 +39,5 @@ public partial class Minion(MinionData data, Vector2I position, Board.Entities o
     }
 
     Vector2I pos = position;
+    bool selectable = true;
 }
