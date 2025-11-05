@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Utility;
 
@@ -131,5 +131,29 @@ public static class GodotExtensions
         // Create a timer that ignores the global time scale
         var timer = tree.CreateTimer(duration, processAlways: true, processInPhysics: false, ignoreTimeScale: true);
         timer.Timeout += () => Engine.TimeScale = previousScale;
+    }
+
+    ///<summary>Asynchronously waits until a given condition becomes true, checking once per frame.
+    /// This is <see cref="Engine.TimeScale"/> dependant.</summary>
+    ///<param name="tree">The current <see cref="SceneTree"/> used to yield each frame.</param>
+    ///<param name="condition">A function that returns true when the wait should end.</param>
+    public static async Task DelayUntil(this SceneTree tree, Func<bool> condition)
+    {
+        while (!condition())
+            await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+    }
+
+    ///<summary>Asynchronously waits for a specified amount of real-time seconds using frame-based updates.
+    /// This is <see cref="Engine.TimeScale"/> dependant.</summary>
+    ///<param name="tree">The current <see cref="SceneTree"/> used to yield each frame.</param>
+    ///<param name="seconds">The number of seconds to wait before continuing execution.</param>
+    public static async Task Delay(this SceneTree tree, float seconds)
+    {
+        double elapsed = 0.0;
+        while (elapsed < seconds)
+        {
+            await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            elapsed += tree.Root.GetProcessDeltaTime();
+        }
     }
 }

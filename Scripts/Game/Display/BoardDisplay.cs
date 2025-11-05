@@ -151,7 +151,7 @@ public partial class BoardDisplay : Node2D
 
 	async void OnFortDominated(Fort fort, Minion dominator)
 	{
-		await ToSignal(dominator, Minion.SignalName.SelectionAvailable);
+		await GetTree().DelayUntil(() => dominator.Selectable);
 
 		fortVisuals[fort].Particle.Texture = fort.Element.Symbol;
 		fortVisuals[fort].Sprite.Modulate = dominator.Element.Color;
@@ -178,7 +178,7 @@ public partial class BoardDisplay : Node2D
 
     async void OnMinionDeath(Minion minion)
 	{
-		if (!minion.Selectable) await ToSignal(minion, Minion.SignalName.SelectionAvailable);
+		await GetTree().DelayUntil(() => minion.Selectable);
 
 		// Death animation
 		MinionDisplay minionDisplay = minionVisuals[minion];
@@ -195,7 +195,7 @@ public partial class BoardDisplay : Node2D
 
     async void OnMinionDamaged(Minion minion, int damageReceived)
 	{
-		if (!minion.Selectable) await ToSignal(minion, Minion.SignalName.SelectionAvailable);
+		await GetTree().DelayUntil(() => minion.Selectable);
 
 		// On damaged animation
 		MinionDisplay minionDisplay = minionVisuals[minion];
@@ -238,7 +238,7 @@ public partial class BoardDisplay : Node2D
 		await minionDisplay.FlashEffect.PlayEffect(fade, onMinionRestoredColor);
 	}
 
-	async void OnMinionMoved(Minion minion, Godot.Collections.Array<Vector2I> path)
+	async void OnMinionMoved(Minion minion, Vector2I[] path)
 	{
 		// Moving animation
 		Tween moveTween;

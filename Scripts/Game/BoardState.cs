@@ -9,20 +9,6 @@ namespace Game;
 [GlobalClass]
 public partial class BoardState : Node
 {
-	[Signal] public delegate void TurnStartedEventHandler(Board.Players newTurnOwner);
-    [Signal] public delegate void MinionDeathEventHandler(Minion minion);
-    [Signal] public delegate void MinionDamagedEventHandler(Minion minion, int damageReceived);
-    [Signal] public delegate void MinionAttackEventHandler(Minion minion, Vector2I direction);
-    [Signal] public delegate void MinionRestoredEventHandler(Minion minion);
-    [Signal] public delegate void MinionMovedEventHandler(Minion minion, Godot.Collections.Array<Vector2I> path);
-    [Signal] public delegate void MinionAddedEventHandler(Minion minion);
-    [Signal] public delegate void MinionUnselectedEventHandler(Minion minion);
-    [Signal] public delegate void MinionSelectedEventHandler(Minion minion);
-    [Signal] public delegate void AttackModeToggledEventHandler(bool attackMode);
-    [Signal] public delegate void FortDominatedEventHandler(Fort fort, Minion dominator);
-    [Signal] public delegate void FortHarvestedEventHandler(Fort fort);
-    [Signal] public delegate void TileAddedEventHandler(Tile tile, Vector2I cell);
-    [Signal] public delegate void FortAddedEventHandler(Fort fort);
     [Export] Mana Player1StartingMana;
     [Export] Mana Player2StartingMana;
 
@@ -34,6 +20,20 @@ public partial class BoardState : Node
     public Vector2I? SelectedCell { get; set; }
     public Minion SelectedMinion { get; private set; }
     public bool AttackMode { get; private set; }
+    public event Action<Board.Players> TurnStarted;
+    public event Action<Minion> MinionDeath;
+    public event Action<Minion, int> MinionDamaged;
+    public event Action<Minion, Vector2I> MinionAttack;
+    public event Action<Minion> MinionRestored;
+    public event Action<Minion, Vector2I[]> MinionMoved;
+    public event Action<Minion> MinionAdded;
+    public event Action<Minion> MinionUnselected;
+    public event Action<Minion> MinionSelected;
+    public event Action<bool> AttackModeToggled;
+    public event Action<Fort, Minion> FortDominated;
+    public event Action<Fort> FortHarvested;
+    public event Action<Tile, Vector2I> TileAdded;
+    public event Action<Fort> FortAdded;
 
     bool isPlayer1Turn = false;
 
@@ -58,7 +58,7 @@ public partial class BoardState : Node
     public void SelectMinion(Minion minion)
     {
         SelectedMinion = minion;
-        EmitSignal(SignalName.MinionSelected, minion);
+        MinionSelected?.Invoke(minion);
     }
 
     public void UnselectMinion()
@@ -66,13 +66,13 @@ public partial class BoardState : Node
         Minion oldSelection = SelectedMinion;
         SelectedMinion = null;
         AttackMode = false;
-        EmitSignal(SignalName.MinionUnselected, oldSelection);
+        MinionUnselected?.Invoke(oldSelection);
     }
 
     public void SetAttackMode(bool value)
     {
         AttackMode = value;
-        EmitSignal(SignalName.AttackModeToggled, value);
+        AttackModeToggled?.Invoke(value);
     }
 
     public void PassTurn()
@@ -92,7 +92,7 @@ public partial class BoardState : Node
             if (fort.Owner == oldTurnOwner)
                 HarvestMana(fort);
 
-        EmitSignal(SignalName.TurnStarted, (int)newTurnOwner);
+        TurnStarted?.Invoke(newTurnOwner);
     }
 
     public CellData GetCellData(Vector2I cell)
@@ -137,8 +137,7 @@ public partial class BoardState : Node
         if (fort != null && fort.Element != minion.Element) DominateFort(fort, minion);
         if (Tiles[pathEnd].Damage > 0) DamageMinion(minion, Tiles[pathEnd].Damage);
 
-        Godot.Collections.Array<Vector2I> arrayPath = [.. path];
-        EmitSignal(SignalName.MinionMoved, minion, arrayPath);
+        MinionMoved?.Invoke(minion, path);
     }
 
     public void AttackWithMinion(Minion minion, Vector2I direction)
@@ -152,27 +151,27 @@ public partial class BoardState : Node
         }
         minion.Exhausted = true;
         Board.State.UnselectMinion();
-        EmitSignal(SignalName.MinionAttack, minion, direction);
+        MinionAttack?.Invoke(minion, direction);
     }
 
     public void DamageMinion(Minion minion, int damage)
     {
         minion.Health -= damage;
         if (minion.Health <= 0) KillMinion(minion);
-        EmitSignal(SignalName.MinionDamaged, minion, damage);
+        MinionDamaged?.Invoke(minion, damage);
     }
 
     public void KillMinion(Minion minion)
     {
         Minions.Remove(minion);
-        EmitSignal(SignalName.MinionDeath, minion);
+        MinionDeath?.Invoke(minion);
     }
 
     public void RestoreMinion(Minion minion)
     {
         minion.Exhausted = false;
         minion.MovePoints = minion.MaxMovePoints;
-        EmitSignal(SignalName.MinionRestored, minion);
+        MinionRestored?.Invoke(minion);
     }
 
     public Mana GetActiveRivalMana() => isPlayer1Turn ? Player1Mana : Player2Mana;
@@ -181,7 +180,7 @@ public partial class BoardState : Node
     {
         fort.Element = minion.Element;
         fort.Owner = minion.Owner;
-        EmitSignal(SignalName.FortDominated, fort, minion);
+        FortDominated?.Invoke(fort, minion);
     }
 
     void HarvestMana(Fort fort)
@@ -192,7 +191,7 @@ public partial class BoardState : Node
             new Mana(0, 0, 1); // Plant mana
 
         GetActiveRivalMana().Obtain(earned);
-        EmitSignal(SignalName.FortHarvested, fort);
+        FortHarvested?.Invoke(fort);
     }
 
     void AddTile(Tile tile, Vector2I cell)
@@ -204,7 +203,7 @@ public partial class BoardState : Node
         }
 
         Tiles.Add(cell, tile);
-        EmitSignal(SignalName.TileAdded, tile, cell);
+        TileAdded?.Invoke(tile, cell);
     }
 
     void AddFort(Fort fort)
@@ -216,7 +215,7 @@ public partial class BoardState : Node
         }
 
         Forts.Add(fort);
-        EmitSignal(SignalName.FortAdded, fort);
+        FortAdded?.Invoke(fort);
     }
 
     void AddMinion(Minion minion)
@@ -228,7 +227,7 @@ public partial class BoardState : Node
         }
 
         Minions.Add(minion);
-        EmitSignal(SignalName.MinionAdded, minion);
+        MinionAdded?.Invoke(minion);
     }
 
     void CreateBoard() // TODO: Replace this method's content and create interesting way of designing the board
