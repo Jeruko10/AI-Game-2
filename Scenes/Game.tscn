@@ -285,7 +285,7 @@ metadata/_edit_lock_ = true
 script = ExtResource("17_lbihj")
 gridReference = NodePath("BoardGrid")
 stateReference = NodePath("BoardState")
-player1 = NodePath("../../InputHandler/BotInputProvider1")
+player1 = NodePath("../../InputHandler/MouseInputProvider")
 player2 = NodePath("../../InputHandler/BotInputProvider2")
 metadata/_custom_type_script = "uid://u4ode5mopgro"
 
