@@ -12,12 +12,15 @@ public partial class Board : Node
 	
 	[Export] Grid2D gridReference;
 	[Export] BoardState stateReference;
+	[Export] BotInputProvider player1;
+	[Export] BotInputProvider player2;
 
 	static Board singleton;
 	public static Grid2D Grid => singleton.gridReference;
 	public static BoardState State => singleton.stateReference;
-	public static IInputProvider Player1 { get; private set; } = new MouseInputProvider();
-	public static IInputProvider Player2 { get; private set; } = new MouseInputProvider();
+	public static IInputProvider Player1 => singleton.player1;
+	public static IInputProvider Player2 => singleton.player2;
+
 
 	public override void _EnterTree() => singleton ??= this;
 
@@ -33,5 +36,10 @@ public partial class Board : Node
 		AudioManager.SetOriginParent(singleton);
 		AudioManager.CreateGroup("music");
 		AudioManager.CreateGroup("sounds");
+
+		AddChild(Player1 as Node2D);
+		AddChild(Player2 as Node2D);
 	}
+
+    public static Players GetRival(Players player) => (player == Players.Player1) ? Players.Player2 : Players.Player1;
 }

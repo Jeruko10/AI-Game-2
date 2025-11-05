@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=29 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputManagement/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
@@ -20,7 +20,9 @@
 [ext_resource type="PackedScene" uid="uid://bcookw6uqteh7" path="res://Scenes/MinionDisplay.tscn" id="14_tfod6"]
 [ext_resource type="PackedScene" uid="uid://drjycecp44mo7" path="res://Scenes/FortDisplay.tscn" id="15_rajel"]
 [ext_resource type="PackedScene" uid="uid://b87vvghkw306d" path="res://Scenes/TileDisplay.tscn" id="16_vvhu1"]
+[ext_resource type="Script" uid="uid://bib5h2me841oe" path="res://Scripts/Game/InputManagement/MouseInputProvider.cs" id="17_i0vto"]
 [ext_resource type="Script" uid="uid://u4ode5mopgro" path="res://Scripts/Game/Board.cs" id="17_lbihj"]
+[ext_resource type="Script" uid="uid://o71pb6ak4n57" path="res://Scripts/Game/AI/BotInputProvider.cs" id="18_3jf1l"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
 [ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
@@ -234,9 +236,24 @@ metadata/_custom_type_script = "uid://cgdtthefjt0bb"
 script = ExtResource("1_3cx6b")
 metadata/_custom_type_script = "uid://bv23wi5pjg5mj"
 
+[node name="MouseInputProvider" type="Node2D" parent="InputHandler"]
+script = ExtResource("17_i0vto")
+metadata/_custom_type_script = "uid://bib5h2me841oe"
+
+[node name="BotInputProvider1" type="Node2D" parent="InputHandler"]
+script = ExtResource("18_3jf1l")
+playSpeed = 2.0
+metadata/_custom_type_script = "uid://o71pb6ak4n57"
+
+[node name="BotInputProvider2" type="Node2D" parent="InputHandler"]
+script = ExtResource("18_3jf1l")
+self = 1
+playSpeed = 2.0
+metadata/_custom_type_script = "uid://o71pb6ak4n57"
+
 [node name="Board" type="Node2D" parent="."]
 
-[node name="BoardDisplay" type="Node2D" parent="Board" node_paths=PackedStringArray("fireManaCounter", "waterManaCounter", "plantManaCounter", "turnInformer", "screenFlash")]
+[node name="BoardDisplay" type="Node2D" parent="Board" node_paths=PackedStringArray("fireManaCounter", "waterManaCounter", "plantManaCounter", "screenFlash", "turnInformer")]
 position = Vector2(104, 57)
 script = ExtResource("13_8r6kd")
 minionDisplayTscn = ExtResource("14_tfod6")
@@ -245,12 +262,17 @@ tileDisplayTscn = ExtResource("16_vvhu1")
 fireManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/FireMana/Amount")
 waterManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/WaterMana/Amount")
 plantManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/PlantMana/Amount")
-turnInformer = NodePath("../../InterfaceLayer/HUD/TurnInformer")
-turnInformerAnimationSpeed = 0.6
+turnInformerAnimationSpeed = 0.5
 minionMoveAnimationSpeed = 20.0
 minionDeathAnimationSpeed = 5.0
+minionsRestoreDelay = 0.6
+fortsHarvestDelay = 0.8
+turnStartDelay = 2.0
 screenFlash = NodePath("../../InterfaceLayer/HUD/ScreenFlashModule")
+turnInformer = NodePath("../../InterfaceLayer/HUD/TurnInformer")
+player1Color = Color(6.545782e-06, 0.71936023, 0.97920626, 1)
 onMinionSelectedColor = Color(0.9537279, 0.83686966, 3.85046e-07, 1)
+selectedCellColor = Color(1, 1, 1, 0.11372549)
 movementRangeColor = Color(0.20999998, 0.3811667, 1, 0.21960784)
 movementPathColor = Color(0.98, 0.7023334, 0, 0.24705882)
 damageZoneColor = Color(1, 0, 0, 0.15294118)
@@ -259,10 +281,12 @@ fortTextureScale = 1.7
 metadata/_custom_type_script = "uid://bpoclqr2f21y2"
 metadata/_edit_lock_ = true
 
-[node name="BoardData" type="Node" parent="Board" node_paths=PackedStringArray("gridReference", "stateReference")]
+[node name="BoardData" type="Node" parent="Board" node_paths=PackedStringArray("gridReference", "stateReference", "player1", "player2")]
 script = ExtResource("17_lbihj")
 gridReference = NodePath("BoardGrid")
 stateReference = NodePath("BoardState")
+player1 = NodePath("../../InputHandler/BotInputProvider1")
+player2 = NodePath("../../InputHandler/BotInputProvider2")
 metadata/_custom_type_script = "uid://u4ode5mopgro"
 
 [node name="BoardState" type="Node" parent="Board/BoardData"]

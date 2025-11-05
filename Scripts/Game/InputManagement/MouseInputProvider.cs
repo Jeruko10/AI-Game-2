@@ -1,25 +1,15 @@
 using Godot;
 
-namespace Game
+namespace Game;
+
+[GlobalClass]
+public partial class MouseInputProvider : Node2D, IInputProvider
 {
-    public partial class MouseInputProvider : Node, IInputProvider
-    {
-        public Vector2I? GetLeftClickedCell()
-        {
-            if (Input.IsActionJustPressed("leftClick"))
-                return Board.Grid.WorldToGrid(GetViewport().GetMousePosition());
-            return null;
-        }
+    public Vector2I? GetLeftClickedCell() => Input.IsActionJustPressed("leftClick") ? GetHoveredCell() : null;
 
-        public Vector2I? GetRightClickedCell()
-        {
-            if (Input.IsActionJustPressed("rightClick"))
-                return Board.Grid.WorldToGrid(GetViewport().GetMousePosition());
-            return null;
-        }
+    public Vector2I? GetRightClickedCell() => Input.IsActionJustPressed("rightClick") ? GetHoveredCell() : null;
 
-        public Vector2I? GetHoveredCell() => Board.Grid.GetHoveredCell();
+    public Vector2I? GetHoveredCell() => Board.Grid.GetHoveredCell();
 
-        public bool IsTurnPassClicked() => Input.IsActionJustPressed("passTurn");
-    }
+    public bool IsTurnPassPressed() => Input.IsActionJustPressed("passTurn");
 }

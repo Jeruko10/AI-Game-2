@@ -61,17 +61,6 @@ public static class GridNavigation
         return GetReachableCells(minion).Contains(cell);
     }
 
-    public static Vector2I[] GetPathToCursor(Minion origin)
-    {
-        Vector2I[] path = [];
-        Vector2I? hoveredCell = Board.Grid.GetHoveredCell();
-
-        if (hoveredCell == null) return path;
-
-        path = GetPathForMinion(origin, hoveredCell.Value);
-        return path;
-    }
-
     public static Vector2I[] GetPathForMinion(Minion minion, Vector2I destination)
     {
         if (minion == null) return [];

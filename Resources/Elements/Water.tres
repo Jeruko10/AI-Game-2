@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="Element" load_steps=2 format=3 uid="uid://cp1te5ttwo23a"]
+[gd_resource type="Resource" script_class="Element" load_steps=3 format=3 uid="uid://cp1te5ttwo23a"]
 
+[ext_resource type="Texture2D" uid="uid://w4p0tsentu6k" path="res://Sprites/WaterSymbol.png" id="1_okw01"]
 [ext_resource type="Script" uid="uid://c0fc8opavw5h2" path="res://Scripts/Game/Resources/Element.cs" id="1_pf8cb"]
 
 [resource]
 script = ExtResource("1_pf8cb")
+Symbol = ExtResource("1_okw01")
 Color = Color(0.36785087, 0.64374197, 1, 1)
 metadata/_custom_type_script = "uid://c0fc8opavw5h2"

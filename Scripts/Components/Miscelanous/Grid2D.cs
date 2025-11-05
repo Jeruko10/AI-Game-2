@@ -179,19 +179,22 @@ public partial class Grid2D : Node2D
     public Vector2I? GetHoveredCell()
     {
         Vector2I? cell = null;
-        Vector2I candidate = WorldToGrid(GetViewport().GetMousePosition());
+        Vector2I candidate = WorldToGrid(GetGlobalMousePosition());
 
         if (IsInsideGrid(candidate)) cell = candidate;
 
         return cell;
     }
 
-    /// <summary> Returns true if the mouse is currently touching the cell. </summary>
-    public bool IsMouseOverCell(Vector2I cell)
+    /// <summary>Returns the predominant cardinal direction from 'from' to 'to'.
+    /// Only returns (1, 0), (-1, 0), (0, 1), or (0, -1).</summary>
+    public Vector2I GetCardinal(Vector2I from, Vector2I to)
     {
-        Vector2 mousePos = GetViewport().GetMousePosition();
-        Vector2I hoveredCell = WorldToGrid(mousePos);
-        return hoveredCell == cell;
+        Vector2I delta = to - from;
+
+        if (delta == Vector2I.Zero) return Vector2I.Zero;
+        if (Math.Abs(delta.X) > Math.Abs(delta.Y)) return new Vector2I(Math.Sign(delta.X), 0);
+        else return new Vector2I(0, Math.Sign(delta.Y));
     }
 
     /// <summary> Draws an overlay for a specific cell with the given color. </summary>

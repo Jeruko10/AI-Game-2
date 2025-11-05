@@ -9,6 +9,7 @@ public partial class FortDisplay : Node2D
 	[ExportSubgroup("References")]
 	[Export] public Sprite2D Sprite { get; private set; }
 	[Export] Sprite2D outlineSprite;
+	[Export] public GpuParticles2D Particle { get; private set; }
 	[Export] public OutlineModule OutlineModule { get; private set; }
 	[Export] public SquashStretch2D SquashAnimator { get; private set; }
 	

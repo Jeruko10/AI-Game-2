@@ -2,7 +2,9 @@ using Components;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Utility;
 
 namespace Game;
@@ -21,19 +23,25 @@ public partial class BoardDisplay : Node2D
 	[Export] RichTextLabel plantManaCounter;
 
 	[ExportSubgroup("Animations")]
-	[Export] Control turnInformer;
+	[Export] public float GamePace { get; set; } = 1f;
 	[Export] float turnInformerAnimationSpeed = 1f;
 	[Export] float minionMoveAnimationSpeed = 1f;
 	[Export] float minionDeathAnimationSpeed = 1f;
+	[Export] float minionsRestoreDelay = 1f;
+	[Export] float fortsHarvestDelay = 1f;
+	[Export] float turnStartDelay = 1f;
 	[Export] ScreenFlashModule screenFlash;
+	[Export] Control turnInformer;
 
 	[ExportSubgroup("Colors")]
-	[Export] float colorFilterIntensity = 0.3f;
+	[Export] float colorFilterIntensity = 0.2f;
 	[Export(PropertyHint.ColorNoAlpha)] Color player1Color = Colors.SkyBlue;
 	[Export(PropertyHint.ColorNoAlpha)] Color player2Color = Colors.Red;
 	[Export(PropertyHint.ColorNoAlpha)] Color onMinionRestoredColor = Colors.Lime;
 	[Export(PropertyHint.ColorNoAlpha)] Color onMinionSelectedColor = Colors.White;
 	[Export(PropertyHint.ColorNoAlpha)] Color onMinionDamagedColor = Colors.Red;
+	[Export(PropertyHint.ColorNoAlpha)] Color turnEndFlashColor = Colors.White;
+	[Export] Color selectedCellColor = Colors.White;
 	[Export] Color movementRangeColor = Colors.Purple;
 	[Export] Color movementPathColor = Colors.Purple;
 	[Export] Color damageZoneColor = Colors.Purple;
@@ -47,7 +55,6 @@ public partial class BoardDisplay : Node2D
     readonly Dictionary<Minion, MinionDisplay> minionVisuals = [];
     readonly Dictionary<Fort, FortDisplay> fortVisuals = [];
 	Node2D tilesGroup, fortsGroup, minionsGroup;
-	Vector2I? hoveredCell = null;
 
 	public override void _Ready()
 	{
@@ -64,7 +71,8 @@ public partial class BoardDisplay : Node2D
 		Board.State.MinionDamaged += OnMinionDamaged;
 		Board.State.MinionDeath += OnMinionDeath;
 		Board.State.TurnStarted += OnTurnStarted;
-		Board.State.CellHovered += OnCellHovered;
+		Board.State.MinionSelected += OnMinionSelected;
+		Board.State.AttackModeToggled += OnAttackModeToggled;
 
 		Board.Grid.GlobalPosition = GlobalPosition;
 	}
@@ -87,7 +95,26 @@ public partial class BoardDisplay : Node2D
 		Board.Grid.ClearAll();
 		Minion selectedMinion = Board.State.SelectedMinion;
 
-		if (selectedMinion == null || selectedMinion.MovePoints == 0) return;
+		// Draw damage zone
+		if (Board.State.AttackMode)
+		{
+			Vector2I minionDir = Board.State.SelectedCell == null ? Vector2I.Up :
+			Board.Grid.GetCardinal(selectedMinion.Position, Board.State.SelectedCell.Value);
+
+			Vector2I[] rotatedZone = GridNavigation.RotatedDamageArea(selectedMinion.DamageArea, minionDir);
+
+			foreach (Vector2I offset in rotatedZone)
+			{
+				Vector2I cellGlobal = selectedMinion.Position + offset;
+				Board.Grid.ColorCell(cellGlobal, damageZoneColor);
+			}
+			return;
+		}
+		
+		// Draw cell hover
+		Vector2I? hoveredCell = Board.State.SelectedCell;
+		if (hoveredCell != null) Board.Grid.ColorCell(hoveredCell.Value, selectedCellColor);
+		if (selectedMinion == null) return;
 
 		// Draw movement range
 		Vector2I[] movementRange = GridNavigation.GetReachableCells(selectedMinion);
@@ -96,24 +123,13 @@ public partial class BoardDisplay : Node2D
 			Board.Grid.ColorCell(cell, movementRangeColor);
 
 		// Draw movement path
-		Vector2I[] pathToCursor = GridNavigation.GetPathToCursor(selectedMinion);
-		Vector2I pathEnd = (pathToCursor.Length > 0) ? pathToCursor[^1] : selectedMinion.Position;
-		Vector2I pathPenultimate = (pathToCursor.Length > 1) ? pathToCursor[^2] : selectedMinion.Position;
+		Vector2I[] pathToHoveredCell = GridNavigation.GetPathForMinion(selectedMinion, hoveredCell.Value);
+		Vector2I pathEnd = (pathToHoveredCell.Length > 0) ? pathToHoveredCell[^1] : selectedMinion.Position;
 
 		if (!movementRange.Contains(pathEnd)) return;
 
-		foreach (Vector2I cell in pathToCursor)
+		foreach (Vector2I cell in pathToHoveredCell)
 			Board.Grid.ColorCell(cell, movementPathColor);
-
-		// Draw damage zone
-		Vector2I minionDir = pathEnd - pathPenultimate;
-		Vector2I[] rotatedZone = GridNavigation.RotatedDamageArea(selectedMinion.DamageArea, minionDir);
-
-		foreach (Vector2I offset in rotatedZone)
-		{
-			Vector2I cellGlobal = pathEnd + offset;
-			Board.Grid.ColorCell(cellGlobal, damageZoneColor);
-		}
 	}
 
 	void OnTileAdded(Tile tile, Vector2I cell)
@@ -137,19 +153,20 @@ public partial class BoardDisplay : Node2D
 	{
 		await ToSignal(dominator, Minion.SignalName.SelectionAvailable);
 
+		fortVisuals[fort].Particle.Texture = fort.Element.Symbol;
 		fortVisuals[fort].Sprite.Modulate = dominator.Element.Color;
 		fortVisuals[fort].OutlineModule.OutlineColor = GetPlayerColor(dominator.Owner);
 		fortVisuals[fort].SquashAnimator.ApplyImpact(1f);
 	}
 
-	void OnFortHarvested(Fort fort)
+	async void OnFortHarvested(Fort fort)
 	{
-		GD.Print("daw");
+		await Task.Delay((int)Mathf.Round(fortsHarvestDelay * 1000 / GamePace));
+
+		fortVisuals[fort].Particle.SpawnBurst();
 		fortVisuals[fort].SquashAnimator.ApplyImpact(1f);
 	}
 	
-    void OnCellHovered(Vector2I cell) => hoveredCell = cell;
-
 	void OnMinionAdded(Minion minion)
 	{
 		CreateVisual(minion, minionDisplayTscn, minionsGroup, minionVisuals, minionTextureScale, "Minion");
@@ -169,8 +186,8 @@ public partial class BoardDisplay : Node2D
 		float startRotation = minionDisplay.RotationDegrees;
 		Vector2 startScale = minionDisplay.Scale;
 
-		deathTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, startRotation, 180f, 1 / minionDeathAnimationSpeed);
-		deathTween.TweenDelegate<Vector2>(v => minionDisplay.Scale = v, startScale, Vector2.Zero, 1 / minionDeathAnimationSpeed);
+		deathTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, startRotation, 180f, 1 / (minionDeathAnimationSpeed * GamePace));
+		deathTween.TweenDelegate<Vector2>(v => minionDisplay.Scale = v, startScale, Vector2.Zero, 1 / (minionDeathAnimationSpeed * GamePace));
 
 		await ToSignal(deathTween, Tween.SignalName.Finished);
 		minionVisuals[minion].QueueFree();
@@ -202,12 +219,21 @@ public partial class BoardDisplay : Node2D
 		await minionDisplay.FlashEffect.PlayEffect(fade, onMinionSelectedColor);
 	}
 
+    async void OnAttackModeToggled(bool attackMode)
+	{
+		Minion selected = Board.State.SelectedMinion;
+
+		if (selected == null) return;
+		minionVisuals[selected].SquashAnimator.ApplyImpact(1f);
+    }
+
 	async void OnMinionRestored(Minion minion)
 	{
 		// Restore animation
 		MinionDisplay minionDisplay = minionVisuals[minion];
 		ColorOverlayModule.Fade fade = new(1f, 0.2f, 0.1f, 0.4f);
 
+		await Task.Delay((int)Mathf.Round(minionsRestoreDelay * 1000 / GamePace));
 		minionDisplay.SquashAnimator.ApplyImpact(1f);
 		await minionDisplay.FlashEffect.PlayEffect(fade, onMinionRestoredColor);
 	}
@@ -223,7 +249,7 @@ public partial class BoardDisplay : Node2D
 			Vector2 startingPos = visual.Position;
 
 			moveTween = CreateTween();
-			moveTween.TweenDelegate<Vector2>(v => visual.Position = v, startingPos, CellToWorld(cell), 1 / minionMoveAnimationSpeed);
+			moveTween.TweenDelegate<Vector2>(v => visual.Position = v, startingPos, CellToWorld(cell), 1 / (minionMoveAnimationSpeed * GamePace));
 			await ToSignal(moveTween, Tween.SignalName.Finished);
 		}
 		
@@ -232,17 +258,22 @@ public partial class BoardDisplay : Node2D
 
 	async void OnTurnStarted(Board.Players turnOwner)
 	{
+		_ = screenFlash.PlayFlash(0f, 0f, 0.4f, 0.2f, turnEndFlashColor);
+		Modulate = Colors.White;
+
+		await Task.Delay((int)Mathf.Round(turnStartDelay * 1000 / GamePace));
+		
 		Tween bannerTween;
 
 		Modulate = (turnOwner == Board.Players.Player1) ? player1Color.Lightened(1 - colorFilterIntensity) : player2Color.Lightened(1 - colorFilterIntensity);
-		await screenFlash.PlayFlash(0f, 0f, 0.5f, 0.5f, GetPlayerColor(turnOwner));
+		_ = screenFlash.PlayFlash(0f, 0f, 0.5f, 0.5f, GetPlayerColor(turnOwner));
 
 		turnInformer.Show();
 		RichTextLabel label = turnInformer.GetChildrenOfType<RichTextLabel>().First();
 
 		label.Text = $"{turnOwner}'s Turn";
 		bannerTween = CreateTween();
-		bannerTween.TweenDelegate(v => turnInformer.Position = new(v, turnInformer.Position.Y), -2577f, 2557f, 1 / turnInformerAnimationSpeed)
+		bannerTween.TweenDelegate(v => turnInformer.Position = new(v, turnInformer.Position.Y), -2577f, 2557f, 1 / (turnInformerAnimationSpeed * GamePace))
 		.SetEase(Tween.EaseType.OutIn).SetTrans(Tween.TransitionType.Elastic);
 
 		await ToSignal(bannerTween, Tween.SignalName.Finished);

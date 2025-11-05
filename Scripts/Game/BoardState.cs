@@ -2,7 +2,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Utility;
 
 namespace Game;
@@ -10,7 +9,6 @@ namespace Game;
 [GlobalClass]
 public partial class BoardState : Node
 {
-	[Signal] public delegate void CellHoveredEventHandler(Vector2I cell);
 	[Signal] public delegate void TurnStartedEventHandler(Board.Players newTurnOwner);
     [Signal] public delegate void MinionDeathEventHandler(Minion minion);
     [Signal] public delegate void MinionDamagedEventHandler(Minion minion, int damageReceived);
@@ -20,6 +18,7 @@ public partial class BoardState : Node
     [Signal] public delegate void MinionAddedEventHandler(Minion minion);
     [Signal] public delegate void MinionUnselectedEventHandler(Minion minion);
     [Signal] public delegate void MinionSelectedEventHandler(Minion minion);
+    [Signal] public delegate void AttackModeToggledEventHandler(bool attackMode);
     [Signal] public delegate void FortDominatedEventHandler(Fort fort, Minion dominator);
     [Signal] public delegate void FortHarvestedEventHandler(Fort fort);
     [Signal] public delegate void TileAddedEventHandler(Tile tile, Vector2I cell);
@@ -32,7 +31,9 @@ public partial class BoardState : Node
     public List<Fort> Forts { get; private set; } = [];
     public Mana Player1Mana { get; set; }
     public Mana Player2Mana { get; set; }
+    public Vector2I? SelectedCell { get; set; }
     public Minion SelectedMinion { get; private set; }
+    public bool AttackMode { get; private set; }
 
     bool isPlayer1Turn = false;
 
@@ -64,22 +65,29 @@ public partial class BoardState : Node
     {
         Minion oldSelection = SelectedMinion;
         SelectedMinion = null;
+        AttackMode = false;
         EmitSignal(SignalName.MinionUnselected, oldSelection);
     }
 
-    public async void PassTurn()
+    public void SetAttackMode(bool value)
+    {
+        AttackMode = value;
+        EmitSignal(SignalName.AttackModeToggled, value);
+    }
+
+    public void PassTurn()
     {
         isPlayer1Turn = !isPlayer1Turn;
-        Board.Players oldTurnOwner = isPlayer1Turn ? Board.Players.Player2 : Board.Players.Player1;
-        Board.Players newTurnOwner = isPlayer1Turn ? Board.Players.Player1 : Board.Players.Player2;
+        Board.Players oldTurnOwner = Board.GetRival(GetActivePlayer());
+        Board.Players newTurnOwner = GetActivePlayer();
         InputHandler.InteractionEnabled = false;
+        UnselectMinion();
+        SelectedCell = null;
 
         foreach (Minion minion in Minions)
             if (minion.Owner == oldTurnOwner)
                 RestoreMinion(minion);
         
-        await Task.Delay(600);
-
         foreach (Fort fort in Forts)
             if (fort.Owner == oldTurnOwner)
                 HarvestMana(fort);
@@ -111,7 +119,7 @@ public partial class BoardState : Node
         AddMinion(playedMinion);
     }
 
-    public void MoveMinion(Minion minion, Vector2I[] path, bool autoatack = true)
+    public void MoveMinion(Minion minion, Vector2I[] path)
     {
         minion.Selectable = false;
 
@@ -121,16 +129,12 @@ public partial class BoardState : Node
             minion.MovePoints -= tile.MoveCost;
         }
 		Vector2I pathEnd = (path.Length > 0) ? path[^1] : minion.Position;
-        Vector2I pathPenultimate = (path.Length > 1) ? path[^2] : minion.Position;
-        Vector2I attackDirection = pathEnd - pathPenultimate;
-
         minion.Position = pathEnd;
         SelectedMinion = null;
 
         Fort fort = GetCellData(pathEnd).Fort;
 
         if (fort != null && fort.Element != minion.Element) DominateFort(fort, minion);
-        if (autoatack) AttackWithMinion(minion, attackDirection);
         if (Tiles[pathEnd].Damage > 0) DamageMinion(minion, Tiles[pathEnd].Damage);
 
         Godot.Collections.Array<Vector2I> arrayPath = [.. path];
@@ -146,6 +150,8 @@ public partial class BoardState : Node
             Minion victim = GetCellData(cell + minion.Position).Minion;
             if (victim != null) DamageMinion(victim, minion.Damage);
         }
+        minion.Exhausted = true;
+        Board.State.UnselectMinion();
         EmitSignal(SignalName.MinionAttack, minion, direction);
     }
 
@@ -164,6 +170,7 @@ public partial class BoardState : Node
 
     public void RestoreMinion(Minion minion)
     {
+        minion.Exhausted = false;
         minion.MovePoints = minion.MaxMovePoints;
         EmitSignal(SignalName.MinionRestored, minion);
     }

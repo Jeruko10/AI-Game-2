@@ -10,5 +10,5 @@ public interface IInputProvider
 
     Vector2I? GetHoveredCell();
 
-    bool IsTurnPassClicked();
+    bool IsTurnPassPressed();
 }
