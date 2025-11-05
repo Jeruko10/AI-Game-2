@@ -8,14 +8,19 @@ namespace Game;
 [GlobalClass]
 public partial class Board : Node
 {
-	public enum Rivals { Player, Opponent };
+	public enum Players { Player1, Player2 };
 	
 	[Export] Grid2D gridReference;
 	[Export] BoardState stateReference;
+	[Export] BotInputProvider player1;
+	[Export] BotInputProvider player2;
 
 	static Board singleton;
 	public static Grid2D Grid => singleton.gridReference;
 	public static BoardState State => singleton.stateReference;
+	public static IInputProvider Player1 => singleton.player1;
+	public static IInputProvider Player2 => singleton.player2;
+
 
 	public override void _EnterTree() => singleton ??= this;
 
@@ -31,5 +36,10 @@ public partial class Board : Node
 		AudioManager.SetOriginParent(singleton);
 		AudioManager.CreateGroup("music");
 		AudioManager.CreateGroup("sounds");
+
+		AddChild(Player1 as Node2D);
+		AddChild(Player2 as Node2D);
 	}
+
+    public static Players GetRival(Players player) => (player == Players.Player1) ? Players.Player2 : Players.Player1;
 }

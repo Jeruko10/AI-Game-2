@@ -1,6 +1,6 @@
-[gd_scene load_steps=27 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=29 format=3 uid="uid://tytjfp0a04oh"]
 
-[ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputHandler.cs" id="1_3cx6b"]
+[ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputManagement/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
 [ext_resource type="Theme" uid="uid://mx3t0l4mt7vv" path="res://Resources/Text/GameFontStyle.tres" id="1_tfod6"]
 [ext_resource type="Resource" uid="uid://bwq44820bcf61" path="res://Resources/Tiles/GroundTile.tres" id="2_3so38"]
@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://c1cllrx0lx67p" path="res://Sprites/FireSymbol.png" id="2_rajel"]
 [ext_resource type="Resource" uid="uid://cwa7gma4l002d" path="res://Resources/Tiles/WallTile.tres" id="3_3cx6b"]
 [ext_resource type="Resource" uid="uid://ddjxxepck0qec" path="res://Resources/Minions/FireKnight.tres" id="3_fgofq"]
-[ext_resource type="Script" uid="uid://cu3r71iskihyv" path="res://Scripts/Game/TurnManager.cs" id="3_kldst"]
 [ext_resource type="Texture2D" uid="uid://w4p0tsentu6k" path="res://Sprites/WaterSymbol.png" id="3_lbihj"]
 [ext_resource type="Resource" uid="uid://der1cl6k57cfm" path="res://Resources/Minions/WaterKnight.tres" id="4_2irst"]
 [ext_resource type="Texture2D" uid="uid://b3sp5x3r3jge7" path="res://Sprites/PlantSymbol.png" id="4_raj38"]
@@ -16,23 +15,26 @@
 [ext_resource type="Resource" uid="uid://bvylj8fneatts" path="res://Resources/Minions/PlantKnight.tres" id="5_2irst"]
 [ext_resource type="Resource" uid="uid://cxkqasn5gq6mj" path="res://Resources/Tiles/WaterTile.tres" id="5_acvyw"]
 [ext_resource type="Script" uid="uid://dwaiexaedy04n" path="res://Scripts/Components/Visuals/ScreenFlashModule.cs" id="5_lbihj"]
+[ext_resource type="Texture2D" uid="uid://b8abewsqcsyjg" path="res://Sprites/TurnInformer.png" id="6_8e0uq"]
 [ext_resource type="Script" uid="uid://bpoclqr2f21y2" path="res://Scripts/Game/Display/BoardDisplay.cs" id="13_8r6kd"]
 [ext_resource type="PackedScene" uid="uid://bcookw6uqteh7" path="res://Scenes/MinionDisplay.tscn" id="14_tfod6"]
 [ext_resource type="PackedScene" uid="uid://drjycecp44mo7" path="res://Scenes/FortDisplay.tscn" id="15_rajel"]
 [ext_resource type="PackedScene" uid="uid://b87vvghkw306d" path="res://Scenes/TileDisplay.tscn" id="16_vvhu1"]
+[ext_resource type="Script" uid="uid://bib5h2me841oe" path="res://Scripts/Game/InputManagement/MouseInputProvider.cs" id="17_i0vto"]
 [ext_resource type="Script" uid="uid://u4ode5mopgro" path="res://Scripts/Game/Board.cs" id="17_lbihj"]
+[ext_resource type="Script" uid="uid://o71pb6ak4n57" path="res://Scripts/Game/AI/BotInputProvider.cs" id="18_3jf1l"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
 [ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
 
-[sub_resource type="Resource" id="Resource_8e0uq"]
+[sub_resource type="Resource" id="Resource_raj38"]
 script = ExtResource("23_raj38")
 FireMana = 10
 WaterMana = 10
 PlantMana = 10
 metadata/_custom_type_script = "uid://dkojvf477tj8k"
 
-[sub_resource type="Resource" id="Resource_i0vto"]
+[sub_resource type="Resource" id="Resource_8e0uq"]
 script = ExtResource("23_raj38")
 FireMana = 10
 WaterMana = 10
@@ -42,10 +44,10 @@ metadata/_custom_type_script = "uid://dkojvf477tj8k"
 [node name="Game" type="Node2D"]
 metadata/_edit_lock_ = true
 
-[node name="Background Layer" type="CanvasLayer" parent="."]
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1000
 
-[node name="ColorRect" type="ColorRect" parent="Background Layer"]
+[node name="ColorRect" type="ColorRect" parent="BackgroundLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -55,10 +57,10 @@ color = Color(0.17611885, 0.16417989, 0.23555094, 1)
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="Interface Layer" type="CanvasLayer" parent="."]
+[node name="InterfaceLayer" type="CanvasLayer" parent="."]
 layer = 100
 
-[node name="HUD" type="Control" parent="Interface Layer"]
+[node name="HUD" type="Control" parent="InterfaceLayer"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -68,7 +70,7 @@ grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="ManaCounters" type="HBoxContainer" parent="Interface Layer/HUD"]
+[node name="ManaCounters" type="HBoxContainer" parent="InterfaceLayer/HUD"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.054166667
@@ -78,13 +80,13 @@ anchor_bottom = 0.98703706
 alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="FireMana" type="HBoxContainer" parent="Interface Layer/HUD/ManaCounters"]
+[node name="FireMana" type="HBoxContainer" parent="InterfaceLayer/HUD/ManaCounters"]
 layout_mode = 2
 size_flags_horizontal = 2
 alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="Amount" type="RichTextLabel" parent="Interface Layer/HUD/ManaCounters/FireMana"]
+[node name="Amount" type="RichTextLabel" parent="InterfaceLayer/HUD/ManaCounters/FireMana"]
 custom_minimum_size = Vector2(60, 80)
 layout_mode = 2
 size_flags_horizontal = 6
@@ -96,7 +98,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="Symbol" type="TextureRect" parent="Interface Layer/HUD/ManaCounters/FireMana"]
+[node name="Symbol" type="TextureRect" parent="InterfaceLayer/HUD/ManaCounters/FireMana"]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 size_flags_horizontal = 6
@@ -104,13 +106,13 @@ texture = ExtResource("2_rajel")
 stretch_mode = 5
 metadata/_edit_lock_ = true
 
-[node name="WaterMana" type="HBoxContainer" parent="Interface Layer/HUD/ManaCounters"]
+[node name="WaterMana" type="HBoxContainer" parent="InterfaceLayer/HUD/ManaCounters"]
 layout_mode = 2
 size_flags_horizontal = 6
 alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="Amount" type="RichTextLabel" parent="Interface Layer/HUD/ManaCounters/WaterMana"]
+[node name="Amount" type="RichTextLabel" parent="InterfaceLayer/HUD/ManaCounters/WaterMana"]
 custom_minimum_size = Vector2(60, 80)
 layout_mode = 2
 size_flags_horizontal = 6
@@ -123,7 +125,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="Symbol" type="TextureRect" parent="Interface Layer/HUD/ManaCounters/WaterMana"]
+[node name="Symbol" type="TextureRect" parent="InterfaceLayer/HUD/ManaCounters/WaterMana"]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 size_flags_horizontal = 6
@@ -131,13 +133,13 @@ texture = ExtResource("3_lbihj")
 stretch_mode = 5
 metadata/_edit_lock_ = true
 
-[node name="PlantMana" type="HBoxContainer" parent="Interface Layer/HUD/ManaCounters"]
+[node name="PlantMana" type="HBoxContainer" parent="InterfaceLayer/HUD/ManaCounters"]
 layout_mode = 2
 size_flags_horizontal = 10
 alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="Amount" type="RichTextLabel" parent="Interface Layer/HUD/ManaCounters/PlantMana"]
+[node name="Amount" type="RichTextLabel" parent="InterfaceLayer/HUD/ManaCounters/PlantMana"]
 custom_minimum_size = Vector2(60, 80)
 layout_mode = 2
 size_flags_horizontal = 6
@@ -149,7 +151,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="Symbol" type="TextureRect" parent="Interface Layer/HUD/ManaCounters/PlantMana"]
+[node name="Symbol" type="TextureRect" parent="InterfaceLayer/HUD/ManaCounters/PlantMana"]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 size_flags_horizontal = 6
@@ -157,7 +159,7 @@ texture = ExtResource("4_raj38")
 stretch_mode = 5
 metadata/_edit_lock_ = true
 
-[node name="ScreenFlashModule" type="ColorRect" parent="Interface Layer/HUD"]
+[node name="ScreenFlashModule" type="ColorRect" parent="InterfaceLayer/HUD"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -172,12 +174,50 @@ DefaultDuration = 0.0
 DefaultFadeOut = 0.3
 metadata/_custom_type_script = "uid://dwaiexaedy04n"
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
-[node name="InputHandler" type="Node" parent="."]
-script = ExtResource("1_3cx6b")
-metadata/_custom_type_script = "uid://bv23wi5pjg5mj"
+[node name="TurnInformer" type="Control" parent="InterfaceLayer/HUD"]
+layout_mode = 1
+anchor_left = -1.3625
+anchor_top = 0.21203704
+anchor_right = -0.3436953
+anchor_bottom = 0.594537
+offset_right = 600.895
+offset_bottom = 126.900024
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.765, 0.765)
+metadata/_edit_use_anchors_ = true
 
-[node name="Tile Library" type="Node" parent="."]
+[node name="Banner" type="TextureRect" parent="InterfaceLayer/HUD/TurnInformer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_8e0uq")
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="InterfaceLayer/HUD/TurnInformer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_tfod6")
+theme_override_font_sizes/normal_font_size = 291
+text = "Player's Turn"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="RefLibrary" type="Node" parent="."]
+
+[node name="TileLibrary" type="Node" parent="RefLibrary"]
 script = ExtResource("1_gl6un")
 groundTile = ExtResource("2_3so38")
 wallTile = ExtResource("3_3cx6b")
@@ -185,31 +225,54 @@ fireTile = ExtResource("4_wxwew")
 waterTile = ExtResource("5_acvyw")
 metadata/_custom_type_script = "uid://c2vxjlf16t6t5"
 
-[node name="Minion Library" type="Node" parent="."]
+[node name="MinionLibrary" type="Node" parent="RefLibrary"]
 script = ExtResource("2_j5yw3")
 fireKnightData = ExtResource("3_fgofq")
 waterKnightData = ExtResource("4_2irst")
 plantKnightData = ExtResource("5_2irst")
 metadata/_custom_type_script = "uid://cgdtthefjt0bb"
 
-[node name="TurnManager" type="Node" parent="."]
-script = ExtResource("3_kldst")
-metadata/_custom_type_script = "uid://cu3r71iskihyv"
+[node name="InputHandler" type="Node" parent="."]
+script = ExtResource("1_3cx6b")
+metadata/_custom_type_script = "uid://bv23wi5pjg5mj"
+
+[node name="MouseInputProvider" type="Node2D" parent="InputHandler"]
+script = ExtResource("17_i0vto")
+metadata/_custom_type_script = "uid://bib5h2me841oe"
+
+[node name="BotInputProvider1" type="Node2D" parent="InputHandler"]
+script = ExtResource("18_3jf1l")
+playSpeed = 2.0
+metadata/_custom_type_script = "uid://o71pb6ak4n57"
+
+[node name="BotInputProvider2" type="Node2D" parent="InputHandler"]
+script = ExtResource("18_3jf1l")
+self = 1
+playSpeed = 2.0
+metadata/_custom_type_script = "uid://o71pb6ak4n57"
 
 [node name="Board" type="Node2D" parent="."]
 
-[node name="BoardDisplay" type="Node2D" parent="Board" node_paths=PackedStringArray("fireManaCounter", "waterManaCounter", "plantManaCounter", "screenFlash")]
+[node name="BoardDisplay" type="Node2D" parent="Board" node_paths=PackedStringArray("fireManaCounter", "waterManaCounter", "plantManaCounter", "screenFlash", "turnInformer")]
 position = Vector2(104, 57)
 script = ExtResource("13_8r6kd")
 minionDisplayTscn = ExtResource("14_tfod6")
 fortDisplayTscn = ExtResource("15_rajel")
 tileDisplayTscn = ExtResource("16_vvhu1")
-fireManaCounter = NodePath("../../Interface Layer/HUD/ManaCounters/FireMana/Amount")
-waterManaCounter = NodePath("../../Interface Layer/HUD/ManaCounters/WaterMana/Amount")
-plantManaCounter = NodePath("../../Interface Layer/HUD/ManaCounters/PlantMana/Amount")
+fireManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/FireMana/Amount")
+waterManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/WaterMana/Amount")
+plantManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/PlantMana/Amount")
+turnInformerAnimationSpeed = 0.5
 minionMoveAnimationSpeed = 20.0
 minionDeathAnimationSpeed = 5.0
-screenFlash = NodePath("../../Interface Layer/HUD/ScreenFlashModule")
+minionsRestoreDelay = 0.6
+fortsHarvestDelay = 0.8
+turnStartDelay = 2.0
+screenFlash = NodePath("../../InterfaceLayer/HUD/ScreenFlashModule")
+turnInformer = NodePath("../../InterfaceLayer/HUD/TurnInformer")
+player1Color = Color(6.545782e-06, 0.71936023, 0.97920626, 1)
+onMinionSelectedColor = Color(0.9537279, 0.83686966, 3.85046e-07, 1)
+selectedCellColor = Color(1, 1, 1, 0.11372549)
 movementRangeColor = Color(0.20999998, 0.3811667, 1, 0.21960784)
 movementPathColor = Color(0.98, 0.7023334, 0, 0.24705882)
 damageZoneColor = Color(1, 0, 0, 0.15294118)
@@ -218,16 +281,18 @@ fortTextureScale = 1.7
 metadata/_custom_type_script = "uid://bpoclqr2f21y2"
 metadata/_edit_lock_ = true
 
-[node name="BoardData" type="Node" parent="Board" node_paths=PackedStringArray("gridReference", "stateReference")]
+[node name="BoardData" type="Node" parent="Board" node_paths=PackedStringArray("gridReference", "stateReference", "player1", "player2")]
 script = ExtResource("17_lbihj")
 gridReference = NodePath("BoardGrid")
 stateReference = NodePath("BoardState")
+player1 = NodePath("../../InputHandler/BotInputProvider1")
+player2 = NodePath("../../InputHandler/BotInputProvider2")
 metadata/_custom_type_script = "uid://u4ode5mopgro"
 
 [node name="BoardState" type="Node" parent="Board/BoardData"]
 script = ExtResource("18_raj38")
-PlayerStartingMana = SubResource("Resource_8e0uq")
-EnemyStartingMana = SubResource("Resource_i0vto")
+Player1StartingMana = SubResource("Resource_raj38")
+Player2StartingMana = SubResource("Resource_8e0uq")
 metadata/_custom_type_script = "uid://cwd71a6sseflj"
 
 [node name="BoardGrid" type="Node2D" parent="Board/BoardData"]
@@ -236,10 +301,5 @@ script = ExtResource("19_8e0uq")
 Size = Vector2i(17, 9)
 CellSize = 100.0
 gridColor = Color(0.79607844, 0.79607844, 0.79607844, 0.24705882)
-hoverColor = Color(1, 1, 1, 0.05490196)
 metadata/_custom_type_script = "uid://dq36qu2o3hfpu"
 metadata/_edit_lock_ = true
-
-[connection signal="MinionSelected" from="InputHandler" to="Board/BoardDisplay" method="OnMinionSelected"]
-[connection signal="TurnEnded" from="TurnManager" to="Board/BoardData/BoardState" method="OnTurnEnded"]
-[connection signal="TurnStarted" from="TurnManager" to="Board/BoardDisplay" method="OnTurnStarted"]

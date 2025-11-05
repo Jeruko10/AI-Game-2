@@ -1,14 +1,33 @@
-[gd_scene load_steps=5 format=3 uid="uid://drjycecp44mo7"]
+[gd_scene load_steps=9 format=3 uid="uid://drjycecp44mo7"]
 
 [ext_resource type="Script" uid="uid://ccd44coci0nah" path="res://Scripts/Game/Display/FortDisplay.cs" id="1_ig1bj"]
 [ext_resource type="Texture2D" uid="uid://bwyl8mj8bcdsi" path="res://Sprites/Fort.png" id="2_edmu7"]
 [ext_resource type="Script" uid="uid://lpcmsp8qjbfa" path="res://Scripts/Components/Visuals/SquashStretch2D.cs" id="2_gy725"]
 [ext_resource type="Script" uid="uid://ccsf7mfhim8f2" path="res://Scripts/Components/Visuals/OutlineModule.cs" id="3_o86m0"]
+[ext_resource type="Texture2D" uid="uid://w4p0tsentu6k" path="res://Sprites/WaterSymbol.png" id="4_6u7t4"]
 
-[node name="Fort" type="Node2D" node_paths=PackedStringArray("Sprite", "outlineSprite", "OutlineModule", "SquashAnimator")]
+[sub_resource type="Gradient" id="Gradient_3csj3"]
+offsets = PackedFloat32Array(0, 0.14619882, 0.85672516, 1)
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_udlr1"]
+gradient = SubResource("Gradient_3csj3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ykmn1"]
+particle_flag_disable_z = true
+spread = 0.0
+initial_velocity_min = 60.0
+initial_velocity_max = 60.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.0
+color_ramp = SubResource("GradientTexture1D_udlr1")
+
+[node name="Fort" type="Node2D" node_paths=PackedStringArray("Sprite", "outlineSprite", "Particle", "OutlineModule", "SquashAnimator")]
 script = ExtResource("1_ig1bj")
 Sprite = NodePath("SquashStretch2D/Sprite2D")
 outlineSprite = NodePath("SquashStretch2D/OutlineSprite")
+Particle = NodePath("GPUParticles2D")
 OutlineModule = NodePath("OutlineModule")
 SquashAnimator = NodePath("SquashStretch2D")
 metadata/_edit_lock_ = true
@@ -31,6 +50,17 @@ metadata/_edit_lock_ = true
 [node name="Sprite2D" type="Sprite2D" parent="SquashStretch2D"]
 texture = ExtResource("2_edmu7")
 metadata/_edit_lock_ = true
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+z_index = 200
+rotation = -1.5707964
+emitting = false
+amount = 1
+texture = ExtResource("4_6u7t4")
+lifetime = 0.8
+explosiveness = 1.0
+visibility_rect = Rect2(-32, -32, 110, 64)
+process_material = SubResource("ParticleProcessMaterial_ykmn1")
 
 [node name="OutlineModule" type="Node" parent="." node_paths=PackedStringArray("TargetNode")]
 script = ExtResource("3_o86m0")

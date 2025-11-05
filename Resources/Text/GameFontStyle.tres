@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=2 format=3 uid="uid://mx3t0l4mt7vv"]
 
-[ext_resource type="FontFile" uid="uid://b7dnsajjukbbr" path="res://Resources/Text/Vaseline Extra.ttf" id="1_cne75"]
+[ext_resource type="FontFile" uid="uid://b7dnsajjukbbr" path="res://Resources/Text/VaselineExtra.ttf" id="1_cne75"]
 
 [resource]
 default_font = ExtResource("1_cne75")

@@ -10,7 +10,7 @@ public partial class Minion(MinionData data, Vector2I position) : Resource
     
     public string Name = data.Name;
     public Texture2D Texture { get; set; } = data.Texture;
-    public Board.Rivals Owner { get; set; } = Board.State.IsPlayerTurn ? Board.Rivals.Player : Board.Rivals.Opponent;
+    public Board.Players Owner { get; set; } = Board.State.GetActivePlayer();
     public int MaxHealth { get; } = data.Health;
     public int Health { get; set; } = data.Health;
     public int MaxMovePoints { get; } = data.MovePoints;
@@ -18,6 +18,7 @@ public partial class Minion(MinionData data, Vector2I position) : Resource
     public Vector2I[] DamageArea { get; } = data.DamageArea.ToArray();
     public int Damage { get; } = data.Damage;
     public Element Element { get; } = data.Element;
+    public bool Exhausted { get; set; } = false;
     public bool Selectable
     {
         get => selectable;
