@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Game;
 
-public partial class VirtualInputProvider : Node2D, IInputProvider
+public partial class VirtualInputProvider : Node, IInputProvider
 {
     readonly Queue<Vector2I> queuedLeftClicks = new();
     readonly Queue<Vector2I> queuedRightClicks = new();

@@ -1,6 +1,7 @@
 using Components;
 using Godot;
 using System;
+using Utility;
 
 namespace Game;
 
@@ -12,14 +13,14 @@ public partial class Board : Node
 	
 	[Export] Grid2D gridReference;
 	[Export] BoardState stateReference;
-	[Export] BotInputProvider player1;
-	[Export] BotInputProvider player2;
+	[Export] IInputProviderRef player1;
+	[Export] IInputProviderRef player2;
 
 	static Board singleton;
 	public static Grid2D Grid => singleton.gridReference;
 	public static BoardState State => singleton.stateReference;
-	public static IInputProvider Player1 => singleton.player1;
-	public static IInputProvider Player2 => singleton.player2;
+	public static IInputProvider Player1 => singleton.player1.Get();
+	public static IInputProvider Player2 => singleton.player2.Get();
 
 
 	public override void _EnterTree() => singleton ??= this;

@@ -3,7 +3,7 @@ using Godot;
 namespace Game;
 
 [GlobalClass]
-public partial class MouseInputProvider : Node2D, IInputProvider
+public partial class MouseInputProvider : Node, IInputProvider
 {
     public Vector2I? GetLeftClickedCell() => Input.IsActionJustPressed("leftClick") ? GetHoveredCell() : null;
 
