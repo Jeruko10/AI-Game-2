@@ -240,15 +240,9 @@ metadata/_custom_type_script = "uid://bv23wi5pjg5mj"
 script = ExtResource("17_i0vto")
 metadata/_custom_type_script = "uid://bib5h2me841oe"
 
-[node name="BotInputProvider1" type="Node2D" parent="InputHandler"]
-script = ExtResource("18_3jf1l")
-playSpeed = 2.0
-metadata/_custom_type_script = "uid://o71pb6ak4n57"
-
-[node name="BotInputProvider2" type="Node2D" parent="InputHandler"]
+[node name="BotInputProvider" type="Node2D" parent="InputHandler"]
 script = ExtResource("18_3jf1l")
 self = 1
-playSpeed = 2.0
 metadata/_custom_type_script = "uid://o71pb6ak4n57"
 
 [node name="Board" type="Node2D" parent="."]
@@ -262,6 +256,7 @@ tileDisplayTscn = ExtResource("16_vvhu1")
 fireManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/FireMana/Amount")
 waterManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/WaterMana/Amount")
 plantManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/PlantMana/Amount")
+GamePace = 4.0
 turnInformerAnimationSpeed = 0.5
 minionMoveAnimationSpeed = 20.0
 minionDeathAnimationSpeed = 5.0
@@ -286,7 +281,7 @@ script = ExtResource("17_lbihj")
 gridReference = NodePath("BoardGrid")
 stateReference = NodePath("BoardState")
 player1 = NodePath("../../InputHandler/MouseInputProvider")
-player2 = NodePath("../../InputHandler/BotInputProvider2")
+player2 = NodePath("../../InputHandler/BotInputProvider")
 metadata/_custom_type_script = "uid://u4ode5mopgro"
 
 [node name="BoardState" type="Node" parent="Board/BoardData"]

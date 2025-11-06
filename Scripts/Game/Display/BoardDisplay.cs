@@ -195,7 +195,9 @@ public partial class BoardDisplay : Node2D
 
     async void OnMinionDamaged(Minion minion, int damageReceived)
 	{
+		GD.Print("Start");
 		await GetTree().DelayUntil(() => minion.Selectable);
+        GD.Print("end");
 
 		// On damaged animation
 		MinionDisplay minionDisplay = minionVisuals[minion];

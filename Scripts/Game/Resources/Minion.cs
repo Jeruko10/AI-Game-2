@@ -17,7 +17,7 @@ public partial class Minion(MinionData data, Vector2I position) : Resource
     public int Damage { get; } = data.Damage;
     public Element Element { get; } = data.Element;
     public bool Exhausted { get; set; } = false;
-    public bool Selectable { get; set; }
+    public bool Selectable { get; set; } = true;
     public Vector2I Position
     {
         get => pos;

@@ -75,5 +75,5 @@ public static class Logic
     
     ///<summary>Asynchronously waits for a specified amount of seconds using <see cref="Task.Delay"/>.</summary>
     ///<param name="seconds">The number of seconds to delay the execution of the next operation.</param>
-	static async Task Delay(float seconds) => await Task.Delay((int)MathF.Round(seconds * 1000));
+	public static async Task Delay(float seconds) => await Task.Delay((int)MathF.Round(seconds * 1000));
 }

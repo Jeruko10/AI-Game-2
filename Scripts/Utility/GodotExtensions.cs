@@ -118,21 +118,6 @@ public static class GodotExtensions
         return spawn;
     }
 
-    /// <summary>Temporarily slows down the game by modifying <see cref="Engine.TimeScale"/> for a set duration.
-    /// The time scale automatically resets to its previous value after the timer completes.</summary>
-    /// <param name="tree">The current <see cref="SceneTree"/> used to create the internal timer.</param>
-    /// <param name="timeScale">The temporary time scale to apply (e.g., 0 for a full freeze).</param>
-    /// <param name="duration">The duration, in seconds, to maintain the time scale modification.</param>
-    public static void FreezeTime(this SceneTree tree, float timeScale, float duration)
-    {
-        float previousScale = (float)Engine.TimeScale;
-        Engine.TimeScale = timeScale;
-
-        // Create a timer that ignores the global time scale
-        var timer = tree.CreateTimer(duration, processAlways: true, processInPhysics: false, ignoreTimeScale: true);
-        timer.Timeout += () => Engine.TimeScale = previousScale;
-    }
-
     ///<summary>Asynchronously waits until a given condition becomes true, checking once per frame.
     /// This is <see cref="Engine.TimeScale"/> dependant.</summary>
     ///<param name="tree">The current <see cref="SceneTree"/> used to yield each frame.</param>
