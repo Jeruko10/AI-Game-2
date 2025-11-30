@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-[gd_scene load_steps=32 format=3 uid="uid://tytjfp0a04oh"]
-=======
-[gd_scene load_steps=30 format=3 uid="uid://tytjfp0a04oh"]
->>>>>>> Stashed changes
+[gd_scene load_steps=29 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputManagement/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
@@ -30,21 +26,6 @@
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
 [ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
-<<<<<<< Updated upstream
-[ext_resource type="Script" uid="uid://d3gg77rkn0ysp" path="res://Scripts/Game/Resources/IInputProviderRef.cs" id="24_3jf1l"]
-
-[sub_resource type="Resource" id="Resource_3jf1l"]
-script = ExtResource("24_3jf1l")
-interfaceReference = NodePath("../../InputHandler/BotInputProvider1")
-metadata/_custom_type_script = "uid://d3gg77rkn0ysp"
-
-[sub_resource type="Resource" id="Resource_i4lct"]
-script = ExtResource("24_3jf1l")
-interfaceReference = NodePath("../../InputHandler/BotInputProvider2")
-metadata/_custom_type_script = "uid://d3gg77rkn0ysp"
-=======
-[ext_resource type="Script" uid="uid://tngqnuudq4ge" path="res://Scripts/Game/AI/InfluenceMapManager.cs" id="27_3jf1l"]
->>>>>>> Stashed changes
 
 [sub_resource type="Resource" id="Resource_raj38"]
 script = ExtResource("23_raj38")
@@ -255,15 +236,11 @@ metadata/_custom_type_script = "uid://cgdtthefjt0bb"
 script = ExtResource("1_3cx6b")
 metadata/_custom_type_script = "uid://bv23wi5pjg5mj"
 
-[node name="MouseInputProvider" type="Node" parent="InputHandler"]
+[node name="MouseInputProvider" type="Node2D" parent="InputHandler"]
 script = ExtResource("17_i0vto")
 metadata/_custom_type_script = "uid://bib5h2me841oe"
 
-[node name="BotInputProvider1" type="Node" parent="InputHandler"]
-script = ExtResource("18_3jf1l")
-metadata/_custom_type_script = "uid://o71pb6ak4n57"
-
-[node name="BotInputProvider2" type="Node" parent="InputHandler"]
+[node name="BotInputProvider" type="Node2D" parent="InputHandler"]
 script = ExtResource("18_3jf1l")
 self = 1
 metadata/_custom_type_script = "uid://o71pb6ak4n57"
@@ -279,6 +256,7 @@ tileDisplayTscn = ExtResource("16_vvhu1")
 fireManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/FireMana/Amount")
 waterManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/WaterMana/Amount")
 plantManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/PlantMana/Amount")
+GamePace = 4.0
 turnInformerAnimationSpeed = 0.5
 minionMoveAnimationSpeed = 20.0
 minionDeathAnimationSpeed = 5.0
@@ -298,12 +276,12 @@ fortTextureScale = 1.7
 metadata/_custom_type_script = "uid://bpoclqr2f21y2"
 metadata/_edit_lock_ = true
 
-[node name="BoardData" type="Node" parent="Board" node_paths=PackedStringArray("gridReference", "stateReference")]
+[node name="BoardData" type="Node" parent="Board" node_paths=PackedStringArray("gridReference", "stateReference", "player1", "player2")]
 script = ExtResource("17_lbihj")
 gridReference = NodePath("BoardGrid")
 stateReference = NodePath("BoardState")
-player1 = SubResource("Resource_3jf1l")
-player2 = SubResource("Resource_i4lct")
+player1 = NodePath("../../InputHandler/MouseInputProvider")
+player2 = NodePath("../../InputHandler/BotInputProvider")
 metadata/_custom_type_script = "uid://u4ode5mopgro"
 
 [node name="BoardState" type="Node" parent="Board/BoardData"]
@@ -320,6 +298,3 @@ CellSize = 100.0
 gridColor = Color(0.79607844, 0.79607844, 0.79607844, 0.24705882)
 metadata/_custom_type_script = "uid://dq36qu2o3hfpu"
 metadata/_edit_lock_ = true
-
-[node name="InfluenceMapManager" type="Node2D" parent="Board"]
-script = ExtResource("27_3jf1l")

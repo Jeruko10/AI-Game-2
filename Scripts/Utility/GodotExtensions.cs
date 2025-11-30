@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Utility;
 
@@ -118,18 +118,27 @@ public static class GodotExtensions
         return spawn;
     }
 
-    /// <summary>Temporarily slows down the game by modifying <see cref="Engine.TimeScale"/> for a set duration.
-    /// The time scale automatically resets to its previous value after the timer completes.</summary>
-    /// <param name="tree">The current <see cref="SceneTree"/> used to create the internal timer.</param>
-    /// <param name="timeScale">The temporary time scale to apply (e.g., 0 for a full freeze).</param>
-    /// <param name="duration">The duration, in seconds, to maintain the time scale modification.</param>
-    public static void FreezeTime(this SceneTree tree, float timeScale, float duration)
+    ///<summary>Asynchronously waits until a given condition becomes true, checking once per frame.
+    /// This is <see cref="Engine.TimeScale"/> dependant.</summary>
+    ///<param name="tree">The current <see cref="SceneTree"/> used to yield each frame.</param>
+    ///<param name="condition">A function that returns true when the wait should end.</param>
+    public static async Task DelayUntil(this SceneTree tree, Func<bool> condition)
     {
-        float previousScale = (float)Engine.TimeScale;
-        Engine.TimeScale = timeScale;
+        while (!condition())
+            await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+    }
 
-        // Create a timer that ignores the global time scale
-        var timer = tree.CreateTimer(duration, processAlways: true, processInPhysics: false, ignoreTimeScale: true);
-        timer.Timeout += () => Engine.TimeScale = previousScale;
+    ///<summary>Asynchronously waits for a specified amount of real-time seconds using frame-based updates.
+    /// This is <see cref="Engine.TimeScale"/> dependant.</summary>
+    ///<param name="tree">The current <see cref="SceneTree"/> used to yield each frame.</param>
+    ///<param name="seconds">The number of seconds to wait before continuing execution.</param>
+    public static async Task Delay(this SceneTree tree, float seconds)
+    {
+        double elapsed = 0.0;
+        while (elapsed < seconds)
+        {
+            await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+            elapsed += tree.Root.GetProcessDeltaTime();
+        }
     }
 }

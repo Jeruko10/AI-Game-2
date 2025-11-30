@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Utility;
 
@@ -71,13 +72,8 @@ public static class Logic
         int wrapped = ((relative % range) + range) % range;
         return min + wrapped;
     }
-
-    public static void GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
-    {
-        if (!dict.TryGetValue(key, out var v))
-        {
-            v = value;
-            dict[key] = value;
-        }
-    }
+    
+    ///<summary>Asynchronously waits for a specified amount of seconds using <see cref="Task.Delay"/>.</summary>
+    ///<param name="seconds">The number of seconds to delay the execution of the next operation.</param>
+	public static async Task Delay(float seconds) => await Task.Delay((int)MathF.Round(seconds * 1000));
 }

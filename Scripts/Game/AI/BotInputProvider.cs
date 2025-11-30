@@ -45,6 +45,9 @@ public partial class BotInputProvider() : VirtualInputProvider
 			await SimulateHumanClick(minion.Position);
 
 			Vector2I[] minionRange = GridNavigation.GetReachableCells(minion);
+			
+			if (minionRange.IsEmpty()) continue;
+
 			Vector2I randomCell = minionRange.GetRandomElement();
 
 			await SimulateHumanClick(randomCell, false, 2);

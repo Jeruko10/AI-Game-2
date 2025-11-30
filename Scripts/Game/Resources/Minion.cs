@@ -5,9 +5,7 @@ using Godot;
 namespace Game;
 
 public partial class Minion(MinionData data, Vector2I position) : Resource
-{
-    [Signal] public delegate void SelectionAvailableEventHandler();
-    
+{    
     public string Name = data.Name;
     public Texture2D Texture { get; set; } = data.Texture;
     public Board.Players Owner { get; set; } = Board.State.GetActivePlayer();
@@ -19,16 +17,7 @@ public partial class Minion(MinionData data, Vector2I position) : Resource
     public int Damage { get; } = data.Damage;
     public Element Element { get; } = data.Element;
     public bool Exhausted { get; set; } = false;
-    public bool Selectable
-    {
-        get => selectable;
-        set
-        {
-            selectable = value;
-            if (selectable) EmitSignal(SignalName.SelectionAvailable);
-        }
-    }
-    
+    public bool Selectable { get; set; } = true;
     public Vector2I Position
     {
         get => pos;
@@ -40,5 +29,4 @@ public partial class Minion(MinionData data, Vector2I position) : Resource
     }
 
     Vector2I pos = position;
-    bool selectable = true;
 }
