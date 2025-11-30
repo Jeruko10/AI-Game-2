@@ -13,7 +13,7 @@ public partial class Minion(MinionData data, Vector2I position) : Resource
     public int Health { get; set; } = data.Health;
     public int MaxMovePoints { get; } = data.MovePoints;
     public int MovePoints { get; set; } = data.MovePoints;
-    public Vector2I[] DamageArea { get; } = data.DamageArea.ToArray();
+    public Vector2I[] DamageArea { get; } = [.. data.DamageArea];
     public int Damage { get; } = data.Damage;
     public Element Element { get; } = data.Element;
     public bool Exhausted { get; set; } = false;

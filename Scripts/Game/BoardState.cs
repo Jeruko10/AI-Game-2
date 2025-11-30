@@ -34,6 +34,7 @@ public partial class BoardState : Node
 	public event Action<Fort> FortHarvested;
 	public event Action<Tile, Vector2I> TileAdded;
 	public event Action<Fort> FortAdded;
+	public event Action<Waypoint> WaypointAdded;
 
 	bool isPlayer1Turn = false;
 
@@ -216,6 +217,18 @@ public partial class BoardState : Node
 
 		Forts.Add(fort);
 		FortAdded?.Invoke(fort);
+	}
+
+	// New method added for waypoints... this should be public?
+	public void AddWaypoint(Waypoint waypoint)
+	{
+		if (!Board.Grid.IsInsideGrid(waypoint.Cell))
+		{
+			GD.PushError("Trying to add a waypoint outside of grid boundaries.");
+			return;
+		}
+
+		WaypointAdded?.Invoke(waypoint);
 	}
 
 	void AddMinion(Minion minion)

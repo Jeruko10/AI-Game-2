@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5li2o273p167"]
+
+[ext_resource type="Script" uid="uid://ougvru8tj6lm" path="res://Scripts/Game/Display/WaypointDisplay.cs" id="1_ca5ap"]
+[ext_resource type="Script" uid="uid://lpcmsp8qjbfa" path="res://Scripts/Components/Visuals/SquashStretch2D.cs" id="1_smpy7"]
+[ext_resource type="Texture2D" uid="uid://chetshhkxjqc4" path="res://Sprites/Circle.png" id="2_ca5ap"]
+
+[node name="Waypoint" type="Node2D" node_paths=PackedStringArray("Sprite", "SquashAnimator")]
+script = ExtResource("1_ca5ap")
+Sprite = NodePath("SquashStretch2D/Sprite2D")
+SquashAnimator = NodePath("SquashStretch2D")
+
+[node name="SquashStretch2D" type="Node2D" parent="."]
+script = ExtResource("1_smpy7")
+SquashFactor = 0.2
+MaxValueThreshold = 1.0
+MinValueThreshold = -1.0
+DeadZone = 0.0
+ImpactFactor = 1.0
+ImpactDecay = 25.0
+metadata/_custom_type_script = "uid://lpcmsp8qjbfa"
+metadata/_edit_lock_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="SquashStretch2D"]
+texture = ExtResource("2_ca5ap")
+metadata/_edit_lock_ = true

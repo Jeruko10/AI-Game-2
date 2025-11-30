@@ -13,10 +13,28 @@ public partial class BotInputProvider() : VirtualInputProvider
 	[Export] float playSpeed = 1f;
 	[Export] float courtesyDelay = 1f;
 
-	public override void _Ready() => Board.State.TurnStarted += OnTurnStarted;
+    readonly WaypointsNavigator navigator = new();
 
-	async Task PlayTurn()
+    public override void _Ready()
+    {
+        Board.State.TurnStarted += OnTurnStarted;
+    }
+
+    async Task PlayTurn()
 	{
+		
+		foreach (Minion minion in GetFriendlyMinions())
+		{
+			List<Waypoint> waypoints = navigator.GenerateWaypoints(minion);
+		}
+
+		foreach (Waypoint wp in navigator.GenerateWaypoints(GetFriendlyMinions()[0]))
+		{
+			GD.Print($"Waypoint: Type={wp.Type}, Cell={wp.Cell}, ElementAffinity={wp.ElementAffinity}, Priority={wp.Priority}");
+			Board.State.AddWaypoint(wp);
+		}
+
+
 		// USE THESE INPUT SIMULATION METHODS TO CONTROL THE BOT:
 		//
 		// SimulateHover(Vector2I?);
@@ -53,6 +71,7 @@ public partial class BotInputProvider() : VirtualInputProvider
 			await SimulateHumanClick(randomCell, false, 2);
 		}
 
+		navigator.ClearWaypoints();
 		SimulatePassTurn();
 	}
 

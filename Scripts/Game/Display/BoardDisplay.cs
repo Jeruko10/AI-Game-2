@@ -16,6 +16,7 @@ public partial class BoardDisplay : Node2D
 	[Export] PackedScene minionDisplayTscn;
 	[Export] PackedScene fortDisplayTscn;
 	[Export] PackedScene tileDisplayTscn;
+	[Export] PackedScene waypointDisplayTscn;
 
 	[ExportSubgroup("Mana Counters")]
 	[Export] RichTextLabel fireManaCounter;
@@ -45,21 +46,27 @@ public partial class BoardDisplay : Node2D
 	[Export] Color movementRangeColor = Colors.Purple;
 	[Export] Color movementPathColor = Colors.Purple;
 	[Export] Color damageZoneColor = Colors.Purple;
+	[Export] Color captureWaypointColor = Colors.Orange;
+	[Export] Color attackWaypointColor = Colors.Red;
+	[Export] Color moveWaypointColor = Colors.Blue;
 
 	[ExportSubgroup("Textures")]
 	[Export] float tileTextureScale = 1f;
 	[Export] float minionTextureScale = 1f;
 	[Export] float fortTextureScale = 1f;
+	[Export] float waypointTextureScale = 1f;
 
 	readonly Dictionary<Vector2I, TileDisplay> tileVisuals = [];
     readonly Dictionary<Minion, MinionDisplay> minionVisuals = [];
     readonly Dictionary<Fort, FortDisplay> fortVisuals = [];
+	readonly Dictionary<Waypoint, WaypointDisplay> waypointVisuals = [];
 	Node2D tilesGroup, fortsGroup, minionsGroup;
 
 	public override void _Ready()
 	{
 		CreateChildGroups();
 
+		Board.State.WaypointAdded += OnWaypointAdded;
 		Board.State.FortAdded += OnFortAdded;
 		Board.State.FortDominated += OnFortDominated;
 		Board.State.FortHarvested += OnFortHarvested;
@@ -147,6 +154,26 @@ public partial class BoardDisplay : Node2D
 		fortVisuals[fort].Position = CellToWorld(fort.Position);
 		fortVisuals[fort].Modulate = (fort.Element == null) ? Colors.White : fort.Element.Color;
 		fortVisuals[fort].OutlineModule.OutlineColor = GetPlayerColor(fort.Owner);
+	}
+
+	void OnWaypointAdded(Waypoint waypoint)
+	{
+		CreateVisual(waypoint, waypointDisplayTscn, tilesGroup, waypointVisuals, waypointTextureScale, "Waypoint");
+
+		waypointVisuals[waypoint].Position = CellToWorld(waypoint.Cell);
+		
+		switch (waypoint.Type)
+		{
+			case WaypointType.Capture:
+				waypointVisuals[waypoint].Sprite.Modulate = captureWaypointColor;
+				break;
+			case WaypointType.Attack:
+				waypointVisuals[waypoint].Sprite.Modulate = attackWaypointColor;
+				break;
+			case WaypointType.Move:
+				waypointVisuals[waypoint].Sprite.Modulate = moveWaypointColor;
+				break;
+		}
 	}
 
 	async void OnFortDominated(Fort fort, Minion dominator)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=31 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputManagement/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
@@ -25,6 +25,7 @@
 [ext_resource type="Script" uid="uid://o71pb6ak4n57" path="res://Scripts/Game/AI/BotInputProvider.cs" id="18_3jf1l"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
+[ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/waypointDisplayTscn.tscn" id="23_356ba"]
 [ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
 [ext_resource type="Script" uid="uid://cyngg360t1vk" path="res://Scripts/Game/AI/InfluenceMapManager.cs" id="27_3jf1l"]
 
@@ -244,6 +245,8 @@ metadata/_custom_type_script = "uid://bib5h2me841oe"
 [node name="BotInputProvider" type="Node2D" parent="InputHandler"]
 script = ExtResource("18_3jf1l")
 self = 1
+playSpeed = 0.79
+courtesyDelay = 0.75
 metadata/_custom_type_script = "uid://o71pb6ak4n57"
 
 [node name="Board" type="Node2D" parent="."]
@@ -254,12 +257,13 @@ script = ExtResource("13_8r6kd")
 minionDisplayTscn = ExtResource("14_tfod6")
 fortDisplayTscn = ExtResource("15_rajel")
 tileDisplayTscn = ExtResource("16_vvhu1")
+waypointDisplayTscn = ExtResource("23_356ba")
 fireManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/FireMana/Amount")
 waterManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/WaterMana/Amount")
 plantManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/PlantMana/Amount")
 GamePace = 4.0
 turnInformerAnimationSpeed = 0.5
-minionMoveAnimationSpeed = 20.0
+minionMoveAnimationSpeed = 6.58
 minionDeathAnimationSpeed = 5.0
 minionsRestoreDelay = 0.6
 fortsHarvestDelay = 0.8
@@ -275,7 +279,6 @@ damageZoneColor = Color(1, 0, 0, 0.15294118)
 minionTextureScale = 0.7
 fortTextureScale = 1.7
 metadata/_custom_type_script = "uid://bpoclqr2f21y2"
-metadata/_edit_lock_ = true
 
 [node name="BoardData" type="Node" parent="Board" node_paths=PackedStringArray("gridReference", "stateReference", "player1", "player2")]
 script = ExtResource("17_lbihj")
