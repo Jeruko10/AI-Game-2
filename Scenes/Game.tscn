@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=30 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputManagement/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
@@ -26,6 +26,7 @@
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
 [ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
+[ext_resource type="Script" uid="uid://cyngg360t1vk" path="res://Scripts/Game/AI/InfluenceMapManager.cs" id="27_3jf1l"]
 
 [sub_resource type="Resource" id="Resource_raj38"]
 script = ExtResource("23_raj38")
@@ -298,3 +299,6 @@ CellSize = 100.0
 gridColor = Color(0.79607844, 0.79607844, 0.79607844, 0.24705882)
 metadata/_custom_type_script = "uid://dq36qu2o3hfpu"
 metadata/_edit_lock_ = true
+
+[node name="InfluenceMapManager" type="Node2D" parent="Board"]
+script = ExtResource("27_3jf1l")

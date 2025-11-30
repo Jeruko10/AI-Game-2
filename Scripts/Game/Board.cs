@@ -38,5 +38,5 @@ public partial class Board : Node
 		AudioManager.CreateGroup("sounds");
 	}
 
-    public static Players GetRival(Players player) => (player == Players.Player1) ? Players.Player2 : Players.Player1;
+	public static Players GetRival(Players player) => (player == Players.Player1) ? Players.Player2 : Players.Player1;
 }
