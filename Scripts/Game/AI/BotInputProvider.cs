@@ -28,11 +28,15 @@ public partial class BotInputProvider() : VirtualInputProvider
 			List<Waypoint> waypoints = navigator.GenerateWaypoints(minion);
 		}
 
-		foreach (Waypoint wp in navigator.GenerateWaypoints(GetFriendlyMinions()[0]))
-		{
-			GD.Print($"Waypoint: Type={wp.Type}, Cell={wp.Cell}, ElementAffinity={wp.ElementAffinity}, Priority={wp.Priority}");
-			Board.State.AddWaypoint(wp);
-		}
+		if (GetFriendlyMinions().Count != 0)
+        {
+			foreach (Waypoint wp in navigator.GenerateWaypoints(GetFriendlyMinions()[0]))
+			{
+				GD.Print($"Waypoint: Type={wp.Type}, Cell={wp.Cell}, ElementAffinity={wp.ElementAffinity}, Priority={wp.Priority}");
+				Board.State.AddWaypoint(wp);
+			}
+        }
+			
 
 
 		// USE THESE INPUT SIMULATION METHODS TO CONTROL THE BOT:
@@ -70,8 +74,8 @@ public partial class BotInputProvider() : VirtualInputProvider
 
 			await SimulateHumanClick(randomCell, false, 2);
 		}
-
-		navigator.ClearWaypoints();
+		//todo: implement this
+		//navigator.ClearWaypoints();
 		SimulatePassTurn();
 	}
 
