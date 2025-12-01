@@ -28,7 +28,8 @@ public partial class BotInputProvider() : VirtualInputProvider
 
         DeployUnit(waypoints);
 
-        SimulateGoingFort(waypoints);
+		foreach(Minion minion in GetFriendlyMinions())
+        	await SimulateGoingFort(waypoints, minion);
 
 
 		//HERE WILL BE THE BOT LOGIC FSM @Joao
@@ -55,18 +56,18 @@ public partial class BotInputProvider() : VirtualInputProvider
         // 		await SimulateHumanClick(cell, true);
         // }
 
-        foreach (Minion minion in GetFriendlyMinions())
-        {
-            await SimulateHumanClick(minion.Position);
+        // foreach (Minion minion in GetFriendlyMinions())
+        // {
+        //     await SimulateHumanClick(minion.Position);
 
-            Vector2I[] minionRange = GridNavigation.GetReachableCells(minion);
+        //     Vector2I[] minionRange = GridNavigation.GetReachableCells(minion);
 
-            if (minionRange.IsEmpty()) continue;
+        //     if (minionRange.IsEmpty()) continue;
 
-            Vector2I randomCell = minionRange.GetRandomElement();
+        //     Vector2I randomCell = minionRange.GetRandomElement();
 
-            await SimulateHumanClick(randomCell, false, 2);
-        }
+        //     await SimulateHumanClick(randomCell, false, 2);
+        // }
 
 
         navigator.ClearWaypoints();
@@ -95,12 +96,24 @@ public partial class BotInputProvider() : VirtualInputProvider
 
         return waypoints;
     }
-    static void SimulateGoingFort(List<Waypoint> waypoints)
+    async Task SimulateGoingFort(List<Waypoint> waypoints, Minion minion)
     {
-        
+        var goFortWaypoints = waypoints
+            .Where(wp => wp.Type == WaypointType.Capture)
+            .OrderByDescending(wp => wp.Priority)
+            .ToList();
+
+        if (goFortWaypoints.Count == 0)
+            return;
+
+        var bestGoFortWaypoint = goFortWaypoints.First();
+		
+        await SimulateHumanClick(minion.Position, false);
+		await Wait(courtesyDelay);
+		await SimulateHumanClick(bestGoFortWaypoint.Cell, false);
     }
 
-    private void DeployUnit(List<Waypoint> waypoints)
+    void DeployUnit(List<Waypoint> waypoints)
     {
         var deployWaypoints = waypoints
 			.Where(wp => wp.Type == WaypointType.Deploy)

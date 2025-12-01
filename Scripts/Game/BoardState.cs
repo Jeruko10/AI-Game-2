@@ -237,8 +237,6 @@ public partial class BoardState : Node
 		WaypointRemoved?.Invoke(null);
 	}
 
-
-
 	void AddMinion(Minion minion)
 	{
 		if (!Board.Grid.IsInsideGrid(minion.Position))
@@ -253,37 +251,32 @@ public partial class BoardState : Node
 
 	void CreateBoard() // TODO: Replace this method's content and create interesting way of designing the board
 	{
-		// Dimensiones
 	int width = 17;
 	int height = 9;
 
-	// Fortalezas colocadas de forma coherente
 	Vector2I[] fortPositions =
 	[
-		new(2, 2),   // Fortaleza en zona segura al norte
-		new(14, 6)   // Fortaleza en zona de fuego al sur-este
+		new(2, 2),   
+		new(14, 6)   
 	];
 
 	foreach (Vector2I cell in Board.Grid.GetAllCells())
 	{
 		Tile tile;
 
-		// Bordes
 		if (cell.X == 0 || cell.X == width - 1 || cell.Y == 0 || cell.Y == height - 1)
 		{
 			tile = Game.Tiles.Wall;
 		}
 		// Río central vertical
-		else if (cell.X == 8)
+		else if (cell.X == 8 || cell.X == 9)
 		{
 			tile = Game.Tiles.Water;
 		}
-		// Zona sur-este volcánica
 		else if (cell.Y >= 5 && cell.X >= 11)
 		{
 			tile = Game.Tiles.Fire;
 		}
-		// Resto: tierra
 		else
 		{
 			tile = Game.Tiles.Ground;
