@@ -35,6 +35,7 @@ public partial class BoardState : Node
 	public event Action<Tile, Vector2I> TileAdded;
 	public event Action<Fort> FortAdded;
 	public event Action<Waypoint> WaypointAdded;
+	public event Action<Waypoint> WaypointRemoved;
 
 	bool isPlayer1Turn = false;
 
@@ -231,6 +232,13 @@ public partial class BoardState : Node
 		WaypointAdded?.Invoke(waypoint);
 	}
 
+	public void ClearWaypoints()
+	{
+		WaypointRemoved?.Invoke(null);
+	}
+
+
+
 	void AddMinion(Minion minion)
 	{
 		if (!Board.Grid.IsInsideGrid(minion.Position))
@@ -245,20 +253,48 @@ public partial class BoardState : Node
 
 	void CreateBoard() // TODO: Replace this method's content and create interesting way of designing the board
 	{
-		Vector2I[] fortPositions = [new(3, 3), new(13, 5)];
+		// Dimensiones
+	int width = 17;
+	int height = 9;
 
-		foreach (Vector2I cell in Board.Grid.GetAllCells())
+	// Fortalezas colocadas de forma coherente
+	Vector2I[] fortPositions =
+	[
+		new(2, 2),   // Fortaleza en zona segura al norte
+		new(14, 6)   // Fortaleza en zona de fuego al sur-este
+	];
+
+	foreach (Vector2I cell in Board.Grid.GetAllCells())
+	{
+		Tile tile;
+
+		// Bordes
+		if (cell.X == 0 || cell.X == width - 1 || cell.Y == 0 || cell.Y == height - 1)
 		{
-			Tile tile;
-
-			if (cell.Y < 7 || cell.X < 4) tile = Game.Tiles.Ground;
-			else tile = Game.Tiles.Fire;
-
-			AddTile(tile, cell);
-
-			if (fortPositions.Contains(cell))
-				AddFort(new(cell));
+			tile = Game.Tiles.Wall;
 		}
+		// Río central vertical
+		else if (cell.X == 8)
+		{
+			tile = Game.Tiles.Water;
+		}
+		// Zona sur-este volcánica
+		else if (cell.Y >= 5 && cell.X >= 11)
+		{
+			tile = Game.Tiles.Fire;
+		}
+		// Resto: tierra
+		else
+		{
+			tile = Game.Tiles.Ground;
+		}
+
+		AddTile(tile, cell);
+
+		if (fortPositions.Contains(cell))
+			AddFort(new(cell));
+	}
+
 		
 		
 		var influence = GetNode<InfluenceMapManager>("../../InfluenceMapManager");

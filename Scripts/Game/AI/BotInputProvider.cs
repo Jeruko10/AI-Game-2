@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Utility;
 
@@ -21,65 +22,101 @@ public partial class BotInputProvider() : VirtualInputProvider
     }
 
     async Task PlayTurn()
-	{
-		
-		foreach (Minion minion in GetFriendlyMinions())
-		{
-			List<Waypoint> waypoints = navigator.GenerateWaypoints(minion);
-		}
+    {
+        List<Waypoint> waypoints = GetWaypoints();
+        await Wait(courtesyDelay);
 
-		if (GetFriendlyMinions().Count != 0)
+        DeployUnit(waypoints);
+
+        SimulateGoingFort(waypoints);
+
+
+		//HERE WILL BE THE BOT LOGIC FSM @Joao
+
+
+        // USE THESE INPUT SIMULATION METHODS TO CONTROL THE BOT:
+        //
+        // SimulateHover(Vector2I?);
+        // SimulateLeftClick(Vector2I);
+        // SimulateRightClick(Vector2I);
+        // SimulateHumanClick(Vector2I, bool, float, float)
+        // SimulatePassTurn();
+
+        // if (GetFriendlyMinions().Count <= 4) // Few minions? Spawn some first
+        // {
+        // 	List<Vector2I> spawnPositions = [];
+        // 	Vector2I[] allCells = Board.Grid.GetAllCells();
+        // 	int minionAmount = GD.RandRange(4, 10);
+
+        // 	for (int i = 0; i < minionAmount; i++)
+        // 		spawnPositions.Add(allCells.GetRandomElement());
+
+        // 	foreach (Vector2I cell in spawnPositions)
+        // 		await SimulateHumanClick(cell, true);
+        // }
+
+        foreach (Minion minion in GetFriendlyMinions())
         {
-			foreach (Waypoint wp in navigator.GenerateWaypoints(GetFriendlyMinions()[0]))
-			{
-				GD.Print($"Waypoint: Type={wp.Type}, Cell={wp.Cell}, ElementAffinity={wp.ElementAffinity}, Priority={wp.Priority}");
-				Board.State.AddWaypoint(wp);
-			}
+            await SimulateHumanClick(minion.Position);
+
+            Vector2I[] minionRange = GridNavigation.GetReachableCells(minion);
+
+            if (minionRange.IsEmpty()) continue;
+
+            Vector2I randomCell = minionRange.GetRandomElement();
+
+            await SimulateHumanClick(randomCell, false, 2);
         }
-			
 
 
-		// USE THESE INPUT SIMULATION METHODS TO CONTROL THE BOT:
-		//
-		// SimulateHover(Vector2I?);
-		// SimulateLeftClick(Vector2I);
-		// SimulateRightClick(Vector2I);
-		// SimulateHumanClick(Vector2I, bool, float, float)
-		// SimulatePassTurn();
+        navigator.ClearWaypoints();
+        SimulatePassTurn();
+    }
 
-		await Wait(courtesyDelay);
 
-		if (GetFriendlyMinions().Count <= 4) // Few minions? Spawn some first
-		{
-			List<Vector2I> spawnPositions = [];
-			Vector2I[] allCells = Board.Grid.GetAllCells();
-			int minionAmount = GD.RandRange(4, 10);
+    private List<Waypoint> GetWaypoints()
+    {
+        List<Waypoint> waypoints = [];
 
-			for (int i = 0; i < minionAmount; i++)
-				spawnPositions.Add(allCells.GetRandomElement());
+        if (GetFriendlyMinions().Count == 0)
+            waypoints = navigator.GenerateDeployWaypoints();
+        else
+            foreach (Minion minion in GetFriendlyMinions())
+                waypoints = navigator.GenerateWaypoints(minion);
 
-			foreach (Vector2I cell in spawnPositions)
-				await SimulateHumanClick(cell, true);
-		}
+        GD.Print($"Generated {waypoints.Count} waypoints for bot.");
 
-		foreach (Minion minion in GetFriendlyMinions())
-		{
-			await SimulateHumanClick(minion.Position);
+        if (GetFriendlyMinions().Count != 0)
+            foreach (Waypoint wp in waypoints)
+            {
+                GD.Print($"Waypoint: Type={wp.Type}, Cell={wp.Cell}, ElementAffinity={wp.ElementAffinity}, Priority={wp.Priority}");
+                Board.State.AddWaypoint(wp);
+            }
 
-			Vector2I[] minionRange = GridNavigation.GetReachableCells(minion);
-			
-			if (minionRange.IsEmpty()) continue;
+        return waypoints;
+    }
+    static void SimulateGoingFort(List<Waypoint> waypoints)
+    {
+        
+    }
 
-			Vector2I randomCell = minionRange.GetRandomElement();
+    private void DeployUnit(List<Waypoint> waypoints)
+    {
+        var deployWaypoints = waypoints
+			.Where(wp => wp.Type == WaypointType.Deploy)
+			.OrderByDescending(wp => wp.Priority)
+			.ToList();
 
-			await SimulateHumanClick(randomCell, false, 2);
-		}
-		//todo: implement this
-		//navigator.ClearWaypoints();
-		SimulatePassTurn();
-	}
+		if (deployWaypoints.Count == 0)
+			return;
 
-	async Task SimulateHumanClick(Vector2I cell, bool rightClick = false, float hoverTime = 0.2f, float afterClickTime = 0.2f)
+		var bestDeployWaypoint = deployWaypoints.First();
+
+		SimulateHover(bestDeployWaypoint.Cell);
+		SimulateRightClick(bestDeployWaypoint.Cell);
+    }
+
+    async Task SimulateHumanClick(Vector2I cell, bool rightClick = false, float hoverTime = 0.2f, float afterClickTime = 0.2f)
 	{
 		SimulateHover(cell);
 		await Wait(hoverTime);

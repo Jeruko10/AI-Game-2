@@ -19,20 +19,122 @@ namespace Game
         /// <returns></returns>
         public List<Waypoint> GenerateWaypoints(Minion bot)
         {
+            GD.Print("Hola mundo");
             List<Waypoint> waypoints = [];
 
-            // This is kinda bullshit 
-            if(bot == null)
-                return waypoints;
 
             AddAttackWaypoints(waypoints, bot);
             AddCaptureWaypoints(waypoints, bot);
             //AddMoveWaypoints(waypoints, bot);
+            AddDeployWaypoints(waypoints);
 
             waypoints.Sort((a, b) => b.Priority.CompareTo(a.Priority));
 
             return waypoints;
         }
+
+        public List<Waypoint> GenerateDeployWaypoints()
+        {
+            List<Waypoint> waypoints = [];
+            AddDeployWaypoints(waypoints);
+            waypoints.Sort((a, b) => b.Priority.CompareTo(a.Priority));
+            return waypoints;
+        }
+
+        static void AddDeployWaypoints(List<Waypoint> waypoints)
+        {
+            Mana resources = Board.State.Player2Mana;
+            var myForts = Board.State.Forts.Where(f => f.Owner == Board.Players.Player2).ToArray();
+
+            List<Vector2I> candidateCells = [];
+
+            foreach (var fort in myForts)
+                candidateCells.AddRange(Board.Grid.GetAdjacents(fort.Position));
+
+            // todo: use insted of this the ZONA MUERTA of @Juanan
+            var frontierCell = InfluenceMap.FindWeakAllyFrontierCell();
+            
+            if (frontierCell.HasValue)
+                candidateCells.Add(frontierCell.Value);
+
+
+            foreach (var cell in candidateCells)
+            {
+                if (!Board.Grid.IsInsideGrid(cell)) continue;
+
+                Element.Type type = EvaluateMinionType();
+
+                if (!CanAfford(type, resources)) continue;
+
+                Waypoint w = new()
+                {
+                    Type = WaypointType.Deploy,
+                    Cell = cell,
+                    ElementAffinity = type,
+                    Priority = CalculateDeployPriority(cell)
+                };
+
+                waypoints.Add(w);
+            }
+        }
+
+        // I know this is ugly but idc
+        static Element.Type EvaluateMinionType()
+        {
+            int fireCount = Board.State.Minions.Count(m => m.Owner == Board.Players.Player1 && m.Element.Tag == Element.Type.Fire);
+            int waterCount = Board.State.Minions.Count(m => m.Owner == Board.Players.Player1 && m.Element.Tag == Element.Type.Water);
+            int plantCount = Board.State.Minions.Count(m => m.Owner == Board.Players.Player1 && m.Element.Tag == Element.Type.Plant);
+
+            if (fireCount >= waterCount && fireCount >= plantCount)
+                return Element.Type.Water;
+            else if (waterCount >= fireCount && waterCount >= plantCount)
+                return Element.Type.Plant;
+            else
+                return Element.Type.Fire;
+        }
+
+        static int CalculateDeployPriority(Vector2I cell)
+        {
+            int priority = 1;
+
+            float influence = InfluenceMap.GetInfluenceAt(cell);
+            if (influence < 0)
+                priority -= 2;
+            else if (influence > 0)
+                priority += 2;
+
+            foreach (var enemy in Board.State.Minions.Where(m => m.Owner != Board.Players.Player2))
+            {
+                int distance = Board.Grid.GetDistance(cell, enemy.Position);
+                if (distance < 2) priority -= 3;
+                else if (distance < 5) priority += 1;
+            }
+
+            var myForts = Board.State.Forts.Where(f => f.Owner == Board.Players.Player2);
+            foreach (var fort in myForts)
+            {
+                int distFort = Board.Grid.GetDistance(cell, fort.Position);
+                if (distFort <= 2) priority += 2;
+            }
+
+            Element.Type type = Element.Type.None;
+            if (!CanAfford(type, Board.State.Player2Mana))
+                priority = 0;
+
+            return Math.Max(priority, 0);
+        }
+
+
+         static bool CanAfford(Element.Type elementType, Mana mana)
+        {
+            MinionData minionData = Minions.AllMinionDatas.FirstOrDefault(md => md.Element.Tag == elementType);
+
+            if (minionData == null)
+                return false;
+
+            return minionData.IsAffordable(mana);
+        }
+
 
         void AddAttackWaypoints(List<Waypoint> waypoints, Minion bot)
         {
@@ -108,7 +210,6 @@ namespace Game
             return priority;
         }
 
-
         int CalculateCapturePriority(Fort fort, Minion bot)
         {
             int priority = 5;
@@ -161,37 +262,12 @@ namespace Game
         static float GetBotInfluence(Vector2I cell, Minion bot)
         {
             float raw = InfluenceMap.GetInfluenceAt(cell);
-            return (bot.Owner == Board.Players.Player1) ? raw : -raw;
+            return (bot.Owner == Board.Players.Player2) ? raw : -raw;
         }
 
         public void ClearWaypoints()
         {
-            //Board.State.ClearWaypoints(); or something like that
-            throw new NotImplementedException();
+            Board.State.ClearWaypoints();
         }
-
-
     }
-
-
-
-    public class Waypoint
-    {
-        public WaypointType Type { get; set; }
-        public Element.Type ElementAffinity { get; set; }
-        public Vector2I Cell { get; set; }
-        // priority is in terms of 10x
-        public int Priority { get; set; }
-    }
-
-    public enum WaypointType
-    {
-        Attack,
-        Capture,
-        Move
-
-        // Positioning ?
-    }
-
-    // if no tropes in board we need a Positioning waypoint
 }

@@ -71,7 +71,6 @@ public static class GridNavigation
 		HashSet<Vector2I> blockedCells = GetObstructorsForMinion(minion);
 		if (!Board.Grid.IsInsideGrid(destination) || blockedCells.Contains(destination)) return [];
 
-		// A* open set (priority queue)
 		PriorityQueue<Vector2I, int> frontier = new();
 		frontier.Enqueue(start, 0);
 
@@ -121,7 +120,7 @@ public static class GridNavigation
 		}
 
 		path.Reverse();
-		return path.ToArray();
+		return [.. path];
 	}
 
 	static HashSet<Vector2I> GetObstructorsForMinion(Minion minion)

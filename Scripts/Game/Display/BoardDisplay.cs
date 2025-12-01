@@ -66,6 +66,8 @@ public partial class BoardDisplay : Node2D
 	{
 		CreateChildGroups();
 
+
+		Board.State.WaypointRemoved += OnWaypointRemoved;
 		Board.State.WaypointAdded += OnWaypointAdded;
 		Board.State.FortAdded += OnFortAdded;
 		Board.State.FortDominated += OnFortDominated;
@@ -174,6 +176,16 @@ public partial class BoardDisplay : Node2D
 				waypointVisuals[waypoint].Sprite.Modulate = moveWaypointColor;
 				break;
 		}
+	}
+
+	void OnWaypointRemoved(Waypoint waypoint)
+	{
+		if(waypointVisuals.Count == 0) return;
+		
+		foreach (var wp in waypointVisuals.Values)
+			wp.QueueFree();
+
+		waypointVisuals.Clear();
 	}
 
 	async void OnFortDominated(Fort fort, Minion dominator)

@@ -20,6 +20,14 @@ ImpactDecay = 25.0
 metadata/_custom_type_script = "uid://lpcmsp8qjbfa"
 metadata/_edit_lock_ = true
 
+[node name="Sprite2D2" type="Sprite2D" parent="SquashStretch2D"]
+modulate = Color(1, 1, 1, 0.4745098)
+z_index = 4
+scale = Vector2(0.27999988, 0.27999988)
+texture = ExtResource("2_ca5ap")
+
 [node name="Sprite2D" type="Sprite2D" parent="SquashStretch2D"]
+modulate = Color(1, 1, 1, 0.4745098)
+z_index = 4
 texture = ExtResource("2_ca5ap")
 metadata/_edit_lock_ = true
