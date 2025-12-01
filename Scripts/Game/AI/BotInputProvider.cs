@@ -97,21 +97,53 @@ public partial class BotInputProvider() : VirtualInputProvider
         return waypoints;
     }
     async Task SimulateGoingFort(List<Waypoint> waypoints, Minion minion)
-    {
-        var goFortWaypoints = waypoints
-            .Where(wp => wp.Type == WaypointType.Capture)
-            .OrderByDescending(wp => wp.Priority)
-            .ToList();
+	{
+		if (minion == null) return;
 
-        if (goFortWaypoints.Count == 0)
-            return;
+		Vector2I[] reachable = GridNavigation.GetReachableCells(minion);
+		List<Vector2I> minionRange = [.. reachable];
+		if (!minionRange.Contains(minion.Position))
+			minionRange.Add(minion.Position);
 
-        var bestGoFortWaypoint = goFortWaypoints.First();
-		
-        await SimulateHumanClick(minion.Position, false);
+		if (minionRange.Count == 0)
+			return;
+
+		var goFortWaypoints = waypoints
+			.Where(wp => wp.Type == WaypointType.Capture)
+			.OrderByDescending(wp => wp.Priority)
+			.ToList();
+
+		if (goFortWaypoints.Count == 0)
+			return;
+
+		var bestGoFortWaypoint = goFortWaypoints.First();
+		Vector2I targetCell = bestGoFortWaypoint.Cell;
+
+		if (!minionRange.Contains(bestGoFortWaypoint.Cell))
+		{
+			int shortestDist = int.MaxValue;
+			Vector2I bestReachable = minion.Position;
+
+			foreach (var cell in minionRange)
+			{
+				int distToFort = Board.Grid.GetDistance(cell, bestGoFortWaypoint.Cell);
+				if (distToFort < shortestDist)
+				{
+					shortestDist = distToFort;
+					bestReachable = cell;
+				}
+			}
+
+			targetCell = bestReachable;
+		}
+
+		await SimulateHumanClick(minion.Position);
 		await Wait(courtesyDelay);
-		await SimulateHumanClick(bestGoFortWaypoint.Cell, false);
-    }
+
+		await SimulateHumanClick(targetCell, false);
+		await Wait(courtesyDelay);
+	}
+
 
     void DeployUnit(List<Waypoint> waypoints)
     {
