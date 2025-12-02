@@ -11,11 +11,9 @@ public partial class SelectorScreen : Control
     [Export] ColorRect backgroundRect;
 
     [Export] PackedScene troopCardScene;
-    [Export] Sprite2D fireIcon;
-    [Export] Sprite2D waterIcon;
-    [Export] Sprite2D plantIcon;
-
-
+    [Export] Texture2D fireIcon;
+    [Export] Texture2D waterIcon;
+    [Export] Texture2D plantIcon;
 
 
     bool isDisplayed = false;
@@ -34,9 +32,11 @@ public partial class SelectorScreen : Control
             if (troopCardInstance == null) GD.PushError("CardScene is not provided in SelectorScreen");
 
             Sprite2D iconElementType = troopCardInstance.GetNode<Sprite2D>("IconElementType");
-            Sprite2D silhouette = troopCardInstance.GetNode<Sprite2D>("ElemnentSilhouette");
-            Label nameLabel = troopCardInstance.GetNode<Label>("name");
+            Sprite2D silhouette = troopCardInstance.GetNode<Sprite2D>("ElementSilhouette");
+            Label nameLabel = troopCardInstance.GetNode<Label>("Name");
             Label priceLabel = troopCardInstance.GetNode<Label>("PriceLabel");
+
+            GD.Print(silhouette);
 
             silhouette.Texture = troopType.Texture;
             nameLabel.Text = troopType.Name;
@@ -52,9 +52,9 @@ public partial class SelectorScreen : Control
     {
         return tag switch
         {
-            Element.Types.Fire  => fireIcon.Texture,
-            Element.Types.Water => waterIcon.Texture,
-            Element.Types.Plant => plantIcon.Texture,
+            Element.Types.Fire  => fireIcon,
+            Element.Types.Water => waterIcon,
+            Element.Types.Plant => plantIcon,
             _                   => null
         };
     }

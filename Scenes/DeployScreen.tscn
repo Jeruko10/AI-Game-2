@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cfx08ypbn55vo"]
+[gd_scene load_steps=7 format=3 uid="uid://cfx08ypbn55vo"]
 
 [ext_resource type="Texture2D" uid="uid://bgq2pph8bwjjd" path="res://Sprites/FireUnitTemplate.png" id="1_phnpn"]
 [ext_resource type="Script" uid="uid://c1yt2be4xnd7b" path="res://Scripts/UI/SelectorScreen.cs" id="1_ukjap"]
 [ext_resource type="PackedScene" uid="uid://dc3b7mni5i4q7" path="res://Scenes/TroopCard.tscn" id="2_v3ixr"]
+[ext_resource type="Texture2D" uid="uid://c1cllrx0lx67p" path="res://Sprites/FireSymbol.png" id="3_mls7t"]
+[ext_resource type="Texture2D" uid="uid://w4p0tsentu6k" path="res://Sprites/WaterSymbol.png" id="4_5qpeb"]
+[ext_resource type="Texture2D" uid="uid://b3sp5x3r3jge7" path="res://Sprites/PlantSymbol.png" id="5_dii2r"]
 
 [node name="DeployScreen" type="Control" node_paths=PackedStringArray("displayButton", "troopsContainer", "backgroundRect")]
 layout_mode = 3
@@ -16,6 +19,9 @@ displayButton = NodePath("Fondo/DisplayButton")
 troopsContainer = NodePath("Fondo/FlowContainer")
 backgroundRect = NodePath("Fondo")
 troopCardScene = ExtResource("2_v3ixr")
+fireIcon = ExtResource("3_mls7t")
+waterIcon = ExtResource("4_5qpeb")
+plantIcon = ExtResource("5_dii2r")
 
 [node name="Fondo" type="ColorRect" parent="."]
 layout_mode = 0

@@ -22,7 +22,7 @@ offset_right = 199.0
 offset_bottom = 273.0
 color = Color(0.7919991, 0.79199916, 0.7919991, 1)
 
-[node name="ElemnentSilhouette" type="Sprite2D" parent="."]
+[node name="ElementSilhouette" type="Sprite2D" parent="."]
 position = Vector2(93, 118)
 scale = Vector2(2.0625, 2.0625)
 texture = ExtResource("1_q0ymv")
