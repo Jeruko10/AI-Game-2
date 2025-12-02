@@ -218,6 +218,9 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
+[node name="DeployScreen" parent="InterfaceLayer/HUD" instance=ExtResource("29_i4lct")]
+layout_mode = 1
+
 [node name="RefLibrary" type="Node" parent="."]
 
 [node name="TileLibrary" type="Node" parent="RefLibrary"]
@@ -305,5 +308,3 @@ metadata/_edit_lock_ = true
 
 [node name="InfluenceMapManager" type="Node2D" parent="Board"]
 script = ExtResource("27_3jf1l")
-
-[node name="DeployScreen" parent="." instance=ExtResource("29_i4lct")]

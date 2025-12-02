@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://w4p0tsentu6k" path="res://Sprites/WaterSymbol.png" id="4_5qpeb"]
 [ext_resource type="Texture2D" uid="uid://b3sp5x3r3jge7" path="res://Sprites/PlantSymbol.png" id="5_dii2r"]
 
-[node name="DeployScreen" type="Control" node_paths=PackedStringArray("displayButton", "troopsContainer", "backgroundRect")]
+[node name="DeployScreen" type="Control" node_paths=PackedStringArray("displayButton", "troopsContainer", "backgroundRect", "overlayRect")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,10 +18,18 @@ script = ExtResource("1_ukjap")
 displayButton = NodePath("Fondo/DisplayButton")
 troopsContainer = NodePath("Fondo/FlowContainer")
 backgroundRect = NodePath("Fondo")
+overlayRect = NodePath("OverLay")
 troopCardScene = ExtResource("2_v3ixr")
 fireIcon = ExtResource("3_mls7t")
 waterIcon = ExtResource("4_5qpeb")
 plantIcon = ExtResource("5_dii2r")
+
+[node name="OverLay" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.52906674, 0.5290667, 0.5290667, 1)
 
 [node name="Fondo" type="ColorRect" parent="."]
 layout_mode = 0
@@ -32,8 +40,12 @@ color = Color(0.24057722, 0.24057725, 0.24057719, 1)
 
 [node name="FlowContainer" type="FlowContainer" parent="Fondo"]
 layout_mode = 0
-offset_right = 514.0
-offset_bottom = 1080.0
+offset_left = 30.0
+offset_top = 28.0
+offset_right = 442.0
+offset_bottom = 1036.0
+theme_override_constants/h_separation = 200
+theme_override_constants/v_separation = 275
 
 [node name="DisplayButton" type="Button" parent="Fondo"]
 layout_mode = 0

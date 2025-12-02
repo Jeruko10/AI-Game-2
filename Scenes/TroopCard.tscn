@@ -23,30 +23,33 @@ offset_bottom = 273.0
 color = Color(0.7919991, 0.79199916, 0.7919991, 1)
 
 [node name="ElementSilhouette" type="Sprite2D" parent="."]
-position = Vector2(93, 118)
-scale = Vector2(2.0625, 2.0625)
+position = Vector2(102, 140.00002)
+scale = Vector2(1.703125, 1.703125)
 texture = ExtResource("1_q0ymv")
 
 [node name="Name" type="Label" parent="."]
 layout_mode = 0
-offset_left = 11.0
+offset_left = 7.0
 offset_top = 11.0
-offset_right = 93.0
-offset_bottom = 55.0
+offset_right = 192.0
+offset_bottom = 87.0
 theme_override_font_sizes/font_size = 31
 text = "Fire 1"
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="PriceLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 59.0
-offset_top = 216.0
-offset_right = 174.0
-offset_bottom = 260.0
+offset_left = 91.0
+offset_top = 217.0
+offset_right = 185.0
+offset_bottom = 261.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 31
 text = "100"
 
 [node name="IconElementType" type="Sprite2D" parent="."]
-position = Vector2(27.000006, 238)
+position = Vector2(59, 237)
 scale = Vector2(1.9809569, 1.9809569)
 texture = ExtResource("2_ll5a5")
 

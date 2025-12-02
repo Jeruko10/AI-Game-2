@@ -1,6 +1,7 @@
 using Game;
 using Godot;
 using System;
+using System.Diagnostics;
 
 
 namespace UI;
@@ -9,6 +10,7 @@ public partial class SelectorScreen : Control
     [Export] Button displayButton;
     [Export] FlowContainer troopsContainer;
     [Export] ColorRect backgroundRect;
+    [Export] ColorRect overlayRect;
 
     [Export] PackedScene troopCardScene;
     [Export] Texture2D fireIcon;
@@ -24,7 +26,7 @@ public partial class SelectorScreen : Control
         GenerateCards();
     }
 
-    private void GenerateCards()
+    void GenerateCards()
     {
         foreach (var troopType in Minions.AllMinionDatas)
         {
@@ -40,7 +42,7 @@ public partial class SelectorScreen : Control
 
             silhouette.Texture = troopType.Texture;
             nameLabel.Text = troopType.Name;
-            priceLabel.Text = troopType.Cost.ToString();
+            priceLabel.Text = GetTroopCost(troopType);
             iconElementType.Texture = GetElementIconTexture(troopType.Element.Tag);
 
 
@@ -48,7 +50,18 @@ public partial class SelectorScreen : Control
         }
     }
 
-    private Texture2D GetElementIconTexture(Element.Types tag)
+    string GetTroopCost(MinionData troopType)
+    {
+        return troopType.Element.Tag switch
+        {
+            Element.Types.Fire => troopType.Cost.FireMana.ToString(),
+            Element.Types.Water => troopType.Cost.WaterMana.ToString(),
+            Element.Types.Plant => troopType.Cost.PlantMana.ToString(),
+            _ => "0",
+        };
+    }
+
+    Texture2D GetElementIconTexture(Element.Types tag)
     {
         return tag switch
         {
@@ -66,9 +79,15 @@ public partial class SelectorScreen : Control
         
         Vector2 originalPosition = backgroundRect.Position;
         if (!isDisplayed)
+        {
             tween.TweenProperty(backgroundRect, "position", originalPosition + new Vector2(490.0f, 0f), 0.5f);
+            tween.Parallel().TweenProperty(overlayRect, "modulate:a", 0.0f, 0.5f);
+        }
         else
+        {
             tween.TweenProperty(backgroundRect, "position", originalPosition - new Vector2(490.0f, 0f), 0.5f);
+            tween.Parallel().TweenProperty(overlayRect, "modulate:a", 0.5f, 0.5f);
+        }
     }
 
     Tween CreateDefaultTween()

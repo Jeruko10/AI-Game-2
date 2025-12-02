@@ -36,6 +36,7 @@ public partial class BoardState : Node
 	public event Action<Fort> FortAdded;
 	public event Action<Waypoint> WaypointAdded;
 	public event Action<Waypoint> WaypointRemoved;
+	
 
 	bool isPlayer1Turn = false;
 
