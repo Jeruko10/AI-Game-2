@@ -22,7 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://b87vvghkw306d" path="res://Scenes/TileDisplay.tscn" id="16_vvhu1"]
 [ext_resource type="Script" uid="uid://bib5h2me841oe" path="res://Scripts/Game/InputManagement/MouseInputProvider.cs" id="17_i0vto"]
 [ext_resource type="Script" uid="uid://u4ode5mopgro" path="res://Scripts/Game/Board.cs" id="17_lbihj"]
-[ext_resource type="Script" uid="uid://o71pb6ak4n57" path="res://Scripts/Game/AI/BotInputProvider.cs" id="18_3jf1l"]
+[ext_resource type="Script" path="res://Scripts/Game/AI/BotInputProvider.cs" id="18_3jf1l"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
 [ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/waypointDisplayTscn.tscn" id="23_356ba"]
