@@ -251,7 +251,7 @@ public class WaypointsNavigator
     }
 
 
-    // This probably should go to InfluenceMapManager later @Joao
+    // This probably should go to InfluenceMapManager later
     /// <summary>
     ///  Gets the bot's influence in a given cell, normalized according to the bot's owner.
     /// </summary>

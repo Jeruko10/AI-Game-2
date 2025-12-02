@@ -21,7 +21,6 @@ public partial class Minions : Node
 	public static MinionData WaterKnight { get; private set; }
 	public static MinionData PlantKnight { get; private set; }
 
-	// @joao I don't know if this is the best way to do this
 	public static MinionData[] AllMinionDatas =>
     [
         FireKnight,
