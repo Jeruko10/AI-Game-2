@@ -28,11 +28,11 @@ public partial class BotInputProvider() : VirtualInputProvider
 
         DeployUnit(waypoints);
 
-		foreach(Minion minion in GetFriendlyMinions())
-        	await SimulateGoingFort(waypoints, minion);
-
-
 		//HERE WILL BE THE BOT LOGIC FSM @Joao
+		foreach(Minion minion in GetFriendlyMinions())
+        	await PlayUnitStrategy(waypoints, minion);
+
+
 
 
         // USE THESE INPUT SIMULATION METHODS TO CONTROL THE BOT:
@@ -74,6 +74,12 @@ public partial class BotInputProvider() : VirtualInputProvider
         SimulatePassTurn();
     }
 
+	async Task PlayUnitStrategy(List<Waypoint> waypoints, Minion minion)
+	{
+		// Implement the bot's strategy for each unit here
+		await SimulateDominateFort(waypoints, minion);
+	}
+
 
     private List<Waypoint> GetWaypoints()
     {
@@ -96,7 +102,7 @@ public partial class BotInputProvider() : VirtualInputProvider
 
         return waypoints;
     }
-    async Task SimulateGoingFort(List<Waypoint> waypoints, Minion minion)
+    async Task SimulateDominateFort(List<Waypoint> waypoints, Minion minion)
 	{
 		if (minion == null) return;
 

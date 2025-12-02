@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=3 uid="uid://blp6bgptja1ov"]
+
+[ext_resource type="Texture2D" uid="uid://bgq2pph8bwjjd" path="res://Sprites/FireUnitTemplate.png" id="1_o1ib7"]
+[ext_resource type="Texture2D" uid="uid://c1cllrx0lx67p" path="res://Sprites/FireSymbol.png" id="2_eq51e"]
+
+[node name="TroopCard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(98, 103)
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_right = 199.0
+offset_bottom = 273.0
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="Button"]
+layout_mode = 0
+offset_right = 199.0
+offset_bottom = 199.0
+pivot_offset = Vector2(100, 100)
+color = Color(0, 0, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Button"]
+position = Vector2(93, 118)
+scale = Vector2(2.0625, 2.0625)
+texture = ExtResource("1_o1ib7")
+
+[node name="ColorRect2" type="ColorRect" parent="Button"]
+layout_mode = 0
+offset_top = 199.0
+offset_right = 199.0
+offset_bottom = 273.0
+color = Color(0.7919991, 0.79199916, 0.7919991, 1)
+
+[node name="Label" type="Label" parent="Button"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 11.0
+offset_right = 93.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 31
+text = "Fire 1"
+
+[node name="Label2" type="Label" parent="Button"]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 216.0
+offset_right = 174.0
+offset_bottom = 260.0
+theme_override_font_sizes/font_size = 31
+text = "100"
+
+[node name="Sprite2D2" type="Sprite2D" parent="Button"]
+position = Vector2(27.000006, 238)
+scale = Vector2(1.9809569, 1.9809569)
+texture = ExtResource("2_eq51e")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]

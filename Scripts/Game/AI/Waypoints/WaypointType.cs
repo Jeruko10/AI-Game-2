@@ -1,3 +1,5 @@
+
+namespace Game;
 public enum WaypointType
 {
     Attack,

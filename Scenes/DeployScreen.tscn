@@ -1,12 +1,19 @@
-[gd_scene format=3 uid="uid://cfx08ypbn55vo"]
+[gd_scene load_steps=3 format=3 uid="uid://cfx08ypbn55vo"]
 
-[node name="DeployScreen" type="Control"]
+[ext_resource type="Texture2D" uid="uid://bgq2pph8bwjjd" path="res://Sprites/FireUnitTemplate.png" id="1_phnpn"]
+[ext_resource type="Script" uid="uid://c1yt2be4xnd7b" path="res://Scripts/UI/SelectorScreen.cs" id="1_ukjap"]
+
+[node name="DeployScreen" type="Control" node_paths=PackedStringArray("displayButton", "troopsContainer", "backgroundRect")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_ukjap")
+displayButton = NodePath("Fondo/DisplayButton")
+troopsContainer = NodePath("Fondo/FlowContainer")
+backgroundRect = NodePath("Fondo")
 
 [node name="Fondo" type="ColorRect" parent="."]
 layout_mode = 0
@@ -15,8 +22,15 @@ offset_right = 2434.0
 offset_bottom = 1080.0
 color = Color(0.24057722, 0.24057725, 0.24057719, 1)
 
-[node name="Button" type="Button" parent="."]
+[node name="FlowContainer" type="FlowContainer" parent="Fondo"]
 layout_mode = 0
-offset_left = 1705.0
-offset_right = 1920.0
+offset_right = 514.0
+offset_bottom = 1080.0
+
+[node name="DisplayButton" type="Button" parent="Fondo"]
+layout_mode = 0
+offset_left = -177.0
 offset_bottom = 179.0
+icon = ExtResource("1_phnpn")
+icon_alignment = 1
+expand_icon = true
