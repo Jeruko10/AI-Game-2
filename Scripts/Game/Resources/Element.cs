@@ -11,7 +11,7 @@ public partial class Element : Resource
     [Export] public Texture2D Symbol { get; private set; }
     [Export(PropertyHint.ColorNoAlpha)] public Color Color { get; private set; } = Colors.White;
 
-    public Type Beats()
+    public Type GetAdvantage()
     {
         return Tag switch
         {
@@ -22,7 +22,7 @@ public partial class Element : Resource
         };
     }
 
-    public Type LosesTo()
+    public Type GetDisadvantage()
     {
         return Tag switch
         {

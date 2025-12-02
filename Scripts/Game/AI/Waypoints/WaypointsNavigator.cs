@@ -146,7 +146,7 @@ namespace Game
                 {
                     Type = WaypointType.Attack,
                     Cell = enemy.Position,
-                    ElementAffinity = enemy.Element.LosesTo(),
+                    ElementAffinity = enemy.Element.GetDisadvantage(),
                     Priority = CalculateAttackPriority(enemy, bot)
                 };
                 waypoints.Add(w);
@@ -165,7 +165,7 @@ namespace Game
                     Type = WaypointType.Capture,
                     Cell = fort.Position,
                     ElementAffinity = fort.Element != null 
-                        ? fort.Element.LosesTo() 
+                        ? fort.Element.GetDisadvantage() 
                         : Element.Type.None,
                     Priority = CalculateCapturePriority(fort, bot)
                 };
@@ -194,7 +194,7 @@ namespace Game
         {
             int priority = 10;
 
-            if (bot.Element.Beats() == enemy.Element.Tag)
+            if (bot.Element.GetAdvantage() == enemy.Element.Tag)
                 priority += 5;
 
             int distance = Board.Grid.GetDistance(bot.Position, enemy.Position);
