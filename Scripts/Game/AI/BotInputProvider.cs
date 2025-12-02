@@ -26,55 +26,16 @@ public partial class BotInputProvider() : VirtualInputProvider
         List<Waypoint> waypoints = GetWaypoints();
         await Wait(courtesyDelay);
 
-        await DeployUnit(waypoints);
+        await TryDeployMinions(waypoints);
 
-		//HERE WILL BE THE BOT LOGIC FSM @Joao
 		foreach(Minion minion in GetFriendlyMinions())
-        	await PlayUnitStrategy(waypoints, minion);
-
-
-
-
-        // USE THESE INPUT SIMULATION METHODS TO CONTROL THE BOT:
-        //
-        // SimulateHover(Vector2I?);
-        // SimulateLeftClick(Vector2I);
-        // SimulateRightClick(Vector2I);
-        // SimulateHumanClick(Vector2I, bool, float, float)
-        // SimulatePassTurn();
-
-        // if (GetFriendlyMinions().Count <= 4) // Few minions? Spawn some first
-        // {
-        // 	List<Vector2I> spawnPositions = [];
-        // 	Vector2I[] allCells = Board.Grid.GetAllCells();
-        // 	int minionAmount = GD.RandRange(4, 10);
-
-        // 	for (int i = 0; i < minionAmount; i++)
-        // 		spawnPositions.Add(allCells.GetRandomElement());
-
-        // 	foreach (Vector2I cell in spawnPositions)
-        // 		await SimulateHumanClick(cell, true);
-        // }
-
-        // foreach (Minion minion in GetFriendlyMinions())
-        // {
-        //     await SimulateHumanClick(minion.Position);
-
-        //     Vector2I[] minionRange = GridNavigation.GetReachableCells(minion);
-
-        //     if (minionRange.IsEmpty()) continue;
-
-        //     Vector2I randomCell = minionRange.GetRandomElement();
-
-        //     await SimulateHumanClick(randomCell, false, 2);
-        // }
-
+        	await PlayMinionStrategy(waypoints, minion);
 
         navigator.ClearWaypoints();
         SimulatePassTurn();
     }
 
-	async Task PlayUnitStrategy(List<Waypoint> waypoints, Minion minion)
+	async Task PlayMinionStrategy(List<Waypoint> waypoints, Minion minion)
 	{
 		// Implement the bot's strategy for each unit here
 		await SimulateDominateFort(waypoints, minion);
@@ -102,6 +63,7 @@ public partial class BotInputProvider() : VirtualInputProvider
 
         return waypoints;
     }
+
     async Task SimulateDominateFort(List<Waypoint> waypoints, Minion minion)
 	{
 		if (minion == null) return;
@@ -147,8 +109,7 @@ public partial class BotInputProvider() : VirtualInputProvider
 		await SimulateHumanClick(targetCell, false);
 	}
 
-
-    async Task DeployUnit(List<Waypoint> waypoints)
+    async Task TryDeployMinions(List<Waypoint> waypoints)
     {
         var deployWaypoints = waypoints
 			.Where(wp => wp.Type == WaypointType.Deploy)
@@ -195,9 +156,7 @@ public partial class BotInputProvider() : VirtualInputProvider
 	{
 		if (newTurnOwner != self) return;
 
-		while (!InputHandler.InteractionEnabled)
-			await Wait(0.1f); // Check each 0.1s if interaction is enabled
-
+		await GetTree().DelayUntil(() => InputHandler.InteractionEnabled);
 		await PlayTurn();
 	}
 }
