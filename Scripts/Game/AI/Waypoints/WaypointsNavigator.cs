@@ -61,13 +61,13 @@ public class WaypointsNavigator
         {
             if (!Board.Grid.IsInsideGrid(cell)) continue;
 
-            Element.Type type = EvaluateMinionType();
+            Element.Types type = EvaluateMinionType();
 
             if (!CanAfford(type, resources)) continue;
 
             Waypoint w = new()
             {
-                Type = WaypointType.Deploy,
+                Type = Waypoint.Types.Deploy,
                 Cell = cell,
                 ElementAffinity = type,
                 Priority = CalculateDeployPriority(cell)
@@ -78,18 +78,18 @@ public class WaypointsNavigator
     }
 
     // I know this is ugly but idc
-    static Element.Type EvaluateMinionType()
+    static Element.Types EvaluateMinionType()
     {
-        int fireCount = Board.State.Minions.Count(m => m.Owner == Board.Players.Player1 && m.Element.Tag == Element.Type.Fire);
-        int waterCount = Board.State.Minions.Count(m => m.Owner == Board.Players.Player1 && m.Element.Tag == Element.Type.Water);
-        int plantCount = Board.State.Minions.Count(m => m.Owner == Board.Players.Player1 && m.Element.Tag == Element.Type.Plant);
+        int fireCount = Board.State.Minions.Count(m => m.Owner == Board.Players.Player1 && m.Element.Tag == Element.Types.Fire);
+        int waterCount = Board.State.Minions.Count(m => m.Owner == Board.Players.Player1 && m.Element.Tag == Element.Types.Water);
+        int plantCount = Board.State.Minions.Count(m => m.Owner == Board.Players.Player1 && m.Element.Tag == Element.Types.Plant);
 
         if (fireCount >= waterCount && fireCount >= plantCount)
-            return Element.Type.Water;
+            return Element.Types.Water;
         else if (waterCount >= fireCount && waterCount >= plantCount)
-            return Element.Type.Plant;
+            return Element.Types.Plant;
         else
-            return Element.Type.Fire;
+            return Element.Types.Fire;
     }
 
     static int CalculateDeployPriority(Vector2I cell)
@@ -116,7 +116,7 @@ public class WaypointsNavigator
             if (distFort <= 2) priority += 2;
         }
 
-        Element.Type type = Element.Type.None;
+        Element.Types type = Element.Types.None;
         if (!CanAfford(type, Board.State.Player2Mana))
             priority = 0;
 
@@ -124,7 +124,7 @@ public class WaypointsNavigator
     }
 
 
-        static bool CanAfford(Element.Type elementType, Mana mana)
+        static bool CanAfford(Element.Types elementType, Mana mana)
     {
         MinionData minionData = Minions.AllMinionDatas.FirstOrDefault(md => md.Element.Tag == elementType);
 
@@ -143,7 +143,7 @@ public class WaypointsNavigator
         {
             Waypoint w = new()
             {
-                Type = WaypointType.Attack,
+                Type = Waypoint.Types.Attack,
                 Cell = enemy.Position,
                 ElementAffinity = enemy.Element.GetDisadvantage(),
                 Priority = CalculateAttackPriority(enemy, bot)
@@ -161,11 +161,11 @@ public class WaypointsNavigator
         {
             Waypoint w = new()
             {
-                Type = WaypointType.Capture,
+                Type = Waypoint.Types.Capture,
                 Cell = fort.Position,
                 ElementAffinity = fort.Element != null 
                     ? fort.Element.GetDisadvantage() 
-                    : Element.Type.None,
+                    : Element.Types.None,
                 Priority = CalculateCapturePriority(fort, bot)
             };
             waypoints.Add(w);

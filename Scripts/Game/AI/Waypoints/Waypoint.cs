@@ -1,13 +1,18 @@
 using Godot;
-using System;
-using System.Collections.Generic;
 
 using Game;
 public class Waypoint
 {
-    public WaypointType Type { get; set; }
-    public Element.Type ElementAffinity { get; set; }
+    public enum Types
+    {
+        Attack,
+        Capture,
+        Move,
+        Deploy
+    }
+    
+    public Types Type { get; set; }
+    public Element.Types ElementAffinity { get; set; }
     public Vector2I Cell { get; set; }
-    // priority is in terms of 10x
-    public int Priority { get; set; }
+    public int Priority { get; set; } // priority is in terms of 10x
 }

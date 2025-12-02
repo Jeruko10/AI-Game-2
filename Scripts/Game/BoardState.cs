@@ -188,8 +188,8 @@ public partial class BoardState : Node
 	void HarvestMana(Fort fort)
 	{
 		Mana earned =
-			fort.Element.Tag == Element.Type.Fire ? new Mana(1, 0, 0) :
-			fort.Element.Tag == Element.Type.Water ? new Mana(0, 1, 0) :
+			fort.Element.Tag == Element.Types.Fire ? new Mana(1, 0, 0) :
+			fort.Element.Tag == Element.Types.Water ? new Mana(0, 1, 0) :
 			new Mana(0, 0, 1); // Plant mana
 
 		GetActiveRivalMana().Obtain(earned);

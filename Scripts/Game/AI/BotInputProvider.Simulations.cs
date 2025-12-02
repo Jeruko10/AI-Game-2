@@ -8,7 +8,7 @@ using Utility;
 namespace Game;
 
 [GlobalClass]
-public partial class BotInputProvider() : VirtualInputProvider
+public partial class BotInputProvider : VirtualInputProvider
 {
 	[Export] Board.Players self;
 	[Export] float playSpeed = 1f;
@@ -16,53 +16,7 @@ public partial class BotInputProvider() : VirtualInputProvider
 
     readonly WaypointsNavigator navigator = new();
 
-    public override void _Ready()
-    {
-        Board.State.TurnStarted += OnTurnStarted;
-    }
-
-    async Task PlayTurn()
-    {
-        List<Waypoint> waypoints = GetWaypoints();
-        await Wait(courtesyDelay);
-
-        await TryDeployMinions(waypoints);
-
-		foreach(Minion minion in GetFriendlyMinions())
-        	await PlayMinionStrategy(waypoints, minion);
-
-        navigator.ClearWaypoints();
-        SimulatePassTurn();
-    }
-
-	async Task PlayMinionStrategy(List<Waypoint> waypoints, Minion minion)
-	{
-		// Implement the bot's strategy for each unit here
-		await SimulateDominateFort(waypoints, minion);
-	}
-
-
-    private List<Waypoint> GetWaypoints()
-    {
-        List<Waypoint> waypoints = [];
-
-        if (GetFriendlyMinions().Count == 0)
-            waypoints = navigator.GenerateDeployWaypoints();
-        else
-            foreach (Minion minion in GetFriendlyMinions())
-                waypoints = navigator.GenerateWaypoints(minion);
-
-        GD.Print($"Generated {waypoints.Count} waypoints for bot.");
-
-        if (GetFriendlyMinions().Count != 0)
-            foreach (Waypoint wp in waypoints)
-            {
-                GD.Print($"Waypoint: Type={wp.Type}, Cell={wp.Cell}, ElementAffinity={wp.ElementAffinity}, Priority={wp.Priority}");
-                Board.State.AddWaypoint(wp);
-            }
-
-        return waypoints;
-    }
+    public override void _Ready() => Board.State.TurnStarted += OnTurnStarted;
 
     async Task SimulateDominateFort(List<Waypoint> waypoints, Minion minion)
 	{
@@ -77,7 +31,7 @@ public partial class BotInputProvider() : VirtualInputProvider
 			return;
 
 		var goFortWaypoints = waypoints
-			.Where(wp => wp.Type == WaypointType.Capture)
+			.Where(wp => wp.Type == Waypoint.Types.Capture)
 			.OrderByDescending(wp => wp.Priority)
 			.ToList();
 
@@ -109,10 +63,10 @@ public partial class BotInputProvider() : VirtualInputProvider
 		await SimulateHumanClick(targetCell, false);
 	}
 
-    async Task TryDeployMinions(List<Waypoint> waypoints)
+    async Task SimulateDeployMinions(List<Waypoint> waypoints)
     {
         var deployWaypoints = waypoints
-			.Where(wp => wp.Type == WaypointType.Deploy)
+			.Where(wp => wp.Type == Waypoint.Types.Deploy)
 			.OrderByDescending(wp => wp.Priority)
 			.ToList();
 
@@ -127,15 +81,15 @@ public partial class BotInputProvider() : VirtualInputProvider
     async Task SimulateHumanClick(Vector2I cell, bool rightClick = false, float hoverTime = 0.2f, float afterClickTime = 0.2f)
 	{
 		SimulateHover(cell);
-		await Wait(hoverTime);
+		await SimulateDelay(hoverTime);
 
 		if (rightClick) SimulateRightClick(cell);
 		else SimulateLeftClick(cell);
 
-		await Wait(afterClickTime);
+		await SimulateDelay(afterClickTime);
 	}
 
-	async Task Wait(float seconds) => await Task.Delay((int)Mathf.Round(seconds * 1000 / playSpeed));
+	async Task SimulateDelay(float seconds) => await Task.Delay((int)Mathf.Round(seconds * 1000 / playSpeed));
 
 	List<Minion> GetEnemyMinions() => GetMinionsOwnedBy(Board.GetRival(self));
 
