@@ -168,13 +168,13 @@ public partial class BoardDisplay : Node2D
 		
 		switch (waypoint.Type)
 		{
-			case WaypointType.Capture:
+			case Waypoint.Types.Capture:
 				waypointVisuals[waypoint].Sprite.Modulate = captureWaypointColor;
 				break;
-			case WaypointType.Attack:
+			case Waypoint.Types.Attack:
 				waypointVisuals[waypoint].Sprite.Modulate = attackWaypointColor;
 				break;
-			case WaypointType.Move:
+			case Waypoint.Types.Move:
 				waypointVisuals[waypoint].Sprite.Modulate = moveWaypointColor;
 				break;
 		}
