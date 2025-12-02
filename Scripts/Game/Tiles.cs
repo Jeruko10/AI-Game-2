@@ -17,18 +17,18 @@ public partial class Tiles : Node
 	public static Tile Wall { get; private set; }
 	public static Tile Fire { get; private set; }
 	public static Tile Water { get; private set; }
-    static Tiles singleton;
+	static Tiles singleton;
 
 	public override void _EnterTree() => StoreStaticData();
 
-    public override void _ExitTree()
-    {
-        if (singleton == this) singleton = null;
-    }
-    
-    void StoreStaticData()
-    {
-        singleton ??= this;
+	public override void _ExitTree()
+	{
+		if (singleton == this) singleton = null;
+	}
+	
+	void StoreStaticData()
+	{
+		singleton ??= this;
 		Ground ??= groundTile;
 		Wall ??= wallTile;
 		Fire ??= fireTile;
