@@ -26,7 +26,7 @@ public partial class BotInputProvider() : VirtualInputProvider
         List<Waypoint> waypoints = GetWaypoints();
         await Wait(courtesyDelay);
 
-        DeployUnit(waypoints);
+        await DeployUnit(waypoints);
 
 		foreach(Minion minion in GetFriendlyMinions())
         	await SimulateGoingFort(waypoints, minion);
@@ -138,14 +138,11 @@ public partial class BotInputProvider() : VirtualInputProvider
 		}
 
 		await SimulateHumanClick(minion.Position);
-		await Wait(courtesyDelay);
-
 		await SimulateHumanClick(targetCell, false);
-		await Wait(courtesyDelay);
 	}
 
 
-    void DeployUnit(List<Waypoint> waypoints)
+    async Task DeployUnit(List<Waypoint> waypoints)
     {
         var deployWaypoints = waypoints
 			.Where(wp => wp.Type == WaypointType.Deploy)
@@ -157,8 +154,7 @@ public partial class BotInputProvider() : VirtualInputProvider
 
 		var bestDeployWaypoint = deployWaypoints.First();
 
-		SimulateHover(bestDeployWaypoint.Cell);
-		SimulateRightClick(bestDeployWaypoint.Cell);
+		await SimulateHumanClick(bestDeployWaypoint.Cell, true);
     }
 
     async Task SimulateHumanClick(Vector2I cell, bool rightClick = false, float hoverTime = 0.2f, float afterClickTime = 0.2f)
