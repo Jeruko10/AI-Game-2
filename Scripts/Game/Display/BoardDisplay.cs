@@ -132,6 +132,8 @@ public partial class BoardDisplay : Node2D
 			Board.Grid.ColorCell(cell, movementRangeColor);
 
 		// Draw movement path
+		if (hoveredCell == null) return;
+		
 		Vector2I[] pathToHoveredCell = GridNavigation.GetPathForMinion(selectedMinion, hoveredCell.Value);
 		Vector2I pathEnd = (pathToHoveredCell.Length > 0) ? pathToHoveredCell[^1] : selectedMinion.Position;
 
