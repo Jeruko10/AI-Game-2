@@ -14,8 +14,6 @@ public partial class BotInputProvider : VirtualInputProvider
 	[Export] float playSpeed = 1f;
 	[Export] float courtesyDelay = 1f;
 
-    readonly WaypointsNavigator navigator = new();
-
     public override void _Ready() => Board.State.TurnStarted += OnTurnStarted;
 
     async Task SimulateDominateFort(List<Waypoint> waypoints, Minion minion)
@@ -60,7 +58,7 @@ public partial class BotInputProvider : VirtualInputProvider
 		}
 
 		await SimulateHumanClick(minion.Position);
-		await SimulateHumanClick(targetCell, false);
+		await SimulateHumanClick(targetCell);
 	}
 
     async Task SimulateDeployMinions(List<Waypoint> waypoints)

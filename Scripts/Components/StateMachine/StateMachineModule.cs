@@ -16,7 +16,7 @@ public partial class StateMachineModule : Node
 
     public override async void _Ready()
     {
-        await ToSignal(Owner, "ready");
+        await ToSignal(Owner, Node.SignalName.Ready);
 
         // Script will only run if there is at least one State 
         foreach (Node child in GetChildren())
@@ -53,20 +53,11 @@ public partial class StateMachineModule : Node
         currentState.Enter();
     }
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        currentState?.HandleInput(@event);
-    }
+    public override void _UnhandledInput(InputEvent @event) => currentState?.HandleInput(@event);
 
-    public override void _Process(double delta)
-    {
-        currentState?.Update((float)delta);
-    }
+    public override void _Process(double delta) => currentState?.Update((float)delta);
 
-    public override void _PhysicsProcess(double delta)
-    {
-        currentState?.PhysicsUpdate((float)delta);
-    }
+    public override void _PhysicsProcess(double delta) => currentState?.PhysicsUpdate((float)delta);
 
     public State.States GetCurrentStateIndex() => currentState.StateName;
 

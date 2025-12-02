@@ -9,6 +9,8 @@ namespace Game;
 
 public partial class BotInputProvider : VirtualInputProvider
 {
+    readonly WaypointsNavigator navigator = new();
+    
     async Task PlayTurn()
     {
         List<Waypoint> waypoints = GetWaypoints();

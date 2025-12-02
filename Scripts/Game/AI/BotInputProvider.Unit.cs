@@ -11,7 +11,6 @@ public partial class BotInputProvider : VirtualInputProvider
 {
 	async Task PlayMinionStrategy(List<Waypoint> waypoints, Minion minion)
 	{
-		// Implement the bot's strategy for each unit here
 		await SimulateDominateFort(waypoints, minion);
 	}
 }
