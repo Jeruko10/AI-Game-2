@@ -7,6 +7,7 @@ namespace Components;
 /// Hierarchical State (HFSM). Any State can contain child States,
 /// automatically becoming a composite/parent state.
 /// </summary>
+[GlobalClass]
 public partial class State : Node
 {
     /// <summary>State identifier.</summary>

@@ -6,6 +6,7 @@ namespace Components;
 /// Root node for a Hierarchical Finite State Machine.
 /// The root is itself a State, but with a top-level entry point.
 /// </summary>
+[GlobalClass]
 public partial class RootState : State
 {
     /// <summary>Initial top-level state.</summary>
