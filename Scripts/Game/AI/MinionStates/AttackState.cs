@@ -12,9 +12,8 @@ public partial class AttackState : State, IMinionState
         // WE SHOULD NEVER BE IN THIS STATE DIRECTLY, since it does nothing and acts as folder for its substates. Please ALWAYS return true and transition to a child or sibling state.
         // TODO: Determine where to transition: To a child: AttackMoveState, PunchState, FallbackState or KamikazeState. Or to a sibling: DefendState or DominateState.
         
-        TransitionToChild("Kamikaze");
-		// TransitionToChild("ExampleState"); // Has to be a child state of this state, otherwise push error.
-		// TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
+		TransitionToChild("ExampleState"); // Has to be a child state of this state, otherwise push error.
+		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
         return true;
     }
 

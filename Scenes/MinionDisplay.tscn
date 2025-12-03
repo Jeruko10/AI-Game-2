@@ -18,8 +18,9 @@
 [ext_resource type="Script" uid="uid://gbty0eh57b0v" path="res://Scripts/Game/AI/MinionStates/ProtectTeammateState.cs" id="16_nmark"]
 [ext_resource type="Script" uid="uid://dnkigrjq54eaj" path="res://Scripts/Game/AI/MinionStates/SpreadState.cs" id="17_pibwr"]
 
-[node name="Minion" type="Node2D" node_paths=PackedStringArray("Sprite", "colorOverlay", "SquashAnimator", "FlashEffect", "OutlineModule")]
+[node name="Minion" type="Node2D" node_paths=PackedStringArray("RootState", "Sprite", "colorOverlay", "SquashAnimator", "FlashEffect", "OutlineModule")]
 script = ExtResource("1_p8v5u")
+RootState = NodePath("HFSM")
 Sprite = NodePath("SquashStretch2D/Sprite2D")
 colorOverlay = NodePath("SquashStretch2D/ColorOverlay")
 SquashAnimator = NodePath("SquashStretch2D")
@@ -60,14 +61,15 @@ metadata/_custom_type_script = "uid://ccsf7mfhim8f2"
 [node name="HFSM" type="Node" parent="."]
 script = ExtResource("6_ov0v5")
 StateName = "Root"
-metadata/_custom_type_script = "uid://friq1dmxmmhx"
 
 [node name="AttackState" type="Node" parent="HFSM"]
 script = ExtResource("7_7khbq")
+StateName = "Attack"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="AttackMoveState" type="Node" parent="HFSM/AttackState"]
 script = ExtResource("8_0d77l")
+StateName = "AttackMove"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="PunchState" type="Node" parent="HFSM/AttackState"]
@@ -87,6 +89,7 @@ metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="DominateState" type="Node" parent="HFSM"]
 script = ExtResource("12_mhus3")
+StateName = "Dominate"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="DominateMoveState" type="Node" parent="HFSM/DominateState"]
@@ -101,6 +104,7 @@ metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="DefendState" type="Node" parent="HFSM"]
 script = ExtResource("15_lbxym")
+StateName = "Defend"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="ProtectTeammateState" type="Node" parent="HFSM/DefendState"]

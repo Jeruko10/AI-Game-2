@@ -11,7 +11,7 @@ public partial class BotInputProvider : VirtualInputProvider
     /// <summary>Iterates over state transitions until a state demands no transition, then plays the strategy returned by the chosen state.</summary>
 	async Task PlayMinionStrategy(Minion minion, List<Waypoint> waypoints)
 	{
-        IMinionState minionState = ChangeMinionState(minion, waypoints); // BE AWARE OF POSSIBLE INFINITE LOOPS: We iterate over state transitions until a state demands no transition.
+        IMinionState minionState = ChangeMinionState(minion, waypoints); // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
 		Vector2I[] strategy = minionState.GetStrategy(minion, waypoints);
 
         foreach (Vector2I cell in strategy) // Play the strategy by simulating human clicks
@@ -25,10 +25,11 @@ public partial class BotInputProvider : VirtualInputProvider
     static IMinionState ChangeMinionState(Minion minion, List<Waypoint> waypoints)
     {
         IMinionState minionState;
+        // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
         do
         {
             State activeLeafState = minion.RootState.GetDeepestActiveState();
-            GD.Print($"Minion '{minion.Name}' in state '{activeLeafState.StateName}' is evaluating a possible state change.");
+            
             if (activeLeafState is IMinionState) minionState = activeLeafState as IMinionState;
             else
             {

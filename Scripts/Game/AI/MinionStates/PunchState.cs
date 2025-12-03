@@ -11,8 +11,8 @@ public partial class PunchState : State, IMinionState
     {
         // TODO: Determine where to transition: AttackMoveState, PunchState, FallbackState or KamikazeState.
 
-		// TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
-        return true; // Return true if a state transition occurred, otherwise false.
+		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
+        return false; // Return true if a state transition occurred, otherwise false.
     }
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)

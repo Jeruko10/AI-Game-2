@@ -14,11 +14,10 @@ public partial class BotInputProvider : VirtualInputProvider
     async Task PlayTurn()
     {
         List<Waypoint> waypoints = GetWaypoints();
-        GD.Print(waypoints);
+
         await SimulateDelay(courtesyDelay);
-
         await SimulateDeployMinions(waypoints);
-
+        
 		foreach(Minion minion in GetFriendlyMinions())
         	await PlayMinionStrategy(minion, waypoints);
 
