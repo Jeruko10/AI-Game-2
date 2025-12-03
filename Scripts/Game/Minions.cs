@@ -17,9 +17,9 @@ public partial class Minions : Node
 	[ExportSubgroup("Plant")]
 	[Export] MinionData plantKnightData;
 
-	public static MinionData FireKnight { get; private set; }
-	public static MinionData WaterKnight { get; private set; }
-	public static MinionData PlantKnight { get; private set; }
+	public static MinionData FireKnight => singleton.fireKnightData;
+	public static MinionData WaterKnight => singleton.waterKnightData;
+	public static MinionData PlantKnight => singleton.plantKnightData;
 
 	public static MinionData[] AllMinionDatas =>
     [
@@ -30,18 +30,10 @@ public partial class Minions : Node
 
 	static Minions singleton;
 
-	public override void _EnterTree() => StoreStaticData();
+	public override void _EnterTree() => singleton ??= this;
 
     public override void _ExitTree()
     {
         if (singleton == this) singleton = null;
     }
-    
-    void StoreStaticData()
-    {
-        singleton ??= this;
-		FireKnight ??= fireKnightData;
-		WaterKnight ??= waterKnightData;
-		PlantKnight ??= plantKnightData;
-	}
 }

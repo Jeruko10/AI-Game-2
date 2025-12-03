@@ -28,6 +28,7 @@ public partial class BoardDisplay : Node2D
 	[Export] float turnInformerAnimationSpeed = 1f;
 	[Export] float minionMoveAnimationSpeed = 1f;
 	[Export] float minionDeathAnimationSpeed = 1f;
+	[Export] float minionAttackAnimationSpeed = 0.2f;
 	[Export] float minionsRestoreDelay = 1f;
 	[Export] float fortsHarvestDelay = 1f;
 	[Export] float turnStartDelay = 1f;
@@ -215,6 +216,8 @@ public partial class BoardDisplay : Node2D
 		minionVisuals[minion].Position = CellToWorld(minion.Position);
 		minionVisuals[minion].Sprite.Texture = minion.Texture;
 		minionVisuals[minion].OutlineModule.OutlineColor = (minion.Owner == Board.Players.Player1) ? player1Color : player2Color;
+
+		minion.RootState = minionVisuals[minion].RootState;
 	}
 
     async void OnMinionDeath(Minion minion)
@@ -236,9 +239,7 @@ public partial class BoardDisplay : Node2D
 
     async void OnMinionDamaged(Minion minion, int damageReceived)
 	{
-		GD.Print("Start");
 		await GetTree().DelayUntil(() => minion.Selectable);
-        GD.Print("end");
 
 		// On damaged animation
 		MinionDisplay minionDisplay = minionVisuals[minion];
@@ -250,6 +251,13 @@ public partial class BoardDisplay : Node2D
     async void OnMinionAttack(Minion minion, Vector2I direction)
 	{
         // Attack animation
+        MinionDisplay minionDisplay = minionVisuals[minion];
+		Tween attackTween = CreateTween();
+		float startRotation = minionDisplay.RotationDegrees;
+
+        attackTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, startRotation, -45, 1 / (minionAttackAnimationSpeed * GamePace));
+        attackTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, startRotation, 45, 1 / (minionAttackAnimationSpeed * GamePace));
+        attackTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, startRotation, 0, 1 / (minionAttackAnimationSpeed * GamePace));
     }
 
 	async void OnMinionSelected(Minion minion)

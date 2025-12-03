@@ -10,6 +10,7 @@ public partial class MinionDisplay : Node2D
 	[Export] public float AnimationSpeed { get; set; } = 0.7f;
 
 	[ExportSubgroup("References")]
+	[Export] public MinionRootState RootState { get; private set; }
 	[Export] public Sprite2D Sprite { get; private set; }
 	[Export] Sprite2D colorOverlay;
 	[Export] public SquashStretch2D SquashAnimator { get; private set; }

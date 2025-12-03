@@ -111,7 +111,7 @@ public partial class BoardState : Node
 	
 	public void PlayMinion(MinionData minion, Vector2I cell)
 	{
-		Mana mana = GetActiveRivalMana();
+		Mana mana = GetPlayerMana(GetActivePlayer());
 
 		if (!minion.IsAffordable(mana))
 		{
@@ -179,7 +179,7 @@ public partial class BoardState : Node
 		MinionRestored?.Invoke(minion);
 	}
 
-	public Mana GetActiveRivalMana() => isPlayer1Turn ? Player1Mana : Player2Mana;
+	public Mana GetPlayerMana(Board.Players player) => (player == Board.Players.Player1) ? Player1Mana : Player2Mana;
 
 	void DominateFort(Fort fort, Minion minion)
 	{
@@ -195,7 +195,7 @@ public partial class BoardState : Node
 			fort.Element.Tag == Element.Types.Water ? new Mana(0, 1, 0) :
 			new Mana(0, 0, 1); // Plant mana
 
-		GetActiveRivalMana().Obtain(earned);
+		GetPlayerMana(GetActivePlayer()).Obtain(earned);
 		FortHarvested?.Invoke(fort);
 	}
 
@@ -291,9 +291,8 @@ public partial class BoardState : Node
 			AddFort(new(cell));
 	}
 
-		
-		
-		var influence = GetNode<InfluenceMapManager>("../../InfluenceMapManager");
+
+		InfluenceMapManager influence = GetNode<InfluenceMapManager>("../../InfluenceMapManager");
 		influence.Initialize(this);
 	}
 }

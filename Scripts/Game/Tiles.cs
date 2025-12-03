@@ -13,25 +13,16 @@ public partial class Tiles : Node
 	[Export] Tile fireTile;
 	[Export] Tile waterTile;
 
-	public static Tile Ground { get; private set; }
-	public static Tile Wall { get; private set; }
-	public static Tile Fire { get; private set; }
-	public static Tile Water { get; private set; }
+	public static Tile Ground => singleton.groundTile;
+	public static Tile Wall => singleton.wallTile;
+	public static Tile Fire => singleton.fireTile;
+	public static Tile Water => singleton.waterTile;
     static Tiles singleton;
 
-	public override void _EnterTree() => StoreStaticData();
+	public override void _EnterTree() => singleton ??= this;
 
     public override void _ExitTree()
     {
         if (singleton == this) singleton = null;
     }
-    
-    void StoreStaticData()
-    {
-        singleton ??= this;
-		Ground ??= groundTile;
-		Wall ??= wallTile;
-		Fire ??= fireTile;
-		Water ??= waterTile;
-	}
 }

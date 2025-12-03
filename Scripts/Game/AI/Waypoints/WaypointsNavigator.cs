@@ -18,7 +18,6 @@ public class WaypointsNavigator
     /// <returns></returns>
     public List<Waypoint> GenerateWaypoints(Minion bot)
     {
-        GD.Print("Hola mundo");
         List<Waypoint> waypoints = [];
 
 
@@ -155,7 +154,7 @@ public class WaypointsNavigator
     void AddCaptureWaypoints(List<Waypoint> waypoints, Minion bot)
     {
         var fortsToCapture = Board.State.Forts.Where(f => f.Owner != bot.Owner);
-        GD.Print($"Forts to capture for {bot.Name}: {fortsToCapture.Count()}");
+        // GD.Print($"Forts to capture for {bot.Name}: {fortsToCapture.Count()}");
 
         foreach (var fort in fortsToCapture)
         {

@@ -1,13 +1,26 @@
-[gd_scene load_steps=6 format=3 uid="uid://bcookw6uqteh7"]
+[gd_scene load_steps=18 format=3 uid="uid://bcookw6uqteh7"]
 
 [ext_resource type="Script" uid="uid://wm2wwts40hf3" path="res://Scripts/Game/Display/MinionDisplay.cs" id="1_p8v5u"]
 [ext_resource type="Script" uid="uid://lpcmsp8qjbfa" path="res://Scripts/Components/Visuals/SquashStretch2D.cs" id="2_p8v5u"]
 [ext_resource type="Texture2D" uid="uid://eylrsa5hstfv" path="res://Sprites/PlantUnitTemplate.png" id="3_f0m3k"]
 [ext_resource type="Script" uid="uid://ddbouw1uebof1" path="res://Scripts/Components/Visuals/ColorOverlayModule.cs" id="4_vlnlb"]
 [ext_resource type="Script" uid="uid://ccsf7mfhim8f2" path="res://Scripts/Components/Visuals/OutlineModule.cs" id="5_2lrmb"]
+[ext_resource type="Script" uid="uid://byjalvnu6vjtw" path="res://Scripts/Game/AI/MinionStates/RootState.cs" id="6_ov0v5"]
+[ext_resource type="Script" uid="uid://dcrbuq8ntqlcb" path="res://Scripts/Game/AI/MinionStates/AttackState.cs" id="7_7khbq"]
+[ext_resource type="Script" uid="uid://bx8bh8svcyvn0" path="res://Scripts/Game/AI/MinionStates/AttackMoveState.cs" id="8_0d77l"]
+[ext_resource type="Script" uid="uid://cgnmg1jkx5cu2" path="res://Scripts/Game/AI/MinionStates/PunchState.cs" id="9_2autr"]
+[ext_resource type="Script" uid="uid://dvnf73rvx31m" path="res://Scripts/Game/AI/MinionStates/FallbackState.cs" id="10_r2jre"]
+[ext_resource type="Script" uid="uid://c5gbgncf8dmpa" path="res://Scripts/Game/AI/MinionStates/KamikazeState.cs" id="11_vpsd5"]
+[ext_resource type="Script" uid="uid://tc7r88tblwbr" path="res://Scripts/Game/AI/MinionStates/DominateState.cs" id="12_mhus3"]
+[ext_resource type="Script" uid="uid://di0rdffjmfml6" path="res://Scripts/Game/AI/MinionStates/DominateMoveState.cs" id="13_arpwh"]
+[ext_resource type="Script" uid="uid://bugqjkj3u6pwd" path="res://Scripts/Game/AI/MinionStates/PrevailState.cs" id="14_vc3ld"]
+[ext_resource type="Script" uid="uid://biqjm5i5b8yxi" path="res://Scripts/Game/AI/MinionStates/DefendState.cs" id="15_lbxym"]
+[ext_resource type="Script" uid="uid://gbty0eh57b0v" path="res://Scripts/Game/AI/MinionStates/ProtectTeammateState.cs" id="16_nmark"]
+[ext_resource type="Script" uid="uid://dnkigrjq54eaj" path="res://Scripts/Game/AI/MinionStates/SpreadState.cs" id="17_pibwr"]
 
-[node name="Minion" type="Node2D" node_paths=PackedStringArray("Sprite", "colorOverlay", "SquashAnimator", "FlashEffect", "OutlineModule")]
+[node name="Minion" type="Node2D" node_paths=PackedStringArray("RootState", "Sprite", "colorOverlay", "SquashAnimator", "FlashEffect", "OutlineModule")]
 script = ExtResource("1_p8v5u")
+RootState = NodePath("HFSM")
 Sprite = NodePath("SquashStretch2D/Sprite2D")
 colorOverlay = NodePath("SquashStretch2D/ColorOverlay")
 SquashAnimator = NodePath("SquashStretch2D")
@@ -44,3 +57,62 @@ script = ExtResource("5_2lrmb")
 TargetNode = NodePath("../SquashStretch2D/Sprite2D")
 OutlineThickness = 1.5
 metadata/_custom_type_script = "uid://ccsf7mfhim8f2"
+
+[node name="HFSM" type="Node" parent="."]
+script = ExtResource("6_ov0v5")
+StateName = "Root"
+
+[node name="AttackState" type="Node" parent="HFSM"]
+script = ExtResource("7_7khbq")
+StateName = "Attack"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="AttackMoveState" type="Node" parent="HFSM/AttackState"]
+script = ExtResource("8_0d77l")
+StateName = "AttackMove"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="PunchState" type="Node" parent="HFSM/AttackState"]
+script = ExtResource("9_2autr")
+StateName = "Punch"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="FallbackState" type="Node" parent="HFSM/AttackState"]
+script = ExtResource("10_r2jre")
+StateName = "Fallback"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="KamikazeState" type="Node" parent="HFSM/AttackState"]
+script = ExtResource("11_vpsd5")
+StateName = "Kamikaze"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="DominateState" type="Node" parent="HFSM"]
+script = ExtResource("12_mhus3")
+StateName = "Dominate"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="DominateMoveState" type="Node" parent="HFSM/DominateState"]
+script = ExtResource("13_arpwh")
+StateName = "DominateMove"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="PrevailState" type="Node" parent="HFSM/DominateState"]
+script = ExtResource("14_vc3ld")
+StateName = "Prevail"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="DefendState" type="Node" parent="HFSM"]
+script = ExtResource("15_lbxym")
+StateName = "Defend"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="ProtectTeammateState" type="Node" parent="HFSM/DefendState"]
+script = ExtResource("16_nmark")
+StateName = "ProtectTeammate"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="SpreadState" type="Node" parent="HFSM/DefendState"]
+script = ExtResource("17_pibwr")
+StateName = "Spread"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
