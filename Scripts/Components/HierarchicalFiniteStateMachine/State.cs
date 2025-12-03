@@ -44,22 +44,27 @@ public partial class State : Node
     /// <summary>Called before this state stops being active.</summary>
     public virtual void Exit() { }
 
+    /// <summary>Get all cells the minion would click while being in this state.</summary>
+    public virtual Vector2I[] GetStateStrategy() { return []; }
+
     /// <summary>Called every frame.</summary>
-    public virtual void Update(double delta)
-    {
-        ActiveChild?.Update(delta);
-    }
+    public virtual void Update(double delta) => ActiveChild?.Update(delta);
 
     /// <summary>Called every physics tick.</summary>
-    public virtual void PhysicsUpdate(double delta)
-    {
-        ActiveChild?.PhysicsUpdate(delta);
-    }
+    public virtual void PhysicsUpdate(double delta) => ActiveChild?.PhysicsUpdate(delta);
 
     /// <summary>Called for input events.</summary>
-    public virtual void HandleInput(InputEvent @event)
+    public virtual void HandleInput(InputEvent @event) => ActiveChild?.HandleInput(@event);
+
+    /// <summary> Gets the deepest active child state in the hierarchy.</summary>
+    public State GetActiveLeafState()
     {
-        ActiveChild?.HandleInput(@event);
+        State state = this;
+
+        while (state.ActiveChild != null)
+            state = state.ActiveChild;
+
+        return state;
     }
 
     /// <summary>

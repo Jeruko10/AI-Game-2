@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://bcookw6uqteh7"]
+[gd_scene load_steps=8 format=3 uid="uid://bcookw6uqteh7"]
 
 [ext_resource type="Script" uid="uid://wm2wwts40hf3" path="res://Scripts/Game/Display/MinionDisplay.cs" id="1_p8v5u"]
 [ext_resource type="Script" uid="uid://lpcmsp8qjbfa" path="res://Scripts/Components/Visuals/SquashStretch2D.cs" id="2_p8v5u"]
 [ext_resource type="Texture2D" uid="uid://eylrsa5hstfv" path="res://Sprites/PlantUnitTemplate.png" id="3_f0m3k"]
 [ext_resource type="Script" uid="uid://ddbouw1uebof1" path="res://Scripts/Components/Visuals/ColorOverlayModule.cs" id="4_vlnlb"]
 [ext_resource type="Script" uid="uid://ccsf7mfhim8f2" path="res://Scripts/Components/Visuals/OutlineModule.cs" id="5_2lrmb"]
+[ext_resource type="Script" uid="uid://friq1dmxmmhx" path="res://Scripts/Components/HierarchicalFiniteStateMachine/RootState.cs" id="6_qmgb7"]
+[ext_resource type="Script" uid="uid://c0xq6bpuq13mf" path="res://Scripts/Components/HierarchicalFiniteStateMachine/State.cs" id="7_ks85l"]
 
 [node name="Minion" type="Node2D" node_paths=PackedStringArray("Sprite", "colorOverlay", "SquashAnimator", "FlashEffect", "OutlineModule")]
 script = ExtResource("1_p8v5u")
@@ -44,3 +46,39 @@ script = ExtResource("5_2lrmb")
 TargetNode = NodePath("../SquashStretch2D/Sprite2D")
 OutlineThickness = 1.5
 metadata/_custom_type_script = "uid://ccsf7mfhim8f2"
+
+[node name="HFSM - RootState" type="Node" parent="."]
+script = ExtResource("6_qmgb7")
+metadata/_custom_type_script = "uid://friq1dmxmmhx"
+
+[node name="Attack" type="Node" parent="HFSM - RootState"]
+script = ExtResource("7_ks85l")
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="Move" type="Node" parent="HFSM - RootState/Attack"]
+script = ExtResource("7_ks85l")
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="Punch" type="Node" parent="HFSM - RootState/Attack"]
+script = ExtResource("7_ks85l")
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="Fallback" type="Node" parent="HFSM - RootState/Attack"]
+script = ExtResource("7_ks85l")
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="Kamikaze" type="Node" parent="HFSM - RootState/Attack"]
+script = ExtResource("7_ks85l")
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="Dominate" type="Node" parent="HFSM - RootState"]
+script = ExtResource("7_ks85l")
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="State" type="Node" parent="HFSM - RootState/Dominate"]
+script = ExtResource("7_ks85l")
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="Defend" type="Node" parent="HFSM - RootState"]
+script = ExtResource("7_ks85l")
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"

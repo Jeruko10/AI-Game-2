@@ -41,4 +41,7 @@ public partial class RootState : State
     {
         HandleInput(@event);
     }
+
+    /// <summary>Get all cells the minion would click while being in this state.</summary>
+    public Vector2I[] GetMinionStrategy() => GetActiveLeafState().GetStateStrategy();
 }
