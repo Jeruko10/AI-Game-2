@@ -2,72 +2,48 @@ using Components;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game;
 
 public partial class DefensiveFortFocusedState : State, IGlobalState
 {
+    /// <summary>
+    /// Radius around the fort to evaluate threat level.
+    /// </summary>
     [Export] int threatRadius = 4;
+    Fort[] forts;
 
     public bool TryChangeState()
     {
-        // TODO: Determine where to transition: To a sibling: OffensiveFortFocusedState or KillFocusedState.
-        
-		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
+        forts = Board.State.GetPlayerForts(Board.Players.Player2);   
+        bool anyFortThreatened = forts.Any(f => EvaluateFortThreat(f).IsThreatened);
+
+        if (!anyFortThreatened)
+        {
+            ParentState?.TransitionToParent();
+            return true;
+        }
         return false;
     }
+
+
 
     public List<Waypoint> GenerateWaypoints(WaypointsNavigator navigator)
     {
         List<Waypoint> waypoints = [];
+        forts = Board.State.GetPlayerForts(Board.Players.Player2);
 
-        var influence = Board.State.influence;
-        var forts = Board.State.GetPlayerForts(Board.Players.Player2);
-
-        // ============================
-        // 1) Fort in danger
-        // ============================
         foreach (var fort in forts)
         {
-            Vector2I pos = fort.Position;
+            var threat = EvaluateFortThreat(fort);
 
-            float localInf = influence.GetInfluenceAt(pos);
-            bool directThreat = localInf > 0;
-
-            float enemyPressure = 0f;
-            int samples = 0, fireCount = 0, waterCount = 0, plantCount = 0;
-
-            for (int dx = -threatRadius; dx <= threatRadius; dx++)
+            if (threat.IsThreatened)
             {
-                for (int dy = -threatRadius; dy <= threatRadius; dy++)
-                {
-                    Vector2I p = new(pos.X + dx, pos.Y + dy);
-
-                    if (!Board.Grid.IsInsideGrid(p)) continue;
-
-                    float inf = influence.GetInfluenceAt(p);
-                    if (inf > 0)
-                    {
-                        UpdateEnemyInfluence(ref enemyPressure, ref samples, ref fireCount, ref waterCount, ref plantCount, p, inf);
-                    }
-
-                }
-            }
-
-            Element.Types predominant = GetPredominantElement(fireCount, waterCount, plantCount);
-
-            bool areaThreat = enemyPressure > 0.5f * samples;
-            bool fortThreatened = directThreat || areaThreat;
-
-            if (fortThreatened)
-            {
-                waypoints = AddMoveWaypoints(waypoints, pos, enemyPressure, predominant);
+                waypoints = AddMoveWaypoints(waypoints, fort.Position, threat.EnemyPressure, threat.PredominantElement());
             }
         }
 
-        // ============================
-        // 2) Attack waypoints toward enemies near forts
-        // ============================
         waypoints = AddAttackWaypoints(waypoints, forts);
 
         return waypoints;
@@ -141,7 +117,7 @@ public partial class DefensiveFortFocusedState : State, IGlobalState
         return waypoints;
     }
 
-    private Element.Types GetPredominantElement(int fireCount, int waterCount, int plantCount)
+    private static Element.Types GetPredominantElement(int fireCount, int waterCount, int plantCount)
     {
         Element.Types predominant = Element.Types.None;
         int maxCount = Math.Max(fireCount, Math.Max(waterCount, plantCount));
@@ -155,4 +131,42 @@ public partial class DefensiveFortFocusedState : State, IGlobalState
 
         return predominant;
     }
+
+    private FortThreatInfo EvaluateFortThreat(Fort fort)
+    {
+        var influence = Board.State.influence;
+        Vector2I pos = fort.Position;
+        float localInf = influence.GetInfluenceAt(pos);
+        bool directThreat = localInf > 0;
+
+        float enemyPressure = 0f;
+        int samples = 0, fireCount = 0, waterCount = 0, plantCount = 0;
+
+        for (int dx = -threatRadius; dx <= threatRadius; dx++)
+        {
+            for (int dy = -threatRadius; dy <= threatRadius; dy++)
+            {
+                Vector2I p = new(pos.X + dx, pos.Y + dy);
+                if (!Board.Grid.IsInsideGrid(p)) continue;
+
+                float inf = influence.GetInfluenceAt(p);
+                if (inf > 0)
+                {
+                    UpdateEnemyInfluence(ref enemyPressure, ref samples, ref fireCount, ref waterCount, ref plantCount, p, inf);
+                }
+            }
+        }
+
+        return new FortThreatInfo
+        {
+            Fort = fort,
+            DirectThreat = directThreat,
+            EnemyPressure = enemyPressure,
+            Samples = samples,
+            FireCount = fireCount,
+            WaterCount = waterCount,
+            PlantCount = plantCount
+        };
+    }
+
 }
