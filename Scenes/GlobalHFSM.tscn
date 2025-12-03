@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" uid="uid://bbd2ld0j3eblh" path="res://Scripts/Game/AI/GlobalStates/GlobalRootState.cs" id="1_jimuo"]
 [ext_resource type="Script" uid="uid://davq8fypun0d6" path="res://Scripts/Game/AI/GlobalStates/OffensiveState.cs" id="2_empxi"]
-[ext_resource type="Script" uid="uid://dcy6idhc1h5kv" path="res://Scripts/Game/AI/OffensiveFortFocusedState.cs" id="3_2j6fk"]
+[ext_resource type="Script" uid="uid://cbh0cotoknj3u" path="res://Scripts/Game/AI/GlobalStates/OffensiveFortFocusedState.cs" id="3_2j6fk"]
 [ext_resource type="Script" uid="uid://dhuxqhletlbbj" path="res://Scripts/Game/AI/GlobalStates/KillFocusedState.cs" id="4_poi26"]
 [ext_resource type="Script" uid="uid://ck8ngqricufs5" path="res://Scripts/Game/AI/GlobalStates/DefensiveState.cs" id="5_y25if"]
 [ext_resource type="Script" uid="uid://cscnnf2yujjft" path="res://Scripts/Game/AI/GlobalStates/DefensiveFortFocusedState.cs" id="6_sv4q1"]
 [ext_resource type="Script" uid="uid://ra0cts7o30p" path="res://Scripts/Game/AI/GlobalStates/DeployFocusedState.cs" id="7_t0fiv"]
+
 
 [node name="HFSM" type="Node"]
 script = ExtResource("1_jimuo")
