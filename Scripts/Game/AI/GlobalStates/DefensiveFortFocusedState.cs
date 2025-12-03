@@ -7,6 +7,8 @@ namespace Game;
 
 public partial class DefensiveFortFocusedState : State, IGlobalState
 {
+    [Export] int threatRadius = 4;
+
     public bool TryChangeState()
     {
         // TODO: Determine where to transition: To a sibling: OffensiveFortFocusedState or KillFocusedState.
@@ -17,88 +19,86 @@ public partial class DefensiveFortFocusedState : State, IGlobalState
 
     public List<Waypoint> GenerateWaypoints(WaypointsNavigator navigator)
     {
-        List<Waypoint> waypoints = new();
+        List<Waypoint> waypoints = [];
 
-        var influence = Board.InfluenceManager;
-        var forts = Board.State.Forts;
+        var influence = Board.State.influence;
+        var forts = Board.State.GetPlayerForts(Board.Players.Player2);
 
         // ============================
-        // 1) Fortalezas en peligro
+        // 1) Fort in danger
         // ============================
         foreach (var fort in forts)
         {
             Vector2I pos = fort.Position;
 
-            float inf = influence.GetInfluenceAt(pos);
+            float localInf = influence.GetInfluenceAt(pos);
+            bool directThreat = localInf > 0;
 
-            if (inf < 0)
+            float enemyPressure = 0f;
+            int samples = 0, fireCount = 0, waterCount = 0, plantCount = 0;
+
+            for (int dx = -threatRadius; dx <= threatRadius; dx++)
             {
-                waypoints.Add(new Waypoint(
-                    Waypoint.Types.Capture,
-                    pos,
-                    Priority: 100  // muy alta
-                ));
-
-                // Añadimos waypoints de movimiento defensivo
-                foreach (var adj in Board.Grid.GetAdjacents(pos, false))
+                for (int dy = -threatRadius; dy <= threatRadius; dy++)
                 {
-                    float localInf = influence.GetInfluenceAt(adj);
-                    if (localInf >= 0) // zona que podemos reforzar
+                    Vector2I p = new(pos.X + dx, pos.Y + dy);
+
+                    if (!Board.Grid.IsInsideGrid(p)) continue;
+
+                    float inf = influence.GetInfluenceAt(p);
+                    if (inf > 0)
                     {
-                        waypoints.Add(new Waypoint(
-                            WaypointType.Move,
-                            adj,
-                            Priority: 70 + localInf
-                        ));
+                        enemyPressure += inf;
+                        samples++;
+                        Minion enemy = Board.State.Minions.Find(m => m.Position.Equals(p));
+                        if (enemy != null)
+                        {
+                            switch (enemy.Element.Tag)
+                            {
+                                case Element.Types.Fire: fireCount++; break;
+                                case Element.Types.Water: waterCount++; break;
+                                case Element.Types.Plant: plantCount++; break;
+                            }
+                        }
                     }
+
                 }
             }
-        }
 
-        // ============================
-        // 2) Brecha defensiva
-        // ============================
-        var weakFrontier = influence.FindWeakAllyFrontierCell();
-        if (weakFrontier != null)
-        {
-            waypoints.Add(new Waypoint(
-                WaypointType.Move,
-                weakFrontier.Value,
-                Priority: 60
-            ));
-        }
+            Element.Types predominant = GetPredominantElement(fireCount, waterCount, plantCount);
 
-        // ============================
-        // 3) Zona de nadie útil
-        // ============================
-        var noMans = influence.FindNoMansLandCells();
-        foreach (var cell in noMans)
-        {
-            float struct = influence.StructureValueMap[cell.X, cell.Y];
-            if (struct > 0) // cerca de un fort = útil
+            bool areaThreat = enemyPressure > 0.5f * samples;
+            bool fortThreatened = directThreat || areaThreat;
+
+            if (fortThreatened)
             {
-                waypoints.Add(new Waypoint(
-                    WaypointType.Move,
-                    cell,
-                    Priority: 40
-                ));
+                waypoints = AddMoveWaypoints(waypoints, pos, enemyPressure, predominant);
             }
         }
 
         // ============================
-        // 4) Posibles ataques cercanos a fortaleza
+        // 2) Attack waypoints toward enemies near forts
         // ============================
+        waypoints = AddAttackWaypoints(waypoints, forts);
+
+        return waypoints;
+    }
+
+    private static List<Waypoint> AddAttackWaypoints(List<Waypoint> waypoints, Fort[] forts)
+    {
         foreach (var fort in forts)
         {
-            foreach (var enemy in Board.State.GetEnemyMinions(Board.CurrentPlayer))
+            foreach (var enemy in Board.State.GetPlayerMinions(Board.Players.Player1))
             {
-                if (Board.Grid.GetDistance(enemy.Position, fort.Position) <= 3)
+                if (Board.Grid.GetDistance(enemy.Position, fort.Position) <= 6)
                 {
-                    waypoints.Add(new Waypoint(
-                        WaypointType.Attack,
-                        enemy.Position,
-                        Priority: 80
-                    ));
+                    waypoints.Add(new Waypoint
+                    {
+                        Type = Waypoint.Types.Attack,
+                        ElementAffinity = enemy.Element.GetDisadvantage(),
+                        Cell = enemy.Position,
+                        Priority = 80
+                    });
                 }
             }
         }
@@ -106,4 +106,48 @@ public partial class DefensiveFortFocusedState : State, IGlobalState
         return waypoints;
     }
 
+    private static List<Waypoint> AddMoveWaypoints(List<Waypoint> waypoints, Vector2I pos, float enemyPressure, Element.Types predominant)
+    {
+        int wpCount = Mathf.Clamp(Mathf.RoundToInt(enemyPressure), 1, 6);
+
+        Vector2I[] offsets =
+        [
+            new(1, 0),  new(1, 1),  new(0, 1),  new(-1, 1),
+                    new(-1, 0), new(-1,-1), new(0,-1), new(1,-1)
+        ];
+
+        int idx = 0;
+        for (int i = 0; i < wpCount; i++)
+        {
+            Vector2I wp = pos + offsets[idx];
+
+            if (Board.Grid.IsInsideGrid(wp))
+                waypoints.Add(new Waypoint
+                {
+                    Type = Waypoint.Types.Move,
+                    ElementAffinity = predominant,
+                    Cell = wp,
+                    Priority = 100 + (int)enemyPressure
+                });
+
+            idx = (idx + 1) % offsets.Length;
+        }
+
+        return waypoints;
+    }
+
+    private Element.Types GetPredominantElement(int fireCount, int waterCount, int plantCount)
+    {
+        Element.Types predominant = Element.Types.None;
+        int maxCount = Math.Max(fireCount, Math.Max(waterCount, plantCount));
+
+        if (maxCount > 0)
+        {
+            if (maxCount == fireCount) predominant = Element.Types.Fire;
+            else if (maxCount == waterCount) predominant = Element.Types.Water;
+            else predominant = Element.Types.Plant;
+        }
+
+        return predominant;
+    }
 }

@@ -40,10 +40,6 @@ public partial class BoardState : Node
 
 	public InfluenceMapManager influence;
 
-
-
-
-
 	bool isPlayer1Turn = false;
 
 	public struct CellData(Tile tile, Minion minion, Fort fort)
@@ -65,6 +61,9 @@ public partial class BoardState : Node
 	
 
 	public Board.Players GetActivePlayer() => isPlayer1Turn ? Board.Players.Player1 : Board.Players.Player2;
+
+	public Minion[] GetPlayerMinions(Board.Players player) => [.. Minions.Where(m => m.Owner == player)];
+	public Fort[] GetPlayerForts(Board.Players player) => [.. Forts.Where(f => f.Owner == player)];
 
 	public void SelectMinion(Minion minion)
 	{
