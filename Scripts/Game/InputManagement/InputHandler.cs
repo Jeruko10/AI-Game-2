@@ -121,7 +121,7 @@ public partial class InputHandler : Node
         };
 
         MinionData randomTemplate = templates.GetRandomElement();
-        Mana availableMana = Board.State.GetActiveRivalMana();
+        Mana availableMana = Board.State.GetPlayerMana(Board.State.GetActivePlayer());
 
         if (Board.State.GetCellData(cell).Minion == null &&
             randomTemplate.IsAffordable(availableMana))

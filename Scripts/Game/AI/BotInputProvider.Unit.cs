@@ -9,8 +9,16 @@ namespace Game;
 
 public partial class BotInputProvider : VirtualInputProvider
 {
-	async Task PlayMinionStrategy(List<Waypoint> waypoints, Minion minion)
+	async Task PlayMinionStrategy(Minion minion, List<Waypoint> waypoints)
 	{
-		await SimulateDominateFort(waypoints, minion);
+		Vector2I[] strategy = minion.HFSM.GetStrategy(minion, waypoints);
+
+        foreach (Vector2I cell in strategy)
+        {
+            if (!Board.State.Minions.Contains(minion)) // Minion died during its own turn, he will be forever remembered as a hero.
+                return;
+
+            await SimulateHumanClick(cell);
+        }
 	}
 }

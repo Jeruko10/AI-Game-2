@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Game;
 using Godot;
 
 namespace Components;
@@ -42,6 +44,6 @@ public partial class RootState : State
         HandleInput(@event);
     }
 
-    /// <summary>Get all cells the minion would click while being in this state.</summary>
-    public Vector2I[] GetMinionStrategy() => GetActiveLeafState().GetStateStrategy();
+    /// <summary>Gets the strategy from the deepest leaf active state. The strategy is a set of cells the minion would click in order to perform his moves.</summary>
+    public override Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints) => GetActiveLeafState().GetStrategy(minion, waypoints);
 }

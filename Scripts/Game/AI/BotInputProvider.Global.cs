@@ -19,7 +19,7 @@ public partial class BotInputProvider : VirtualInputProvider
         await SimulateDeployMinions(waypoints);
 
 		foreach(Minion minion in GetFriendlyMinions())
-        	await PlayMinionStrategy(waypoints, minion);
+        	await PlayMinionStrategy(minion, waypoints);
 
         navigator.ClearWaypoints();
         SimulatePassTurn();

@@ -1,3 +1,4 @@
+using Game;
 using Godot;
 using System.Collections.Generic;
 
@@ -45,7 +46,7 @@ public partial class State : Node
     public virtual void Exit() { }
 
     /// <summary>Get all cells the minion would click while being in this state.</summary>
-    public virtual Vector2I[] GetStateStrategy() { return []; }
+    public virtual Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints) { return []; }
 
     /// <summary>Called every frame.</summary>
     public virtual void Update(double delta) => ActiveChild?.Update(delta);

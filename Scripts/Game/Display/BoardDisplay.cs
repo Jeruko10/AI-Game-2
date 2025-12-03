@@ -215,6 +215,8 @@ public partial class BoardDisplay : Node2D
 		minionVisuals[minion].Position = CellToWorld(minion.Position);
 		minionVisuals[minion].Sprite.Texture = minion.Texture;
 		minionVisuals[minion].OutlineModule.OutlineColor = (minion.Owner == Board.Players.Player1) ? player1Color : player2Color;
+
+		minion.HFSM = minionVisuals[minion].HFSM;
 	}
 
     async void OnMinionDeath(Minion minion)
