@@ -53,7 +53,7 @@ public partial class InfluenceMapManager : Node2D
 		boardState.MinionDeath += OnMinionDeath;
 
 		RebuildTroopInfluence();
-		GD.Print("InfluenceMapManager inicializado. Minions actuales: ", boardState.Minions.Count);
+		// GD.Print("InfluenceMapManager inicializado. Minions actuales: ", boardState.Minions.Count);
 	}
 
 	public void RebuildTroopInfluence()
@@ -77,7 +77,7 @@ public partial class InfluenceMapManager : Node2D
 		Convolve(baseMap, kernel3x3, TroopInfluence);
 		
 		//PRUEBA CODIGO
-		GD.Print($"La casillita at (3,3): {TroopInfluence[3,3]}");
+		// GD.Print($"La casillita at (3,3): {TroopInfluence[3,3]}");
 
 	}
 	

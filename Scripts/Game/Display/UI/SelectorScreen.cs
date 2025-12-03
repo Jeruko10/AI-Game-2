@@ -36,8 +36,6 @@ public partial class SelectorScreen : Control
             Label nameLabel = troopCardInstance.GetNode<Label>("Name");
             Label priceLabel = troopCardInstance.GetNode<Label>("PriceLabel");
 
-            GD.Print(silhouette);
-
             silhouette.Texture = troopType.Texture;
             nameLabel.Text = troopType.Name;
             priceLabel.Text = troopType.Cost.ToString();
