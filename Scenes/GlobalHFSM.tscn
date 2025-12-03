@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://hjcj4ivpf450"]
+
+[ext_resource type="Script" uid="uid://bbd2ld0j3eblh" path="res://Scripts/Game/AI/GlobalStates/GlobalRootState.cs" id="1_jimuo"]
+[ext_resource type="Script" uid="uid://c0xq6bpuq13mf" path="res://Scripts/Components/HierarchicalFiniteStateMachine/State.cs" id="1_quaj4"]
+
+[node name="HFSM" type="Node"]
+script = ExtResource("1_jimuo")
+StateName = "Root"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="Offensive" type="Node" parent="."]
+script = ExtResource("1_quaj4")
+StateName = "Offensive"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="OffensiveFortFocused" type="Node" parent="Offensive"]
+script = ExtResource("1_quaj4")
+StateName = "OffensiveFortFocused"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="KillFocused" type="Node" parent="Offensive"]
+script = ExtResource("1_quaj4")
+StateName = "KillFocused"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="Defensive" type="Node" parent="."]
+script = ExtResource("1_quaj4")
+StateName = "Defensive"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="DefensiveFortFocused" type="Node" parent="Defensive"]
+script = ExtResource("1_quaj4")
+StateName = "DefensiveFortFocused"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="DeployFocused" type="Node" parent="Defensive"]
+script = ExtResource("1_quaj4")
+StateName = "DeployFocused"
+metadata/_custom_type_script = "uid://c0xq6bpuq13mf"

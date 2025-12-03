@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Game;
 
-public partial class RootState : State, IMinionState
+public partial class MinionRootState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {

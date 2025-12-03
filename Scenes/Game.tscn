@@ -25,7 +25,7 @@
 [ext_resource type="Script" uid="uid://b48wu1iq57whg" path="res://Scripts/Game/AI/BotInputProvider.cs" id="18_3jf1l"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
-[ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/waypointDisplayTscn.tscn" id="23_356ba"]
+[ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/WaypointDisplayTscn.tscn" id="23_356ba"]
 [ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
 [ext_resource type="Script" uid="uid://cyngg360t1vk" path="res://Scripts/Game/AI/InfluenceMapManager.cs" id="27_3jf1l"]
 [ext_resource type="PackedScene" uid="uid://cfx08ypbn55vo" path="res://Scenes/DeployScreen.tscn" id="29_i4lct"]

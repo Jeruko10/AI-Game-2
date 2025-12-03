@@ -19,7 +19,7 @@ public partial class Minion(MinionData data, Vector2I position) : Resource
     public Element Element { get; } = data.Element;
     public bool Exhausted { get; set; } = false;
     public bool Selectable { get; set; } = true;
-    public RootState RootState { get; set; }
+    public MinionRootState RootState { get; set; }
     public Vector2I Position
     {
         get => pos;

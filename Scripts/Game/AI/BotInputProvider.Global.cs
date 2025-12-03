@@ -9,6 +9,8 @@ namespace Game;
 
 public partial class BotInputProvider : VirtualInputProvider
 {
+    [Export] GlobalRootState RootState;
+    
     readonly WaypointsNavigator navigator = new();
     
     async Task PlayTurn()
