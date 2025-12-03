@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=33 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputManagement/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
@@ -25,6 +25,7 @@
 [ext_resource type="Script" uid="uid://b48wu1iq57whg" path="res://Scripts/Game/AI/BotInputProvider.cs" id="18_3jf1l"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
+[ext_resource type="PackedScene" uid="uid://hjcj4ivpf450" path="res://Scenes/GlobalHFSM.tscn" id="19_iyesh"]
 [ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/WaypointDisplayTscn.tscn" id="23_356ba"]
 [ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
 [ext_resource type="Script" uid="uid://cyngg360t1vk" path="res://Scripts/Game/AI/InfluenceMapManager.cs" id="27_3jf1l"]
@@ -243,11 +244,14 @@ metadata/_custom_type_script = "uid://bv23wi5pjg5mj"
 script = ExtResource("17_i0vto")
 metadata/_custom_type_script = "uid://bib5h2me841oe"
 
-[node name="BotInputProvider" type="Node2D" parent="InputHandler"]
+[node name="BotInputProvider" type="Node2D" parent="InputHandler" node_paths=PackedStringArray("RootState")]
 script = ExtResource("18_3jf1l")
 self = 1
 playSpeed = 0.79
 courtesyDelay = 0.75
+RootState = NodePath("HFSM")
+
+[node name="HFSM" parent="InputHandler/BotInputProvider" instance=ExtResource("19_iyesh")]
 
 [node name="Board" type="Node2D" parent="."]
 

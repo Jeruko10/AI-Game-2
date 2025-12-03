@@ -119,7 +119,7 @@ public partial class InfluenceMapManager : Node2D
 	
 	
 
-	/// METODO PARA CALCULAR PUNTO DEBIL FRONTERA (ESTE ALONSO)
+	/// FUNCION PARA CALCULAR PUNTO DEBIL FRONTERA (ESTE ALONSO)
 	public Vector2I? FindWeakAllyFrontierCell(float frontierThreshold = 0.5f, float strongAllyThreshold = 1.0f)
 	{
 		Vector2I? bestCell = null;
@@ -161,7 +161,7 @@ public partial class InfluenceMapManager : Node2D
 	}
 
 
-	//METODOS AUXILIARES
+	//FUNCIONES AUXILIARES
 
 private bool IsInside(Vector2I cell)
 {
@@ -171,7 +171,7 @@ private bool IsInside(Vector2I cell)
 
 private bool HasStrongAllyNeighbor(Vector2I cell, float strongAllyThreshold)
 {
-	//No me acordaba de este metodo
+	//No me acordaba de este funcion
 	foreach (var n in grid.GetAdjacents(cell, includeDiagonals: true))
 	{
 		float totalInfluence = TroopInfluence[n.X, n.Y];
@@ -183,7 +183,7 @@ private bool HasStrongAllyNeighbor(Vector2I cell, float strongAllyThreshold)
 }
 
 
-	//Que pereza de metodo
+	//Que pereza de funcion
 	private void Convolve(float[,] baseMap, float[,] kernel, float[,] outMap)
 	{
 		int kWidth  = kernel.GetLength(0);

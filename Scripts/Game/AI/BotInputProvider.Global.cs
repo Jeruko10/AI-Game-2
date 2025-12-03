@@ -1,9 +1,7 @@
+using Components;
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Utility;
 
 namespace Game;
 
@@ -15,7 +13,8 @@ public partial class BotInputProvider : VirtualInputProvider
     
     async Task PlayTurn()
     {
-        List<Waypoint> waypoints = GetWaypoints();
+        IGlobalState globalState = ChangeGlobalState(); // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
+        List<Waypoint> waypoints = globalState.GenerateWaypoints(navigator);
 
         await SimulateDelay(courtesyDelay);
         await SimulateDeployMinions(waypoints);
@@ -27,7 +26,27 @@ public partial class BotInputProvider : VirtualInputProvider
         SimulatePassTurn();
     }
 
-    List<Waypoint> GetWaypoints()
+    IGlobalState ChangeGlobalState()
+    {
+        IGlobalState globalState;
+        // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
+        do
+        {
+            State activeLeafState = RootState.GetDeepestActiveState();
+            
+            if (activeLeafState is IGlobalState) globalState = activeLeafState as IGlobalState;
+            else
+            {
+                GD.PushError($"Active leaf state '{activeLeafState.Name}' does not implement IGlobalState interface.");
+                return null;
+            }
+        }
+        while (globalState.TryChangeState());
+
+        return globalState;
+    }
+
+    List<Waypoint> GetWaypoints() // TODO: Move this to each of the global states GenerateWaypoints method. Each state will have its own way of generating waypoints.
     {
         List<Waypoint> waypoints = [];
 

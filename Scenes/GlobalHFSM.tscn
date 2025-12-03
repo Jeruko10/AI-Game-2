@@ -1,39 +1,44 @@
-[gd_scene load_steps=3 format=3 uid="uid://hjcj4ivpf450"]
+[gd_scene load_steps=8 format=3 uid="uid://hjcj4ivpf450"]
 
 [ext_resource type="Script" uid="uid://bbd2ld0j3eblh" path="res://Scripts/Game/AI/GlobalStates/GlobalRootState.cs" id="1_jimuo"]
-[ext_resource type="Script" uid="uid://c0xq6bpuq13mf" path="res://Scripts/Components/HierarchicalFiniteStateMachine/State.cs" id="1_quaj4"]
+[ext_resource type="Script" uid="uid://davq8fypun0d6" path="res://Scripts/Game/AI/GlobalStates/OffensiveState.cs" id="2_empxi"]
+[ext_resource type="Script" uid="uid://dcy6idhc1h5kv" path="res://Scripts/Game/AI/OffensiveFortFocusedState.cs" id="3_2j6fk"]
+[ext_resource type="Script" uid="uid://dhuxqhletlbbj" path="res://Scripts/Game/AI/GlobalStates/KillFocusedState.cs" id="4_poi26"]
+[ext_resource type="Script" uid="uid://ck8ngqricufs5" path="res://Scripts/Game/AI/GlobalStates/DefensiveState.cs" id="5_y25if"]
+[ext_resource type="Script" uid="uid://cscnnf2yujjft" path="res://Scripts/Game/AI/GlobalStates/DefensiveFortFocusedState.cs" id="6_sv4q1"]
+[ext_resource type="Script" uid="uid://ra0cts7o30p" path="res://Scripts/Game/AI/GlobalStates/DeployFocusedState.cs" id="7_t0fiv"]
 
 [node name="HFSM" type="Node"]
 script = ExtResource("1_jimuo")
 StateName = "Root"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
-[node name="Offensive" type="Node" parent="."]
-script = ExtResource("1_quaj4")
+[node name="OffensiveState" type="Node" parent="."]
+script = ExtResource("2_empxi")
 StateName = "Offensive"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
-[node name="OffensiveFortFocused" type="Node" parent="Offensive"]
-script = ExtResource("1_quaj4")
+[node name="OffensiveFortFocusedState" type="Node" parent="OffensiveState"]
+script = ExtResource("3_2j6fk")
 StateName = "OffensiveFortFocused"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
-[node name="KillFocused" type="Node" parent="Offensive"]
-script = ExtResource("1_quaj4")
+[node name="KillFocusedState" type="Node" parent="OffensiveState"]
+script = ExtResource("4_poi26")
 StateName = "KillFocused"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
-[node name="Defensive" type="Node" parent="."]
-script = ExtResource("1_quaj4")
+[node name="DefensiveState" type="Node" parent="."]
+script = ExtResource("5_y25if")
 StateName = "Defensive"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
-[node name="DefensiveFortFocused" type="Node" parent="Defensive"]
-script = ExtResource("1_quaj4")
+[node name="DefensiveFortFocusedState" type="Node" parent="DefensiveState"]
+script = ExtResource("6_sv4q1")
 StateName = "DefensiveFortFocused"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
-[node name="DeployFocused" type="Node" parent="Defensive"]
-script = ExtResource("1_quaj4")
+[node name="DeployFocusedState" type="Node" parent="DefensiveState"]
+script = ExtResource("7_t0fiv")
 StateName = "DeployFocused"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
