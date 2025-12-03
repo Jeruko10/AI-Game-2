@@ -1,69 +1,91 @@
-[gd_scene load_steps=3 format=3 uid="uid://dc3b7mni5i4q7"]
+[gd_scene load_steps=4 format=3 uid="uid://dc3b7mni5i4q7"]
 
+[ext_resource type="Script" uid="uid://dhck5cs3rdlnr" path="res://Scripts/Game/MinionCard.cs" id="1_k86t7"]
 [ext_resource type="Texture2D" uid="uid://bgq2pph8bwjjd" path="res://Sprites/FireUnitTemplate.png" id="1_q0ymv"]
 [ext_resource type="Texture2D" uid="uid://c1cllrx0lx67p" path="res://Sprites/FireSymbol.png" id="2_ll5a5"]
 
-[node name="Button" type="Button"]
-offset_right = 199.0
-offset_bottom = 273.0
-mouse_filter = 2
+[node name="Button" type="Button" node_paths=PackedStringArray("iconElementType", "silhouette", "nameLabel", "priceLabel", "controlSelected")]
+z_index = 365
+custom_minimum_size = Vector2(50, 50)
+anchors_preset = -1
+anchor_right = 0.104
+anchor_bottom = 0.25300002
+offset_right = 0.31999207
+offset_bottom = -0.24002075
+script = ExtResource("1_k86t7")
+iconElementType = NodePath("Control/IconElementType")
+silhouette = NodePath("Control/ElementSilhouette")
+nameLabel = NodePath("Control/Name")
+priceLabel = NodePath("Control/PriceLabel")
+controlSelected = NodePath("Control/FeedbackSilhouette")
 
-[node name="DecorUp" type="ColorRect" parent="."]
+[node name="Control" type="Control" parent="."]
+z_index = -1
+anchors_preset = 0
+mouse_filter = 1
+
+[node name="DecorUp" type="ColorRect" parent="Control"]
 layout_mode = 0
 offset_right = 199.0
 offset_bottom = 199.0
 pivot_offset = Vector2(100, 100)
+mouse_filter = 1
 color = Color(0, 0, 0, 1)
 
-[node name="DecorDown" type="ColorRect" parent="."]
+[node name="DecorDown" type="ColorRect" parent="Control"]
 layout_mode = 0
 offset_top = 199.0
 offset_right = 199.0
 offset_bottom = 273.0
+mouse_filter = 1
 color = Color(0.7919991, 0.79199916, 0.7919991, 1)
 
-[node name="ElementSilhouette" type="Sprite2D" parent="."]
+[node name="ElementSilhouette" type="Sprite2D" parent="Control"]
 position = Vector2(102, 140.00002)
 scale = Vector2(1.703125, 1.703125)
 texture = ExtResource("1_q0ymv")
 
-[node name="Name" type="Label" parent="."]
+[node name="Name" type="Label" parent="Control"]
 layout_mode = 0
 offset_left = 7.0
 offset_top = 11.0
 offset_right = 192.0
 offset_bottom = 87.0
+mouse_filter = 1
 theme_override_font_sizes/font_size = 31
 text = "Fire 1"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="PriceLabel" type="Label" parent="."]
+[node name="PriceLabel" type="Label" parent="Control"]
 layout_mode = 0
 offset_left = 91.0
 offset_top = 217.0
 offset_right = 185.0
 offset_bottom = 261.0
+mouse_filter = 1
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 31
 text = "100"
 
-[node name="IconElementType" type="Sprite2D" parent="."]
+[node name="IconElementType" type="Sprite2D" parent="Control"]
 position = Vector2(59, 237)
 scale = Vector2(1.9809569, 1.9809569)
 texture = ExtResource("2_ll5a5")
 
-[node name="FeedbackSilhouette" type="Control" parent="."]
+[node name="FeedbackSilhouette" type="Control" parent="Control"]
 visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 1
 
-[node name="ColorRect" type="ColorRect" parent="FeedbackSilhouette"]
+[node name="ColorRect" type="ColorRect" parent="Control/FeedbackSilhouette"]
 z_index = -1
 layout_mode = 0
 offset_left = -9.0
 offset_top = -8.0
 offset_right = 208.0
 offset_bottom = 281.0
+mouse_filter = 1
 color = Color(0, 0.6627451, 0.6156863, 1)

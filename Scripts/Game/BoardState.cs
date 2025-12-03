@@ -20,6 +20,7 @@ public partial class BoardState : Node
 	public Vector2I? SelectedCell { get; set; }
 	public Minion SelectedMinion { get; private set; }
 	public bool AttackMode { get; private set; }
+	public MinionData SelectedDeployTroop { get; set; }
 	public event Action<Board.Players> TurnStarted;
 	public event Action<Minion> MinionDeath;
 	public event Action<Minion, int> MinionDamaged;
@@ -36,7 +37,8 @@ public partial class BoardState : Node
 	public event Action<Fort> FortAdded;
 	public event Action<Waypoint> WaypointAdded;
 	public event Action<Waypoint> WaypointRemoved;
-	
+
+
 
 	bool isPlayer1Turn = false;
 

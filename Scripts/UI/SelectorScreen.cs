@@ -13,9 +13,6 @@ public partial class SelectorScreen : Control
     [Export] ColorRect overlayRect;
 
     [Export] PackedScene troopCardScene;
-    [Export] Texture2D fireIcon;
-    [Export] Texture2D waterIcon;
-    [Export] Texture2D plantIcon;
 
 
     bool isDisplayed = false;
@@ -30,47 +27,16 @@ public partial class SelectorScreen : Control
     {
         foreach (var troopType in Minions.AllMinionDatas)
         {
-            var troopCardInstance = troopCardScene.Instantiate() as Button;
+            var troopCardInstance = troopCardScene.Instantiate() as MinionCard;
             if (troopCardInstance == null) GD.PushError("CardScene is not provided in SelectorScreen");
 
-            Sprite2D iconElementType = troopCardInstance.GetNode<Sprite2D>("IconElementType");
-            Sprite2D silhouette = troopCardInstance.GetNode<Sprite2D>("ElementSilhouette");
-            Label nameLabel = troopCardInstance.GetNode<Label>("Name");
-            Label priceLabel = troopCardInstance.GetNode<Label>("PriceLabel");
-
-            GD.Print(silhouette);
-
-            silhouette.Texture = troopType.Texture;
-            nameLabel.Text = troopType.Name;
-            priceLabel.Text = GetTroopCost(troopType);
-            iconElementType.Texture = GetElementIconTexture(troopType.Element.Tag);
-
+            troopCardInstance.SetUpButton(troopType);
 
             troopsContainer.AddChild(troopCardInstance);
         }
     }
 
-    string GetTroopCost(MinionData troopType)
-    {
-        return troopType.Element.Tag switch
-        {
-            Element.Types.Fire => troopType.Cost.FireMana.ToString(),
-            Element.Types.Water => troopType.Cost.WaterMana.ToString(),
-            Element.Types.Plant => troopType.Cost.PlantMana.ToString(),
-            _ => "0",
-        };
-    }
-
-    Texture2D GetElementIconTexture(Element.Types tag)
-    {
-        return tag switch
-        {
-            Element.Types.Fire  => fireIcon,
-            Element.Types.Water => waterIcon,
-            Element.Types.Plant => plantIcon,
-            _                   => null
-        };
-    }
+    
 
     void OnDisplayButtonPressed()
     {

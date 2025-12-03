@@ -108,7 +108,12 @@ public partial class InputHandler : Node
             return;
         }
 
-        SpawnRandomMinion(clickedCell);
+        SpawnSelectedMinion(clickedCell);
+    }
+
+    private static void SpawnSelectedMinion(Vector2I clickedCell)
+    {
+        Board.State.PlayMinion(Board.State.SelectedDeployTroop, clickedCell);
     }
 
     static void SpawnRandomMinion(Vector2I cell)
