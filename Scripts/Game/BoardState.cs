@@ -38,6 +38,10 @@ public partial class BoardState : Node
 	public event Action<Waypoint> WaypointAdded;
 	public event Action<Waypoint> WaypointRemoved;
 
+	public InfluenceMapManager influence;
+
+
+
 
 
 	bool isPlayer1Turn = false;
@@ -48,15 +52,17 @@ public partial class BoardState : Node
 		public Minion Minion { get; private set; } = minion;
 		public Fort Fort { get; private set; } = fort;
 	}
-
 	public override void _Ready()
 	{
+		influence = GetNode<InfluenceMapManager>("../../InfluenceMapManager");
+
 		Player1Mana = Player1StartingMana;
 		Player2Mana = Player2StartingMana;
 
 		PassTurn();
 		GodotExtensions.CallDeferred(CreateBoard);
 	}
+	
 
 	public Board.Players GetActivePlayer() => isPlayer1Turn ? Board.Players.Player1 : Board.Players.Player2;
 
@@ -292,7 +298,6 @@ public partial class BoardState : Node
 	}
 
 
-		InfluenceMapManager influence = GetNode<InfluenceMapManager>("../../InfluenceMapManager");
 		influence.Initialize(this);
 	}
 }
