@@ -48,18 +48,7 @@ public partial class DefensiveFortFocusedState : State, IGlobalState
                     float inf = influence.GetInfluenceAt(p);
                     if (inf > 0)
                     {
-                        enemyPressure += inf;
-                        samples++;
-                        Minion enemy = Board.State.Minions.Find(m => m.Position.Equals(p));
-                        if (enemy != null)
-                        {
-                            switch (enemy.Element.Tag)
-                            {
-                                case Element.Types.Fire: fireCount++; break;
-                                case Element.Types.Water: waterCount++; break;
-                                case Element.Types.Plant: plantCount++; break;
-                            }
-                        }
+                        UpdateEnemyInfluence(ref enemyPressure, ref samples, ref fireCount, ref waterCount, ref plantCount, p, inf);
                     }
 
                 }
@@ -82,6 +71,22 @@ public partial class DefensiveFortFocusedState : State, IGlobalState
         waypoints = AddAttackWaypoints(waypoints, forts);
 
         return waypoints;
+    }
+
+    private static void UpdateEnemyInfluence(ref float enemyPressure, ref int samples, ref int fireCount, ref int waterCount, ref int plantCount, Vector2I p, float inf)
+    {
+        enemyPressure += inf;
+        samples++;
+        Minion enemy = Board.State.Minions.Find(m => m.Position.Equals(p));
+        if (enemy != null)
+        {
+            switch (enemy.Element.Tag)
+            {
+                case Element.Types.Fire: fireCount++; break;
+                case Element.Types.Water: waterCount++; break;
+                case Element.Types.Plant: plantCount++; break;
+            }
+        }
     }
 
     private static List<Waypoint> AddAttackWaypoints(List<Waypoint> waypoints, Fort[] forts)
