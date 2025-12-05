@@ -16,6 +16,7 @@ public partial class FallbackState : State, IMinionState
         if (minion.Health <= minion.MaxHealth * 0.15f)
         {
             TransitionToSibling("KamikazeState");
+            return true;
         }
 
         // If not in danger, go back to attackmove

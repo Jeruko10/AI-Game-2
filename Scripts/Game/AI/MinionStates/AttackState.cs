@@ -1,6 +1,7 @@
 using Components;
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game;
 
@@ -9,11 +10,39 @@ public partial class AttackState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        // Enter AttackMove as a base, change if you wanna
-        TransitionToChild("AttackMoveState");
+        // por si las moscas
+        if (waypoints == null || waypoints.Count == 0)
+        {
+            TransitionToChild("AttackMoveState");
+            return true;
+        }
+
+        // take the waypoint with highest priority
+        Waypoint top = waypoints
+            .OrderByDescending(w => w.Priority)
+            .First();
+
+        switch (top.Type)
+        {
+            case Waypoint.Types.Attack:
+                TransitionToChild("AttackMoveState");
+                break;
+
+            case Waypoint.Types.Capture:
+                TransitionToSibling("DominateState");
+                break;
+
+            case Waypoint.Types.Move: //asumo move como defensa
+                TransitionToSibling("DefendState");
+                break;
+
+            default: //por si las moscas
+                TransitionToChild("AttackMoveState");
+                break;
+        }
+
         return true;
     }
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints) => [];
-    // Always waiting for a child
 }

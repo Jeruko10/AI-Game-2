@@ -41,31 +41,44 @@ public partial class AttackMoveState : State, IMinionState
     {
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
-
         List<Vector2I> clickedCells = new();
 
-        // WE CAN ALSO FILTER BY THE TYPE OF WAYPOINTS IF WE WANT TO
+        // First the attack
+        var attackPoints = waypoints
+            .Where(w => w.Type == Waypoint.Types.Attack)
+            .OrderByDescending(w => w.Priority)
+            .ToList();
 
-        Vector2I? target = influence.FindBestCell(
-            cell =>
-            {
-                var data = boardState.GetCellData(cell);
-                return data.Tile != null &&
-                       influence.MoveCostMap[cell.X, cell.Y] < float.PositiveInfinity;
-            },
-            cell =>
-            {
-                float total   = influence.TroopInfluence[cell.X, cell.Y];
-                float enemy   = Mathf.Max(0f,  total);   // Player
-                float ally    = Mathf.Max(0f, -total);   // Enemy
-                float structV = influence.StructureValueMap[cell.X, cell.Y];
-                float moveC   = influence.MoveCostMap[cell.X, cell.Y];
+        Vector2I? target = null;
 
-                return enemy * 1.5f
-                     + structV * 2f
-                     - ally * 0.5f
-                     - moveC * 0.1f;
-            });
+        if (attackPoints.Count > 0)
+        {
+            target = attackPoints[0].Cell;
+        }
+        else
+        {
+            // Backup if there are no attack waypoints (at first it is not needed)
+            target = influence.FindBestCell(
+                cell =>
+                {
+                    var data = boardState.GetCellData(cell);
+                    return data.Tile != null &&
+                        influence.MoveCostMap[cell.X, cell.Y] < float.PositiveInfinity;
+                },
+                cell =>
+                {
+                    float total   = influence.TroopInfluence[cell.X, cell.Y];
+                    float enemy   = Mathf.Max(0f,  total);
+                    float ally    = Mathf.Max(0f, -total);
+                    float structV = influence.StructureValueMap[cell.X, cell.Y];
+                    float moveC   = influence.MoveCostMap[cell.X, cell.Y];
+
+                    return enemy * 1.5f
+                        + structV * 2f
+                        - ally * 0.5f
+                        - moveC * 0.1f;
+                });
+        }
 
         if (target == null)
             return clickedCells.ToArray();
@@ -74,9 +87,11 @@ public partial class AttackMoveState : State, IMinionState
         if (path == null || path.Length == 0)
             return clickedCells.ToArray();
 
+        // Send THE WHOLE PATH, change if you wanna click only the minion and the destination.
         foreach (var cell in path)
             clickedCells.Add(cell);
 
         return clickedCells.ToArray();
     }
+
 }

@@ -2,6 +2,7 @@ using Components;
 using Godot;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Linq;
 
 namespace Game;
 
@@ -10,21 +11,71 @@ public partial class PrevailState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        // TODO: Determine where to transition: DominateMoveState or PrevailState.
+        BoardState boardState = Board.State;
+        InfluenceMapManager influence = Board.State.influence;
 
-		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
-        return false; // Return true if a state transition occurred, otherwise false.
+        // If the minion is already in a fort, do not move
+        Vector2I pos = minion.Position;
+        float structHere = influence.StructureValueMap[pos.X, pos.Y];
+        if (structHere <= 0f)
+        {
+            TransitionToSibling("DominateMoveState");
+            return true;
+        }
+
+        // If the highest priority is another thing, change state
+        if (waypoints != null && waypoints.Count > 0)
+        {
+            Waypoint top = waypoints
+                .OrderByDescending(w => w.Priority)
+                .First();
+
+            if (top.Type == Waypoint.Types.Attack)
+            {
+                TransitionToSibling("AttackState");
+                return true;
+            }
+            if (top.Type == Waypoint.Types.Move) //assuming (creo que se dice asi en ingles) move como defend
+            {
+                TransitionToSibling("DefendState");
+                return true;
+            }
+        }
+
+        // IF THERE IS AN ENEMY NEARBY, WE COULD CHANGE TO PUNCHSTATE OR SOMETHING
+        return false;
     }
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)
     {
-        List<Vector2I> clickedCells = [];
+        BoardState boardState = Board.State;
+        Grid2D grid = Board.Grid;
+        List<Vector2I> clickedCells = new();
 
-        // Implement here the logic the minion should use when playing a turn while in this state.
+        // No moving here
+        Minion bestTarget = null;
+        Vector2I bestCell = default;
+        int bestHealth = int.MaxValue;
 
+        foreach (var cell in grid.GetAdjacents(minion.Position, includeDiagonals: false))
+        {
+            var data = boardState.GetCellData(cell);
+            Minion enemy = data.Minion;
+            if (enemy == null || enemy.Owner == minion.Owner)
+                continue;
 
-        // ---------------------------------- End of the logic. ----------------------------------
+            if (enemy.Health < bestHealth)
+            {
+                bestHealth = enemy.Health;
+                bestTarget = enemy;
+                bestCell = cell;
+            }
+        }
 
+        if (bestTarget != null)
+            clickedCells.Add(bestCell);
+
+        // If there are not enemies, dont move
         return clickedCells.ToArray();
     }
 }

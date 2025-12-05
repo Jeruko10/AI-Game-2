@@ -12,8 +12,6 @@ public partial class PunchState : State, IMinionState
         BoardState boardState = Board.State;
         Grid2D grid = Board.Grid;
 
-        // Looking at 4 directions (I could look at 8 but I'm tired)
-
         bool enemyFound = false;
 
         foreach (var cell in grid.GetAdjacents(minion.Position, includeDiagonals: false))
@@ -26,7 +24,6 @@ public partial class PunchState : State, IMinionState
             }
         }
 
-        // No enemies in range, go to attackmove
         if (!enemyFound)
         {
             TransitionToSibling("AttackMoveState");
@@ -39,28 +36,17 @@ public partial class PunchState : State, IMinionState
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)
     {
         BoardState boardState = Board.State;
-
+        Grid2D grid = Board.Grid;
         List<Vector2I> clickedCells = new();
 
-        // To check if there are more enemies (I think there was a OBTAIN ADJACENTS or something but Ill check it later)
-        Vector2I[] cardinalDirs =
-        {
-            new Vector2I(1, 0),
-            new Vector2I(-1, 0),
-            new Vector2I(0, 1),
-            new Vector2I(0, -1)
-        };
-
         Minion bestTarget = null;
-        Vector2I bestDir = default;
+        Vector2I bestCell = default;
         int bestHealth = int.MaxValue;
 
-        foreach (var dir in cardinalDirs)
+        foreach (var cell in grid.GetAdjacents(minion.Position, includeDiagonals: false))
         {
-            Vector2I cell = minion.Position + dir;
             var data = boardState.GetCellData(cell);
             Minion enemy = data.Minion;
-
             if (enemy == null || enemy.Owner == minion.Owner)
                 continue;
 
@@ -68,18 +54,15 @@ public partial class PunchState : State, IMinionState
             {
                 bestHealth = enemy.Health;
                 bestTarget = enemy;
-                bestDir = dir;
+                bestCell = cell;
             }
         }
 
-        // If not enemies found, do nothing
         if (bestTarget == null)
             return clickedCells.ToArray();
 
-        // Pass only the attack cell
-        Vector2I attackCell = minion.Position + bestDir;
-        clickedCells.Add(attackCell);
-
+        clickedCells.Add(bestCell);
         return clickedCells.ToArray();
     }
+
 }

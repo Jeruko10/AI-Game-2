@@ -1,21 +1,49 @@
 using Components;
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game;
 
-/// <summary>Minion focuses on occupying and defending zones.</summary>
+/// Minion focuses on defending allies or key positions.
 public partial class DefendState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        // WE SHOULD NEVER BE IN THIS STATE DIRECTLY, since it does nothing and acts as folder for its substates. Please ALWAYS return true and transition to a child or sibling state.
-        // TODO: Determine where to transition: To a child: ProtectState or SpreadState. Or to a sibling: AttackState or DominateState.
-        
-		TransitionToChild("ExampleState"); // Has to be a child state of this state, otherwise push error.
-		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
+        // WE SHOULD NEVER BE IN THIS STATE DIRECTLY, since it does nothing and acts as folder for its substates.
+        // Please ALWAYS return true and transition to a child or sibling state.
+
+        if (waypoints == null || waypoints.Count == 0)
+        {
+            TransitionToChild("ProtectTeammateState");
+            return true;
+        }
+
+        Waypoint top = waypoints
+            .OrderByDescending(w => w.Priority)
+            .First();
+
+        switch (top.Type)
+        {
+            case Waypoint.Types.Move: //asumo Move como Defend
+                TransitionToChild("ProtectTeammateState");
+                break;
+
+            case Waypoint.Types.Attack:
+                TransitionToSibling("AttackState");
+                break;
+
+            case Waypoint.Types.Capture:
+                TransitionToSibling("DominateState");
+                break;
+
+            default: //por si las moscas
+                TransitionToChild("ProtectTeammateState");
+                break;
+        }
+
         return true;
     }
 
-    public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints) => []; // We will treat this state as a 'folder'. It's always expected to have an active child state.
+    public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints) => [];
 }

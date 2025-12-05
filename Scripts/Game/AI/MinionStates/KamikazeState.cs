@@ -13,14 +13,12 @@ public partial class KamikazeState : State, IMinionState
         BoardState boardState = Board.State;
         Grid2D grid = Board.Grid;
 
-        // If healthy enough, not boom boom urself
+        //if healthy enough not boom boom
         if (minion.Health > minion.MaxHealth * 0.25f)
         {
             TransitionToSibling("AttackMoveState");
             return true;
         }
-
-        // Looking at 4 directions (I could look at 8 but I'm tired)
 
         foreach (var cell in grid.GetAdjacents(minion.Position, includeDiagonals: false))
         {
@@ -32,7 +30,6 @@ public partial class KamikazeState : State, IMinionState
             }
         }
 
-        // POSSIBLE CHANGE TO FALLBACK (but I didnt put it)
         return false;
     }
 
