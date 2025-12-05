@@ -1,29 +1,80 @@
 using Components;
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game;
 
-/// <summary>Minion plays extremely agressively, he does not care about dying because the player can replace him afterwards.</summary>
+/// Minion plays extremely agressively, he does not care about dying because the player can replace him afterwards.
 public partial class KamikazeState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        // TODO: Determine where to transition: AttackMoveState, PunchState, FallbackState or KamikazeState.
+        BoardState boardState = Board.State;
+        Grid2D grid = Board.Grid;
 
-		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
-        return false; // Return true if a state transition occurred, otherwise false.
+        // If healthy enough, not boom boom urself
+        if (minion.Health > minion.MaxHealth * 0.25f)
+        {
+            TransitionToSibling("AttackMoveState");
+            return true;
+        }
+
+        // Looking at 4 directions (I could look at 8 but I'm tired)
+
+        foreach (var cell in grid.GetAdjacents(minion.Position, includeDiagonals: false))
+        {
+            var data = boardState.GetCellData(cell);
+            if (data.Minion != null && data.Minion.Owner != minion.Owner)
+            {
+                TransitionToSibling("PunchState");
+                return true;
+            }
+        }
+
+        // POSSIBLE CHANGE TO FALLBACK (but I didnt put it)
+        return false;
     }
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)
     {
-		List<Vector2I> clickedCells = [];
+        BoardState boardState = Board.State;
+        InfluenceMapManager influence = Board.State.influence;
 
-        // Implement here the logic the minion should use when playing a turn while in this state.
+        List<Vector2I> clickedCells = new();
 
+        // Looking for juicy cells
+        Vector2I? target = influence.FindBestCell(
+            cell =>
+            {
+                var data = boardState.GetCellData(cell);
+                return data.Tile != null &&
+                       influence.MoveCostMap[cell.X, cell.Y] < float.PositiveInfinity;
+            },
+            cell =>
+            {
+                float total   = influence.TroopInfluence[cell.X, cell.Y];
+                float enemy   = Mathf.Max(0f,  total);   // Player
+                float ally    = Mathf.Max(0f, -total);   // Enemy
+                float structV = influence.StructureValueMap[cell.X, cell.Y];
 
-		// ---------------------------------- End of the logic. ----------------------------------
+                // He doesnt care so much about the influences
+                return enemy * 2.0f
+                     + structV * 3.0f
+                     - ally * 0.1f;
+            });
 
-		return clickedCells.ToArray();
+        if (target == null)
+            return clickedCells.ToArray();
+
+        Vector2I[] path = GridNavigation.GetPathForMinion(minion, target.Value);
+        if (path == null || path.Length == 0)
+            return clickedCells.ToArray();
+
+        // THE WHOLE PATH AS CLICKED CELLS, CHANGE TO ONLY THE FIRST AND LAST ONE IF NEEDED
+        foreach (var cell in path)
+            clickedCells.Add(cell);
+
+        return clickedCells.ToArray();
     }
 }

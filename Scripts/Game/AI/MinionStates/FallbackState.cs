@@ -4,26 +4,75 @@ using System.Collections.Generic;
 
 namespace Game;
 
-/// <summary>Minion plays safely due to its risk of dying. If health is extremely low and player has enough resources it may transition to Kamikaze state.</summary>
+/// Minion plays safely due to its risk of dying. If health is extremely low and player has enough resources it may transition to Kamikaze state.
 public partial class FallbackState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        // TODO: Determine where to transition: AttackMoveState, PunchState, FallbackState or KamikazeState.
+        BoardState boardState = Board.State;
+        InfluenceMapManager influence = Board.State.influence;
 
-		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
-        return false; // Return true if a state transition occurred, otherwise false.
+        // Low health equals boom boom
+        if (minion.Health <= minion.MaxHealth * 0.15f)
+        {
+            TransitionToSibling("KamikazeState");
+        }
+
+        // If not in danger, go back to attackmove
+        Vector2I pos = minion.Position;
+        float total   = influence.TroopInfluence[pos.X, pos.Y];
+        float enemy   = Mathf.Max(0f,  total);   // Player
+        float ally    = Mathf.Max(0f, -total);   // Enemy
+
+        bool tooDangerous = enemy > ally * 1.2f; 
+
+        if (!tooDangerous)
+        {
+            TransitionToSibling("AttackMoveState");
+            return true;
+        }
+
+    
+        return false;
     }
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)
     {
-		List<Vector2I> clickedCells = [];
+        BoardState boardState = Board.State;
+        InfluenceMapManager influence = Board.State.influence;
 
-        // Implement here the logic the minion should use when playing a turn while in this state.
+        List<Vector2I> clickedCells = new();
+
+        // Looking for a cell with high influence of my friends and low influence from Alonso troops
+        Vector2I? safeCell = influence.FindBestCell(
+            cell =>
+            {
+                var data = boardState.GetCellData(cell);
+                return data.Tile != null &&
+                       influence.MoveCostMap[cell.X, cell.Y] < float.PositiveInfinity;
+            },
+            cell =>
+            {
+                float t      = influence.TroopInfluence[cell.X, cell.Y];
+                float enemy  = Mathf.Max(0f,  t);
+                float ally   = Mathf.Max(0f, -t);
+
+                
+                return ally - enemy;
+            });
+
+        if (safeCell == null)
+            return clickedCells.ToArray();
+
+        Vector2I[] path = GridNavigation.GetPathForMinion(minion, safeCell.Value);
+        if (path == null || path.Length == 0)
+            return clickedCells.ToArray();
 
 
-		// ---------------------------------- End of the logic. ----------------------------------
+        for (int i = 0; i < path.Length; i++)
+            clickedCells.Add(path[i]);
 
-		return clickedCells.ToArray();
+
+        return clickedCells.ToArray();
     }
 }
