@@ -76,7 +76,7 @@ public partial class DefensiveFortFocusedState : State, IGlobalState
                     waypoints.Add(new Waypoint
                     {
                         Type = Waypoint.Types.Attack,
-                        ElementAffinity = enemy.Element.GetDisadvantage(),
+                        ElementAffinity = Element.GetAdvantage(enemy.Element.Tag),
                         Cell = enemy.Position,
                         Priority = 80
                     });
@@ -132,7 +132,7 @@ public partial class DefensiveFortFocusedState : State, IGlobalState
         return predominant;
     }
 
-    private FortThreatInfo EvaluateFortThreat(Fort fort)
+    public static FortThreatInfo EvaluateFortThreat(Fort fort, int threatRadius = 4)
     {
         var influence = Board.State.influence;
         Vector2I pos = fort.Position;

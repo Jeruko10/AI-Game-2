@@ -7,13 +7,39 @@ namespace Game;
 
 public partial class DefensiveState : State, IGlobalState
 {
+
     public bool TryChangeState()
     {
-        // WE SHOULD NEVER BE IN THIS STATE DIRECTLY, since it does nothing and acts as folder for its substates. Please ALWAYS return true and transition to a child or sibling state.
-        // TODO: Determine where to transition: To a child: DefensiveFortFocusedState or DeployFocusedState. Or to a sibling: DefensiveState or OffensiveState.
-        
-		TransitionToChild("ExampleState"); // Has to be a child state of this state, otherwise push error.
-		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
+        Fort[] myForts = Board.State.GetPlayerForts(Board.Players.Player2);
+        Mana myMana = Board.State.Player2Mana;
+        List<FortThreatInfo> threatenedForts = [];
+        bool canSummon = DeployFocusedState.HasManaToDeploy(myMana);
+
+        foreach (var fort in myForts)
+        {
+            FortThreatInfo info = DefensiveFortFocusedState.EvaluateFortThreat(fort);
+            if (info.IsThreatened)
+                threatenedForts.Add(info);
+        }
+
+        if (canSummon)
+        {
+            TransitionToChild("DeployFocusedState");
+            return true;
+        }
+
+        if (threatenedForts.Count > 0)
+        {
+            TransitionToChild("DefensiveFortFocusedState");
+            return true;
+        }
+
+        if (!canSummon && threatenedForts.Count == 0)
+        {
+            TransitionToSibling("OffensiveState");
+            return true;
+        }
+
         return true;
     }
 

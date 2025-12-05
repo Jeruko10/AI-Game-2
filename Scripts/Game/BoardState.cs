@@ -245,6 +245,21 @@ public partial class BoardState : Node
 		WaypointRemoved?.Invoke(null);
 	}
 
+	public Element.Types GetPlayerDominantElement(Board.Players player)
+	{
+		var elementCount = new Dictionary<Element.Types, int>
+		{
+			{ Element.Types.Fire, 0 },
+			{ Element.Types.Water, 0 },
+			{ Element.Types.Plant, 0 }
+		};
+
+		foreach (var minion in GetPlayerMinions(player))
+			elementCount[minion.Element.Tag]++;
+
+		return elementCount.OrderByDescending(kv => kv.Value).First().Key;
+	}
+
 	void AddMinion(Minion minion)
 	{
 		if (!Board.Grid.IsInsideGrid(minion.Position))
@@ -256,6 +271,18 @@ public partial class BoardState : Node
 		Minions.Add(minion);
 		MinionAdded?.Invoke(minion);
 	}
+
+	public static bool IsCellDeployable(Vector2I cell)
+    {
+        if (!Board.Grid.IsInsideGrid(cell)) return false;
+        var data = Board.State.GetCellData(cell);
+        if (data.Tile == null) return false;
+        if (data.Minion != null) return false;
+        if (data.Fort != null && data.Fort.Owner != Board.Players.Player2) return false;
+        var tile = Board.State.Tiles.GetValueOrDefault(cell);
+        if (tile != null && tile.Obstructs) return false;
+        return true;
+    }
 
 	void CreateBoard() // TODO: Replace this method's content and create interesting way of designing the board
 	{

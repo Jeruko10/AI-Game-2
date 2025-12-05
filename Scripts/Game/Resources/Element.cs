@@ -12,9 +12,9 @@ public partial class Element : Resource
     [Export] public Texture2D Symbol { get; private set; }
     [Export(PropertyHint.ColorNoAlpha)] public Color Color { get; private set; } = Colors.White;
 
-    public Types GetAdvantage()
+    public static Types GetAdvantage(Types types)
     {
-        return Tag switch
+        return types switch
         {
             Types.Water => Types.Fire,
             Types.Fire  => Types.Plant,
@@ -23,14 +23,22 @@ public partial class Element : Resource
         };
     }
 
-    public Types GetDisadvantage()
+    public static Types GetDisadvantage(Types types)
     {
-        return Tag switch
+        return types switch
         {
             Types.Water => Types.Plant,
             Types.Fire  => Types.Water,
             Types.Plant => Types.Fire,
             _          => Types.None
         };
+    }
+    public static Types GetTypeFromMostMana(Mana m)
+    {
+        int max = Math.Max(m.FireMana, Math.Max(m.WaterMana, m.PlantMana));
+        if (max == 0) return Types.None;
+        if (max == m.FireMana) return Types.Fire;
+        if (max == m.WaterMana) return Types.Water;
+        return Types.Plant;
     }
 }

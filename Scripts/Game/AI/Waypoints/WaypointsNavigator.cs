@@ -7,6 +7,7 @@ using Godot;
 namespace Game;
 public class WaypointsNavigator
 {
+    [Obsolete]
 
     // This shit should be a singleton 
     static InfluenceMapManager InfluenceMap => Board.State.GetNode<InfluenceMapManager>("../../InfluenceMapManager");

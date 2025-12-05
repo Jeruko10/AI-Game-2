@@ -150,7 +150,7 @@ public partial class Grid2D : Node2D
 				if (distance <= range) result.Add(candidate);
 			}
 
-		return result.ToArray();
+		return [.. result];
 	}
 
 	/// <summary> Colors a specific cell with the given color. </summary>
