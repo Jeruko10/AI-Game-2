@@ -37,6 +37,15 @@ public partial class KillFocusedState : State, IGlobalState
             .Where(c => BoardState.IsCellDeployable(c))
             .ToList();
 
+        waypoints = GenerateMovementWaypoints(waypoints, enemies, myForts, influence, candidateCells);
+
+        waypoints.Sort((a, b) => b.Priority.CompareTo(a.Priority));
+
+        return waypoints;
+    }
+
+    private static List<Waypoint> GenerateMovementWaypoints(List<Waypoint> waypoints, Minion[] enemies, Fort[] myForts, InfluenceMapManager influence, List<Vector2I> candidateCells)
+    {
         foreach (var cell in candidateCells)
         {
             float enemyInfluence = 0f;
@@ -67,10 +76,6 @@ public partial class KillFocusedState : State, IGlobalState
                 Priority = priority
             });
         }
-
-        // Orden final por prioridad descendente
-        waypoints.Sort((a, b) => b.Priority.CompareTo(a.Priority));
-
         return waypoints;
     }
 
