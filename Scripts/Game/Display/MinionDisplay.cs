@@ -1,3 +1,4 @@
+using System;
 using Components;
 using Godot;
 using Utility;
@@ -16,6 +17,7 @@ public partial class MinionDisplay : Node2D
 	[Export] public SquashStretch2D SquashAnimator { get; private set; }
 	[Export] public ColorOverlayModule FlashEffect { get; private set; }
 	[Export] public OutlineModule OutlineModule { get; private set; }
+	[Export] public ProgressBar HealthBar { get; private set; }
 
 	float modifier, elapsedTime;
 
@@ -24,7 +26,7 @@ public partial class MinionDisplay : Node2D
 		SquashAnimator.SetSquashModulator(() => modifier);
     }
 
-	public override void _Process(double delta)
+    public override void _Process(double delta)
 	{
 		colorOverlay.Texture = Sprite.Texture;
 		colorOverlay.Transform = Sprite.Transform;

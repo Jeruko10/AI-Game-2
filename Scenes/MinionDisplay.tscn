@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bcookw6uqteh7"]
+[gd_scene load_steps=20 format=3 uid="uid://bcookw6uqteh7"]
 
 [ext_resource type="Script" uid="uid://wm2wwts40hf3" path="res://Scripts/Game/Display/MinionDisplay.cs" id="1_p8v5u"]
 [ext_resource type="Script" uid="uid://lpcmsp8qjbfa" path="res://Scripts/Components/Visuals/SquashStretch2D.cs" id="2_p8v5u"]
@@ -18,6 +18,16 @@
 [ext_resource type="Script" uid="uid://gbty0eh57b0v" path="res://Scripts/Game/AI/MinionStates/ProtectTeammateState.cs" id="16_nmark"]
 [ext_resource type="Script" uid="uid://dnkigrjq54eaj" path="res://Scripts/Game/AI/MinionStates/SpreadState.cs" id="17_pibwr"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ov0v5"]
+bg_color = Color(0.14406255, 0.14406255, 0.14406249, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.5181232, 0.45217043, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7khbq"]
+bg_color = Color(0.3727572, 0.6863393, 0.36300448, 1)
 
 [node name="Minion" type="Node2D" node_paths=PackedStringArray("RootState", "Sprite", "colorOverlay", "SquashAnimator", "FlashEffect", "OutlineModule")]
 script = ExtResource("1_p8v5u")
@@ -117,3 +127,14 @@ metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 script = ExtResource("17_pibwr")
 StateName = "Spread"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+z_index = 1
+offset_left = -32.0
+offset_top = -37.0
+offset_right = 32.0
+offset_bottom = -30.0
+theme_override_styles/background = SubResource("StyleBoxFlat_ov0v5")
+theme_override_styles/fill = SubResource("StyleBoxFlat_7khbq")
+value = 60.0
+show_percentage = false

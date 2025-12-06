@@ -22,7 +22,7 @@ public partial class BotInputProvider : VirtualInputProvider
 		foreach(Minion minion in GetFriendlyMinions())
         	await PlayMinionStrategy(minion, waypoints);
 
-        navigator.ClearWaypoints();
+        //navigator.ClearWaypoints();
         SimulatePassTurn();
     }
 
@@ -46,25 +46,25 @@ public partial class BotInputProvider : VirtualInputProvider
         return globalState;
     }
 
-    List<Waypoint> GetWaypoints() // TODO: Move this to each of the global states GenerateWaypoints method. Each state will have its own way of generating waypoints.
-    {
-        List<Waypoint> waypoints = [];
+    // List<Waypoint> GetWaypoints() // TODO: Move this to each of the global states GenerateWaypoints method. Each state will have its own way of generating waypoints.
+    // {
+    //     List<Waypoint> waypoints = [];
 
-        if (GetFriendlyMinions().Count == 0)
-            waypoints = navigator.GenerateDeployWaypoints();
-        else
-            foreach (Minion minion in GetFriendlyMinions())
-                waypoints = navigator.GenerateWaypoints(minion);
+    //     if (GetFriendlyMinions().Count == 0)
+    //         waypoints = navigator.GenerateDeployWaypoints();
+    //     else
+    //         foreach (Minion minion in GetFriendlyMinions())
+    //             waypoints = navigator.GenerateWaypoints(minion);
 
-        // GD.Print($"Generated {waypoints.Count} waypoints for bot.");
+    //     // GD.Print($"Generated {waypoints.Count} waypoints for bot.");
 
-        if (GetFriendlyMinions().Count != 0)
-            foreach (Waypoint wp in waypoints)
-            {
-                // GD.Print($"Waypoint: Type={wp.Type}, Cell={wp.Cell}, ElementAffinity={wp.ElementAffinity}, Priority={wp.Priority}");
-                Board.State.AddWaypoint(wp);
-            }
+    //     if (GetFriendlyMinions().Count != 0)
+    //         foreach (Waypoint wp in waypoints)
+    //         {
+    //             // GD.Print($"Waypoint: Type={wp.Type}, Cell={wp.Cell}, ElementAffinity={wp.ElementAffinity}, Priority={wp.Priority}");
+    //             Board.State.AddWaypoint(wp);
+    //         }
 
-        return waypoints;
-    }
+    //     return waypoints;
+    // }
 }

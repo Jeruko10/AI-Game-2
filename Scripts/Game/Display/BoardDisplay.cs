@@ -216,6 +216,9 @@ public partial class BoardDisplay : Node2D
 		minionVisuals[minion].Position = CellToWorld(minion.Position);
 		minionVisuals[minion].Sprite.Texture = minion.Texture;
 		minionVisuals[minion].OutlineModule.OutlineColor = (minion.Owner == Board.Players.Player1) ? player1Color : player2Color;
+		minionVisuals[minion].HealthBar.MaxValue = minion.MaxHealth;
+		minionVisuals[minion].HealthBar.Value = minion.Health;
+
 
 		minion.RootState = minionVisuals[minion].RootState;
 	}
@@ -240,6 +243,9 @@ public partial class BoardDisplay : Node2D
     async void OnMinionDamaged(Minion minion, int damageReceived)
 	{
 		await GetTree().DelayUntil(() => minion.Selectable);
+
+		var prevHealth = minion.Health;
+		minionVisuals[minion].HealthBar.Value = minion.Health;
 
 		// On damaged animation
 		MinionDisplay minionDisplay = minionVisuals[minion];
