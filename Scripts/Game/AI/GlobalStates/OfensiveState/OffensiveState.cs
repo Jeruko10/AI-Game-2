@@ -9,11 +9,27 @@ public partial class OffensiveState : State, IGlobalState
 {
     public bool TryChangeState()
     {
-        // WE SHOULD NEVER BE IN THIS STATE DIRECTLY, since it does nothing and acts as folder for its substates. Please ALWAYS return true and transition to a child or sibling state.
-        // TODO: Determine where to transition: To a child: OffensiveFortFocusedState or KillFocusedState. Or to a sibling: DefensiveState or OffensiveState.
+        Fort[] myForts = Board.State.GetPlayerForts(Board.Players.Player2);
+
+        if(Board.State.GetPlayerMinions(Board.Players.Player2).Length <= Board.State.GetPlayerMinions(Board.Players.Player1).Length)
+        {
+            TransitionToSibling("DefensiveState");
+            return true;
+        }
         
-		TransitionToChild("ExampleState"); // Has to be a child state of this state, otherwise push error.
-		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
+        if (myForts.Length > Board.State.GetPlayerForts(Board.Players.Player1).Length)
+        {
+            TransitionToChild("KillFocusedState");
+            return true;
+        }
+
+        if(myForts.Length <= Board.State.GetPlayerForts(Board.Players.Player1).Length || Board.State.GetPlayerMinions(Board.Players.Player1).Length <= 0)
+        {
+            TransitionToChild("OffensiveFortFocusedState");
+            return true;
+        }
+
+
         return true;
     }
 

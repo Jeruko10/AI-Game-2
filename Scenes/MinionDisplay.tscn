@@ -75,57 +75,57 @@ StateName = "Root"
 
 [node name="AttackState" type="Node" parent="HFSM"]
 script = ExtResource("7_7khbq")
-StateName = "Attack"
+StateName = "AttackState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="AttackMoveState" type="Node" parent="HFSM/AttackState"]
 script = ExtResource("8_0d77l")
-StateName = "AttackMove"
+StateName = "AttackMoveState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="PunchState" type="Node" parent="HFSM/AttackState"]
 script = ExtResource("9_2autr")
-StateName = "Punch"
+StateName = "PunchState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="FallbackState" type="Node" parent="HFSM/AttackState"]
 script = ExtResource("10_r2jre")
-StateName = "Fallback"
+StateName = "FallbackState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="KamikazeState" type="Node" parent="HFSM/AttackState"]
 script = ExtResource("11_vpsd5")
-StateName = "Kamikaze"
+StateName = "KamikazeState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="DominateState" type="Node" parent="HFSM"]
 script = ExtResource("12_mhus3")
-StateName = "Dominate"
+StateName = "DominateState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="DominateMoveState" type="Node" parent="HFSM/DominateState"]
 script = ExtResource("13_arpwh")
-StateName = "DominateMove"
+StateName = "DominateMoveState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="PrevailState" type="Node" parent="HFSM/DominateState"]
 script = ExtResource("14_vc3ld")
-StateName = "Prevail"
+StateName = "PrevailState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="DefendState" type="Node" parent="HFSM"]
 script = ExtResource("15_lbxym")
-StateName = "Defend"
+StateName = "DefendState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="ProtectTeammateState" type="Node" parent="HFSM/DefendState"]
 script = ExtResource("16_nmark")
-StateName = "ProtectTeammate"
+StateName = "ProtectTeammateState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="SpreadState" type="Node" parent="HFSM/DefendState"]
 script = ExtResource("17_pibwr")
-StateName = "Spread"
+StateName = "SpreadState"
 metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="HealthBar" type="ProgressBar" parent="."]

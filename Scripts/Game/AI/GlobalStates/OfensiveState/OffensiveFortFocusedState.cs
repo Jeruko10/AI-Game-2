@@ -2,6 +2,8 @@ using Components;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using static Game.BoardState;
 
 namespace Game;
 
@@ -9,9 +11,11 @@ public partial class OffensiveFortFocusedState : State, IGlobalState
 {
     public bool TryChangeState()
     {
-        // TODO: Determine where to transition: To a sibling: OffensiveFortFocusedState or KillFocusedState.
-        
-		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
+        if(Board.State.GetPlayerForts(Board.Players.Player2).Length > Board.State.GetPlayerForts(Board.Players.Player1).Length)
+        {
+            TransitionToSibling("KillFocusedState");
+            return true;
+        }
         return false;
     }
 
@@ -19,8 +23,102 @@ public partial class OffensiveFortFocusedState : State, IGlobalState
     {
         List<Waypoint> waypoints = [];
 
-        // TODO: Move here the waypoint generation logic based on this state behaviour
+        var influence = Board.State.influence;
+        var allForts = Board.State.Forts;
+
+        var myForts = Board.State.GetPlayerForts(Board.Players.Player2);
+        var enemyForts = allForts
+            .Where(f => !myForts.Contains(f))
+            .ToArray();
+
+        Element.Types enemyDominant = Board.State.GetPlayerDominantElement(Board.Players.Player1);
+        Element.Types preferredType = Element.GetAdvantage(enemyDominant);
+
+        foreach (var fort in enemyForts)
+        {
+            if (fort.Owner == Board.Players.Player2) 
+                continue;
+
+            bool isNeutral = fort.Owner == null;
+            int fortBasePriority = isNeutral ? 90 : 60;
+
+            CreateFortMovementWaypoints(waypoints, fort, influence, fortBasePriority, preferredType);
+
+            CreateLowPriorityAttackWaypoints(waypoints, fort, influence, fortBasePriority - 25);
+        }
 
         return waypoints;
     }
+
+    private static void CreateFortMovementWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority, Element.Types preferredType)
+    {
+        const int range = 4;
+        var origin = fort.Position;
+
+        for (int dx = -range; dx <= range; dx++)
+        {
+            for (int dy = -range; dy <= range; dy++)
+            {
+                Vector2I cell = new(origin.X + dx, origin.Y + dy);
+                if (!Board.Grid.IsInsideGrid(cell)) continue;
+                if (Board.State.IsCellOccupied(cell)) continue;
+
+                float inf = influence.GetInfluenceAt(cell);
+
+                if (inf > 0) continue;
+
+                int dist = Board.Grid.GetDistance(cell, origin);
+                if (dist > range) continue;
+
+                int priority =
+                    basePriority
+                    - dist * 3
+                    + Mathf.RoundToInt(Math.Max(0f, -inf) * 10f);
+
+                output.Add(new Waypoint
+                {
+                    Type = Waypoint.Types.Move,
+                    Cell = cell,
+                    ElementAffinity = preferredType,
+                    Priority = priority
+                });
+            }
+        }
+    }
+
+    private static void CreateLowPriorityAttackWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority)
+    {
+        const int scanRange = 3;
+        Vector2I origin = fort.Position;
+
+        for (int dx = -scanRange; dx <= scanRange; dx++)
+        {
+            for (int dy = -scanRange; dy <= scanRange; dy++)
+            {
+                Vector2I cell = new(origin.X + dx, origin.Y + dy);
+                if (!Board.Grid.IsInsideGrid(cell)) continue;
+
+                bool isMinion = Board.State.IsMinionInCell(cell);
+                if (!isMinion) continue;
+                Minion unit = Board.State.GetMinionAt(cell);
+                if (unit.Owner != Board.Players.Player1) continue;
+
+                float inf = influence.GetInfluenceAt(cell);
+
+                int priority =
+                    basePriority
+                    + Mathf.Clamp(3 - Board.Grid.GetDistance(cell, origin), 0, 3)
+                    + Mathf.RoundToInt(inf * 5f);
+
+                output.Add(new Waypoint
+                {
+                    Type = Waypoint.Types.Attack,
+                    Cell = cell,
+                    Priority = priority
+                });
+            }
+        }
+    }
+
+
 }

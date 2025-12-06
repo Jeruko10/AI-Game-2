@@ -113,6 +113,24 @@ public partial class BoardState : Node
 
 		return new CellData(tile, minion, fort);
 	}
+
+	public bool IsCellOccupied(Vector2I cell)
+	{
+		CellData data = GetCellData(cell);
+		return data.Minion != null || (data.Tile != null && data.Tile.Obstructs);
+	}
+
+	public bool IsMinionInCell(Vector2I cell)
+	{
+		CellData data = GetCellData(cell);
+		return data.Minion != null;
+	}
+
+	public Minion GetMinionAt(Vector2I cell)
+	{
+		CellData data = GetCellData(cell);
+		return data.Minion;
+	}
 	
 	public void PlayMinion(MinionData minion, Vector2I cell)
 	{

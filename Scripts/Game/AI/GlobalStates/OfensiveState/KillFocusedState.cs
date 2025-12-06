@@ -10,9 +10,12 @@ public partial class KillFocusedState : State, IGlobalState
 {
     public bool TryChangeState()
     {
-        // TODO: Determine where to transition: To a sibling: OffensiveFortFocusedState or KillFocusedState.
-        
-		TransitionToSibling("ExampleState"); // Has to be a sibling state of this state, otherwise push error.
+        if (Board.State.GetPlayerMinions(Board.Players.Player2).Length < Board.State.GetPlayerMinions(Board.Players.Player1).Length || Board.State.GetPlayerMinions(Board.Players.Player1).Length <= 0)
+        {
+            TransitionToSibling("DefensiveState");
+            return true;
+        }
+
         return false;
     }
 

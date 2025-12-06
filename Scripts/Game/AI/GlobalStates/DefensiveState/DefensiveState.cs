@@ -2,6 +2,7 @@ using Components;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game;
 
@@ -22,7 +23,7 @@ public partial class DefensiveState : State, IGlobalState
                 threatenedForts.Add(info);
         }
 
-        if (canSummon)
+        if (Board.State.GetPlayerMinions(Board.Players.Player2).Length < Board.State.GetPlayerMinions(Board.Players.Player1).Length)
         {
             TransitionToChild("DeployFocusedState");
             return true;
