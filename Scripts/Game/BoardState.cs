@@ -153,6 +153,7 @@ public partial class BoardState : Node
 
 		foreach (Vector2I pathCell in path[..^1]) // Skip last one
 		{
+			GD.Print($"Moving through cell: {Tiles[pathCell]}");
 			Tile tile = Tiles[pathCell];
 			minion.MovePoints -= tile.MoveCost;
 		}
@@ -304,42 +305,42 @@ public partial class BoardState : Node
 
 	void CreateBoard() // TODO: Replace this method's content and create interesting way of designing the board
 	{
-	int width = 17;
-	int height = 9;
+		int width = 17;
+		int height = 9;
 
-	Vector2I[] fortPositions =
-	[
-		new(2, 2),   
-		new(14, 6)   
-	];
+		Vector2I[] fortPositions =
+		[
+			new(2, 2),   
+			new(14, 6)   
+		];
 
-	foreach (Vector2I cell in Board.Grid.GetAllCells())
-	{
-		Tile tile;
-
-		if (cell.X == 0 || cell.X == width - 1 || cell.Y == 0 || cell.Y == height - 1)
+		foreach (Vector2I cell in Board.Grid.GetAllCells())
 		{
-			tile = Game.Tiles.Wall;
-		}
-		// Río central vertical
-		else if (cell.X == 8 || cell.X == 9)
-		{
-			tile = Game.Tiles.Water;
-		}
-		else if (cell.Y >= 5 && cell.X >= 11)
-		{
-			tile = Game.Tiles.Fire;
-		}
-		else
-		{
-			tile = Game.Tiles.Ground;
-		}
+			Tile tile;
 
-		AddTile(tile, cell);
+			if (cell.X == 0 || cell.X == width - 1 || cell.Y == 0 || cell.Y == height - 1)
+			{
+				tile = Game.Tiles.Wall;
+			}
+			// Río central vertical
+			else if (cell.X == 8 || cell.X == 9)
+			{
+				tile = Game.Tiles.Water;
+			}
+			else if (cell.Y >= 5 && cell.X >= 11)
+			{
+				tile = Game.Tiles.Fire;
+			}
+			else
+			{
+				tile = Game.Tiles.Ground;
+			}
 
-		if (fortPositions.Contains(cell))
-			AddFort(new(cell));
-	}
+			AddTile(tile, cell);
+
+			if (fortPositions.Contains(cell))
+				AddFort(new(cell));
+		}
 
 
 		influence.Initialize(this);

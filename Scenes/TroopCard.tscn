@@ -6,7 +6,7 @@
 
 [node name="Button" type="Button" node_paths=PackedStringArray("iconElementType", "silhouette", "nameLabel", "priceLabel", "controlSelected")]
 z_index = 365
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(200, 273)
 anchors_preset = -1
 anchor_right = 0.104
 anchor_bottom = 0.25300002

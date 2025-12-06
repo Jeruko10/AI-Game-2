@@ -335,6 +335,7 @@ public partial class BoardDisplay : Node2D
 
 		await ToSignal(bannerTween, Tween.SignalName.Finished);
 
+		GD.Print("BoardDisplay: Turn banner animation finished.");
 		InputHandler.InteractionEnabled = true;
 	}
 

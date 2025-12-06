@@ -72,7 +72,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
-metadata/_edit_lock_ = true
 
 [node name="ManaCounters" type="HBoxContainer" parent="InterfaceLayer/HUD"]
 layout_mode = 1
@@ -178,7 +177,6 @@ DefaultDuration = 0.0
 DefaultFadeOut = 0.3
 metadata/_custom_type_script = "uid://dwaiexaedy04n"
 metadata/_edit_use_anchors_ = true
-metadata/_edit_lock_ = true
 
 [node name="TurnInformer" type="Control" parent="InterfaceLayer/HUD"]
 layout_mode = 1
@@ -191,7 +189,7 @@ offset_bottom = 126.900024
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.765, 0.765)
-metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="Banner" type="TextureRect" parent="InterfaceLayer/HUD/TurnInformer"]
 layout_mode = 1
@@ -201,8 +199,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("6_8e0uq")
-metadata/_edit_use_anchors_ = true
-metadata/_edit_lock_ = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="InterfaceLayer/HUD/TurnInformer"]
 layout_mode = 1
@@ -268,7 +264,7 @@ waypointDisplayTscn = ExtResource("23_356ba")
 fireManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/FireMana/Amount")
 waterManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/WaterMana/Amount")
 plantManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/PlantMana/Amount")
-GamePace = 4.0
+GamePace = 2.0
 turnInformerAnimationSpeed = 0.5
 minionMoveAnimationSpeed = 6.58
 minionDeathAnimationSpeed = 5.0

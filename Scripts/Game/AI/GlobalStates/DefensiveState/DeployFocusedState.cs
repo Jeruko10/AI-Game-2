@@ -20,7 +20,7 @@ public partial class DeployFocusedState : State, IGlobalState
         return false;
     }
 
-    public List<Waypoint> GenerateWaypoints(WaypointsNavigator navigator)
+    public List<Waypoint> GenerateWaypoints()
     {
         List<Waypoint> waypoints = [];
 

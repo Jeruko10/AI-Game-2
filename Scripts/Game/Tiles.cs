@@ -19,7 +19,10 @@ public partial class Tiles : Node
 	public static Tile Water { get; private set; }
 	static Tiles singleton;
 
-	public override void _EnterTree() => singleton ??= this;
+	public override void _EnterTree()
+    {
+		StoreStaticData();
+    }
 
 	public override void _ExitTree()
 	{

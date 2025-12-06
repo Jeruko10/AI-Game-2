@@ -33,5 +33,5 @@ public partial class OffensiveState : State, IGlobalState
         return true;
     }
 
-    public List<Waypoint> GenerateWaypoints(WaypointsNavigator navigator) => []; // We will treat this state as a 'folder'. It's always expected to have an active child state.
+    public List<Waypoint> GenerateWaypoints() => []; // We will treat this state as a 'folder'. It's always expected to have an active child state.
 }

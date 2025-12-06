@@ -11,5 +11,5 @@ public interface IGlobalState
     public bool TryChangeState();
 
     /// <summary>Returns an array of waypoints that the global AI will put.</summary>
-    public List<Waypoint> GenerateWaypoints(WaypointsNavigator navigator);
+    public List<Waypoint> GenerateWaypoints();
 }

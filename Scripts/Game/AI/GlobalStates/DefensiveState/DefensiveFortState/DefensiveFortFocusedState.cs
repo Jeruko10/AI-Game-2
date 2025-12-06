@@ -29,7 +29,7 @@ public partial class DefensiveFortFocusedState : State, IGlobalState
 
 
 
-    public List<Waypoint> GenerateWaypoints(WaypointsNavigator navigator)
+    public List<Waypoint> GenerateWaypoints()
     {
         List<Waypoint> waypoints = [];
         forts = Board.State.GetPlayerForts(Board.Players.Player2);

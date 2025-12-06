@@ -29,7 +29,7 @@ border_color = Color(1, 0.5181232, 0.45217043, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7khbq"]
 bg_color = Color(0.3727572, 0.6863393, 0.36300448, 1)
 
-[node name="Minion" type="Node2D" node_paths=PackedStringArray("RootState", "Sprite", "colorOverlay", "SquashAnimator", "FlashEffect", "OutlineModule")]
+[node name="Minion" type="Node2D" node_paths=PackedStringArray("RootState", "Sprite", "colorOverlay", "SquashAnimator", "FlashEffect", "OutlineModule", "HealthBar")]
 script = ExtResource("1_p8v5u")
 RootState = NodePath("HFSM")
 Sprite = NodePath("SquashStretch2D/Sprite2D")
@@ -37,6 +37,7 @@ colorOverlay = NodePath("SquashStretch2D/ColorOverlay")
 SquashAnimator = NodePath("SquashStretch2D")
 FlashEffect = NodePath("ColorOverlayModule")
 OutlineModule = NodePath("OutlineModule")
+HealthBar = NodePath("HealthBar")
 metadata/_edit_lock_ = true
 
 [node name="SquashStretch2D" type="Node2D" parent="."]
@@ -130,10 +131,10 @@ metadata/_custom_type_script = "uid://c0xq6bpuq13mf"
 
 [node name="HealthBar" type="ProgressBar" parent="."]
 z_index = 1
-offset_left = -32.0
-offset_top = -37.0
-offset_right = 32.0
-offset_bottom = -30.0
+offset_left = -59.0
+offset_top = -64.0
+offset_right = 59.85714
+offset_bottom = -51.0
 theme_override_styles/background = SubResource("StyleBoxFlat_ov0v5")
 theme_override_styles/fill = SubResource("StyleBoxFlat_7khbq")
 value = 60.0
