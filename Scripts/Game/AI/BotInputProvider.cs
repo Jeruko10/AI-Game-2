@@ -16,7 +16,7 @@ public partial class BotInputProvider : VirtualInputProvider
 
     public override void _Ready() => Board.State.TurnStarted += OnTurnStarted;
 
-    async Task SimulateHumanClick(Vector2I cell, bool rightClick = false, float hoverTime = 0.2f, float afterClickTime = 0.2f)
+    public async Task SimulateHumanClick(Vector2I cell, bool rightClick = false, float hoverTime = 0.2f, float afterClickTime = 0.2f)
 	{
 		SimulateHover(cell);
 		await SimulateDelay(hoverTime);
