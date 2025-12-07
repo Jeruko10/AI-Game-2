@@ -23,7 +23,7 @@ public partial class DefensiveState : State, IGlobalState
                 threatenedForts.Add(info);
         }
 
-        if (Board.State.GetPlayerMinions(Board.Players.Player2).Length < Board.State.GetPlayerMinions(Board.Players.Player1).Length)
+        if (Board.State.GetPlayerMinions(Board.Players.Player2).Length <= Board.State.GetPlayerMinions(Board.Players.Player1).Length)
         {
             TransitionToChild("DeployFocusedState");
             return true;
@@ -35,12 +35,7 @@ public partial class DefensiveState : State, IGlobalState
             return true;
         }
 
-        if (!canSummon && threatenedForts.Count == 0)
-        {
-            TransitionToSibling("OffensiveState");
-            return true;
-        }
-
+        TransitionToSibling("OffensiveState");
         return true;
     }
 
