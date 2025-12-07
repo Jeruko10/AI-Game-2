@@ -26,7 +26,7 @@ public static class GridNavigation
 
 			// cost to leave the current cell (use current tile)
             int leaveCost;
-            
+
             if (minion.Element.Tag == Element.Types.Water) leaveCost = 1; // Water element ignores terrain move costs
 			else leaveCost = Board.State.Tiles.TryGetValue(current, out Tile currentTile) ? currentTile.MoveCost : 1;
 
@@ -134,8 +134,8 @@ public static class GridNavigation
 		{
 			var data = Board.State.GetCellData(cell);
 
-			if ((data.Tile != null && data.Tile.Obstructs) || data.Minion != null)
-				obstructedCells.Add(cell);
+			if ((data.Tile != null && data.Tile.Obstructs && minion.Element.Tag != Element.Types.Plant) || data.Minion != null)
+				    obstructedCells.Add(cell);
 		}
 
 		return obstructedCells;
