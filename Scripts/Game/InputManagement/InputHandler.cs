@@ -113,6 +113,7 @@ public partial class InputHandler : Node
 
     private static void SpawnSelectedMinion(Vector2I clickedCell)
     {
+        if(Board.State.SelectedDeployTroop == null) return;
         Board.State.PlayMinion(Board.State.SelectedDeployTroop, clickedCell);
     }
 

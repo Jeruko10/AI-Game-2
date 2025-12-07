@@ -28,7 +28,7 @@ public partial class BoardDisplay : Node2D
 	[Export] float turnInformerAnimationSpeed = 1f;
 	[Export] float minionMoveAnimationSpeed = 1f;
 	[Export] float minionDeathAnimationSpeed = 1f;
-	[Export] float minionAttackAnimationSpeed = 0.2f;
+	[Export] float minionAttackAnimationSpeed = 6.0f;
 	[Export] float minionsRestoreDelay = 1f;
 	[Export] float fortsHarvestDelay = 1f;
 	[Export] float turnStartDelay = 1f;
@@ -262,8 +262,8 @@ public partial class BoardDisplay : Node2D
 		float startRotation = minionDisplay.RotationDegrees;
 
         attackTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, startRotation, -45, 1 / (minionAttackAnimationSpeed * GamePace));
-        attackTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, startRotation, 45, 1 / (minionAttackAnimationSpeed * GamePace));
-        attackTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, startRotation, 0, 1 / (minionAttackAnimationSpeed * GamePace));
+        attackTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, -45, 45, 1 / (minionAttackAnimationSpeed * GamePace));
+        attackTween.TweenDelegate(v => minionDisplay.RotationDegrees = v, 45, 0, 1 / (minionAttackAnimationSpeed * GamePace));
     }
 
 	async void OnMinionSelected(Minion minion)
@@ -335,8 +335,8 @@ public partial class BoardDisplay : Node2D
 
 		await ToSignal(bannerTween, Tween.SignalName.Finished);
 
-		GD.Print("BoardDisplay: Turn banner animation finished.");
 		InputHandler.InteractionEnabled = true;
+		GD.Print("BoardDisplay: Turn banner animation finished.");
 	}
 
 	Vector2 CellToWorld(Vector2I cell) => Board.Grid.GridToWorld(cell) - GlobalPosition + Board.Grid.CellSize * Vector2.One / 2;

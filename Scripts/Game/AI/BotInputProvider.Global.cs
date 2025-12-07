@@ -9,7 +9,6 @@ public partial class BotInputProvider : VirtualInputProvider
 {
     [Export] GlobalRootState RootState;
     
-    
     async Task PlayTurn()
     {
         GD.Print("BotInputProvider: PlayTurn started.");
@@ -21,7 +20,6 @@ public partial class BotInputProvider : VirtualInputProvider
 		foreach(Minion minion in GetFriendlyMinions())
         	await PlayMinionStrategy(minion, waypoints);
 
-        //navigator.ClearWaypoints();
         SimulatePassTurn();
     }
 
