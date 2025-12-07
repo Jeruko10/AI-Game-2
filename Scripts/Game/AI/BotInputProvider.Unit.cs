@@ -8,11 +8,14 @@ namespace Game;
 
 public partial class BotInputProvider : VirtualInputProvider
 {
+    public IMinionState minionState;
     /// <summary>Iterates over state transitions until a state demands no transition, then plays the strategy returned by the chosen state.</summary>
 	async Task PlayMinionStrategy(Minion minion, List<Waypoint> waypoints)
 	{
-        IMinionState minionState = ChangeMinionState(minion, waypoints); // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
+        minionState = ChangeMinionState(minion, waypoints); // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
 		Vector2I[] strategy = minionState.GetStrategy(minion, waypoints);
+
+        GD.Print($"BotInputProvider: Minion '{minion.Name}' strategy determined by state '{minionState.GetType().Name}': {string.Join(" -> ", strategy)}");
 
         foreach (Vector2I cell in strategy) // Play the strategy by simulating human clicks
         {
@@ -22,9 +25,8 @@ public partial class BotInputProvider : VirtualInputProvider
         }
 	}
 
-    static IMinionState ChangeMinionState(Minion minion, List<Waypoint> waypoints)
+    IMinionState ChangeMinionState(Minion minion, List<Waypoint> waypoints)
     {
-        IMinionState minionState;
         // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
         do
         {

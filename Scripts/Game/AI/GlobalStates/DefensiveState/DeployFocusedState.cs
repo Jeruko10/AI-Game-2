@@ -13,11 +13,16 @@ public partial class DeployFocusedState : State, IGlobalState
     {
         Mana mana = Board.State.Player2Mana;
 
+        if  (Board.State.GetPlayerMinions(Board.Players.Player2).Length >= Board.State.GetPlayerMinions(Board.Players.Player1).Length +1)
+        {
+            TransitionToSibling("DefensiveFortFocusedState"); 
+            return true;
+        }
+
         if (HasManaToDeploy(mana))
             return false;
-        
-		TransitionToSibling("DefensiveFortFocusedState"); 
         return false;
+        
     }
 
     public List<Waypoint> GenerateWaypoints()

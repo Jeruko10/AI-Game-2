@@ -20,7 +20,8 @@ public partial class BoardState : Node
 	public Vector2I? SelectedCell { get; set; }
 	public Minion SelectedMinion { get; private set; }
 	public bool AttackMode { get; private set; }
-	public MinionData SelectedDeployTroop { get; set; }
+	public MinionData SelectedDeployTroopPlayer1 { get; set; }
+	public MinionData SelectedDeployTroopPlayer2 { get; set; }
 	public event Action<Board.Players> TurnStarted;
 	public event Action<Minion> MinionDeath;
 	public event Action<Minion, int> MinionDamaged;
@@ -40,6 +41,9 @@ public partial class BoardState : Node
 
 	public InfluenceMapManager influence;
 
+	List<Tile> deployableTilesPlayer2 = [];
+	List<Tile> deployableTilesPlayer1 = [];
+	
 	bool isPlayer1Turn = false;
 
 	public struct CellData(Tile tile, Minion minion, Fort fort)
@@ -305,7 +309,7 @@ public partial class BoardState : Node
 
 	void CreateBoard() // TODO: Replace this method's content and create interesting way of designing the board
 	{
-		int width = 17;
+		int width = 100;
 		int height = 9;
 
 		Vector2I[] fortPositions =
@@ -345,4 +349,5 @@ public partial class BoardState : Node
 
 		influence.Initialize(this);
 	}
+
 }

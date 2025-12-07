@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=34 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputManagement/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
@@ -16,6 +16,7 @@
 [ext_resource type="Resource" uid="uid://cxkqasn5gq6mj" path="res://Resources/Tiles/WaterTile.tres" id="5_acvyw"]
 [ext_resource type="Script" uid="uid://dwaiexaedy04n" path="res://Scripts/Components/Visuals/ScreenFlashModule.cs" id="5_lbihj"]
 [ext_resource type="Texture2D" uid="uid://b8abewsqcsyjg" path="res://Sprites/TurnInformer.png" id="6_8e0uq"]
+[ext_resource type="Script" uid="uid://bfw3swkq3rr1u" path="res://Scripts/Components/Miscelanous/ActualStateLabel.cs" id="8_i1pr2"]
 [ext_resource type="Script" uid="uid://bpoclqr2f21y2" path="res://Scripts/Game/Display/BoardDisplay.cs" id="13_8r6kd"]
 [ext_resource type="PackedScene" uid="uid://bcookw6uqteh7" path="res://Scenes/MinionDisplay.tscn" id="14_tfod6"]
 [ext_resource type="PackedScene" uid="uid://drjycecp44mo7" path="res://Scenes/FortDisplay.tscn" id="15_rajel"]
@@ -217,6 +218,27 @@ metadata/_edit_lock_ = true
 
 [node name="DeployScreen" parent="InterfaceLayer/HUD" instance=ExtResource("29_i4lct")]
 layout_mode = 1
+
+[node name="ActualState" type="Label" parent="InterfaceLayer/HUD"]
+layout_mode = 0
+offset_left = 549.0
+offset_top = 986.0
+offset_right = 1233.0
+offset_bottom = 1066.0
+theme_override_font_sizes/font_size = 36
+text = "Actual IA State: "
+horizontal_alignment = 1
+script = ExtResource("8_i1pr2")
+
+[node name="MinionState" type="Label" parent="InterfaceLayer/HUD"]
+layout_mode = 0
+offset_left = 1233.0
+offset_top = 986.0
+offset_right = 1917.0
+offset_bottom = 1066.0
+theme_override_font_sizes/font_size = 36
+text = "Actual Minion State: "
+horizontal_alignment = 1
 
 [node name="RefLibrary" type="Node" parent="."]
 

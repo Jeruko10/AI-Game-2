@@ -9,11 +9,10 @@ namespace Game;
 
 public partial class BotInputProvider : VirtualInputProvider
 {
-    [Export] GlobalRootState RootState;
+    [Export] public GlobalRootState RootState;
     
     async Task PlayTurn()
     {
-        GD.Print("BotInputProvider: PlayTurn started.");
         IGlobalState globalState = ChangeGlobalState(); // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
         List<Waypoint> waypoints = globalState.GenerateWaypoints();
 
@@ -34,13 +33,23 @@ public partial class BotInputProvider : VirtualInputProvider
         deployWaypoints.Sort((a, b) => b.Priority.CompareTo(a.Priority));
         foreach (Waypoint waypoint in deployWaypoints)
         {
+            Board.State.SelectedDeployTroopPlayer2 = GetMinionToDeploy(waypoint.ElementAffinity);
             await SimulateHumanClick(waypoint.Cell, true);
         }
     }
 
+    private static MinionData GetMinionToDeploy(Element.Types elementAffinity)
+    {
+        foreach (MinionData minionData in Minions.AllMinionDatas)
+        {
+            if (minionData.Element.Tag == elementAffinity)
+                return minionData;
+        }
+        return null;
+    }
+
     IGlobalState ChangeGlobalState()
     {
-        GD.Print("BotInputProvider: Changing global state.");
         IGlobalState globalState;
         // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
         do
