@@ -164,7 +164,7 @@ public partial class BoardState : Node
 		Fort fort = GetCellData(pathEnd).Fort;
 
 		if (fort != null && fort.Element != minion.Element) DominateFort(fort, minion);
-		if (Tiles[pathEnd].Damage > 0) DamageMinion(minion, Tiles[pathEnd].Damage);
+		if (Tiles[pathEnd].Damage > 0 && minion.Element.Tag != Element.Types.Fire) DamageMinion(minion, Tiles[pathEnd].Damage);
 
 		MinionMoved?.Invoke(minion, path);
 	}
