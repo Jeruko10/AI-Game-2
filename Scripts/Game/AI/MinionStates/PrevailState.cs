@@ -73,7 +73,10 @@ public partial class PrevailState : State, IMinionState
         }
 
         if (bestTarget != null)
-            clickedCells.Add(bestCell);
+        {
+            clickedCells.Add(minion.Position); //Click the minion
+            clickedCells.Add(bestCell); //Click the last position
+        }
 
         // If there are not enemies, dont move
         return clickedCells.ToArray();

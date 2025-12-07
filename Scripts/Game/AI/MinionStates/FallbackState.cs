@@ -70,8 +70,8 @@ public partial class FallbackState : State, IMinionState
             return clickedCells.ToArray();
 
 
-        for (int i = 0; i < path.Length; i++)
-            clickedCells.Add(path[i]);
+        clickedCells.Add(path[0]); //Click the minion
+        clickedCells.Add(path[path.Length-1]); //Click the last position
 
 
         return clickedCells.ToArray();

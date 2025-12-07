@@ -87,9 +87,9 @@ public partial class AttackMoveState : State, IMinionState
         if (path == null || path.Length == 0)
             return clickedCells.ToArray();
 
-        // Send THE WHOLE PATH, change if you wanna click only the minion and the destination.
-        foreach (var cell in path)
-            clickedCells.Add(cell);
+        //change if you wanna click only the minion and the destination.
+        clickedCells.Add(path[0]); //Click the minion
+        clickedCells.Add(path[path.Length-1]); //Click the last position
 
         return clickedCells.ToArray();
     }

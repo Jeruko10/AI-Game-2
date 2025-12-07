@@ -69,8 +69,8 @@ public partial class KamikazeState : State, IMinionState
             return clickedCells.ToArray();
 
         // THE WHOLE PATH AS CLICKED CELLS, CHANGE TO ONLY THE FIRST AND LAST ONE IF NEEDED
-        foreach (var cell in path)
-            clickedCells.Add(cell);
+        clickedCells.Add(path[0]); //Click the minion
+        clickedCells.Add(path[path.Length-1]); //Click the last position
 
         return clickedCells.ToArray();
     }
