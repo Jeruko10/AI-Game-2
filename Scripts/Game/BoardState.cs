@@ -155,7 +155,7 @@ public partial class BoardState : Node
 		{
 			GD.Print($"Moving through cell: {Tiles[pathCell]}");
 			Tile tile = Tiles[pathCell];
-			minion.MovePoints -= tile.MoveCost;
+			minion.MovePoints -= (minion.Element.Tag == Element.Types.Water) ? 1 : tile.MoveCost;
 		}
 		Vector2I pathEnd = (path.Length > 0) ? path[^1] : minion.Position;
 		minion.Position = pathEnd;
