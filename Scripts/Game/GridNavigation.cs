@@ -86,8 +86,11 @@ public static class GridNavigation
 
 			if (current == destination) break;
 
-			// cost to leave current cell
-			int leaveCost = Board.State.Tiles.TryGetValue(current, out Tile currentTile) ? currentTile.MoveCost : 1;
+			// cost to leave the current cell (use current tile)
+            int leaveCost;
+
+            if (minion.Element.Tag == Element.Types.Water) leaveCost = 1; // Water element ignores terrain move costs
+			else leaveCost = Board.State.Tiles.TryGetValue(current, out Tile currentTile) ? currentTile.MoveCost : 1;
 
 			foreach (Vector2I neighbor in Board.Grid.GetAdjacents(current))
 			{
