@@ -127,23 +127,4 @@ public partial class InputHandler : Node
         
         Board.State.PlayMinion(minionToDeploy, clickedCell);
     }
-
-    static void SpawnRandomMinion(Vector2I cell)
-    {
-        MinionData[] templates =
-        {
-            Minions.FireKnight,
-            Minions.WaterKnight,
-            Minions.PlantKnight
-        };
-
-        MinionData randomTemplate = templates.GetRandomElement();
-        Mana availableMana = Board.State.GetPlayerMana(Board.State.GetActivePlayer());
-
-        if (Board.State.GetCellData(cell).Minion == null &&
-            randomTemplate.IsAffordable(availableMana))
-        {
-            Board.State.PlayMinion(randomTemplate, cell);
-        }
-    }
 }
