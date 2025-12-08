@@ -142,13 +142,13 @@ public partial class InfluenceMapManager : Node2D
 	// =========================
 	private void OnMinionMoved(Minion minion, Vector2I[] path)
 	{
-		GD.Print($"¡Evento MinionMoved recibido! Minion: {minion}, path length: {path.Length}");
+		//GD.Print($"¡Evento MinionMoved recibido! Minion: {minion}, path length: {path.Length}");
 		RebuildTroopInfluence();
 	}
 
 	private void OnMinionAdded(Minion minion)
 	{
-		GD.Print($"¡Minion añadido: {minion.Name}");
+		//GD.Print($"¡Minion añadido: {minion.Name}");
 		RebuildTroopInfluence();
 		
 		//PRUEBAS
@@ -158,7 +158,7 @@ public partial class InfluenceMapManager : Node2D
 
 	private void OnMinionDeath(Minion minion)
 	{
-		GD.Print($"¡Minion muerto: {minion.Name}");
+		//GD.Print($"¡Minion muerto: {minion.Name}");
 		RebuildTroopInfluence();
 	}
 

@@ -42,15 +42,15 @@ public partial class OffensiveFortFocusedState : State, IGlobalState
             bool isNeutral = fort.Owner == null;
             int fortBasePriority = isNeutral ? 90 : 60;
 
-            CreateFortMovementWaypoints(waypoints, fort, influence, fortBasePriority, preferredType);
+            waypoints = CreateFortMovementWaypoints(waypoints, fort, influence, fortBasePriority, preferredType);
 
-            CreateLowPriorityAttackWaypoints(waypoints, fort, influence, fortBasePriority - 25);
+            waypoints = CreateLowPriorityAttackWaypoints(waypoints, fort, influence, fortBasePriority - 25);
         }
 
         return waypoints;
     }
 
-    private static void CreateFortMovementWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority, Element.Types preferredType)
+    private static List<Waypoint> CreateFortMovementWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority, Element.Types preferredType)
     {
         const int range = 4;
         var origin = fort.Position;
@@ -77,16 +77,17 @@ public partial class OffensiveFortFocusedState : State, IGlobalState
 
                 output.Add(new Waypoint
                 {
-                    Type = Waypoint.Types.Move,
+                    Type = Waypoint.Types.Capture,
                     Cell = cell,
                     ElementAffinity = preferredType,
                     Priority = priority
                 });
             }
         }
+        return output;
     }
 
-    private static void CreateLowPriorityAttackWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority)
+    private static List<Waypoint> CreateLowPriorityAttackWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority)
     {
         const int scanRange = 3;
         Vector2I origin = fort.Position;
@@ -118,6 +119,7 @@ public partial class OffensiveFortFocusedState : State, IGlobalState
                 });
             }
         }
+        return output;
     }
 
 

@@ -16,13 +16,18 @@ public partial class BotInputProvider : VirtualInputProvider
         IGlobalState globalState = ChangeGlobalState(); // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
         List<Waypoint> waypoints = globalState.GenerateWaypoints();
 
+        Board.State.ClearWaypoints();
+        foreach (var wp in waypoints)
+        {
+            Board.State.AddWaypoint(wp);
+        }
+
         await SimulateDeploy(waypoints);
 
         await SimulateDelay(courtesyDelay);
 
-        
-		foreach(Minion minion in GetFriendlyMinions())
-        	await PlayMinionStrategy(minion, waypoints);
+        foreach(Minion minion in GetFriendlyMinions())
+            await PlayMinionStrategy(minion, waypoints);
 
         SimulatePassTurn();
     }
