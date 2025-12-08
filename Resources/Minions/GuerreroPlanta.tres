@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="1_cq6qk"]
 [ext_resource type="Resource" uid="uid://b1u2b1vwy56fi" path="res://Resources/Elements/Plant.tres" id="2_ixgmu"]
-[ext_resource type="Texture2D" uid="uid://eylrsa5hstfv" path="res://Sprites/PlantUnitTemplate.png" id="3_vmvb3"]
+[ext_resource type="Texture2D" uid="uid://ckql4shlnm0i5" path="res://Sprites/PlantUnitLvl2.png" id="3_ltgvh"]
 [ext_resource type="Script" uid="uid://b1f3oc3feespy" path="res://Scripts/Game/Resources/MinionData.cs" id="4_2tifr"]
 
 [sub_resource type="Resource" id="Resource_lmarx"]
@@ -12,11 +12,12 @@ metadata/_custom_type_script = "uid://dkojvf477tj8k"
 
 [resource]
 script = ExtResource("4_2tifr")
-Name = "Flor"
-Texture = ExtResource("3_vmvb3")
+Name = "Guerrero Planta"
+Texture = ExtResource("3_ltgvh")
 Element = ExtResource("2_ixgmu")
 Cost = SubResource("Resource_lmarx")
-Health = 200
-Damage = 60
-DamageArea = Array[Vector2i]([Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1)])
+Health = 70
+Damage = 25
+MovePoints = 3
+DamageArea = Array[Vector2i]([Vector2i(0, -1), Vector2i(0, -2), Vector2i(0, -3), Vector2i(0, -4)])
 metadata/_custom_type_script = "uid://b1f3oc3feespy"

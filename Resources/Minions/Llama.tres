@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="MinionData" load_steps=6 format=3 uid="uid://dk7gdy7w6fo17"]
+
+[ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="1_ex34i"]
+[ext_resource type="Resource" uid="uid://bgc3ahlw6sdst" path="res://Resources/Elements/Fire.tres" id="2_n1brf"]
+[ext_resource type="Texture2D" uid="uid://qoa7u3ngijva" path="res://Sprites/FireUnitLvl1.png" id="3_x5hac"]
+[ext_resource type="Script" uid="uid://b1f3oc3feespy" path="res://Scripts/Game/Resources/MinionData.cs" id="4_kblxm"]
+
+[sub_resource type="Resource" id="Resource_jn8rg"]
+script = ExtResource("1_ex34i")
+FireMana = 1
+metadata/_custom_type_script = "uid://dkojvf477tj8k"
+
+[resource]
+script = ExtResource("4_kblxm")
+Name = "Llama"
+Texture = ExtResource("3_x5hac")
+Element = ExtResource("2_n1brf")
+Cost = SubResource("Resource_jn8rg")
+Health = 10
+Damage = 20
+MovePoints = 2
+DamageArea = Array[Vector2i]([Vector2i(0, -1), Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1)])
+metadata/_custom_type_script = "uid://b1f3oc3feespy"
