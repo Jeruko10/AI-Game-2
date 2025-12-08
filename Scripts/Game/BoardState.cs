@@ -60,6 +60,9 @@ public partial class BoardState : Node
 		Player1Mana = Player1StartingMana;
 		Player2Mana = Player2StartingMana;
 
+        SelectedDeployTroopPlayer1 = Game.Minions.FireKnightLv1;
+        SelectedDeployTroopPlayer2 = Game.Minions.FireKnightLv1;
+
 		PassTurn();
 		GodotExtensions.CallDeferred(CreateBoard);
 	}
@@ -67,7 +70,10 @@ public partial class BoardState : Node
 
 	public Board.Players GetActivePlayer() => isPlayer1Turn ? Board.Players.Player1 : Board.Players.Player2;
 
+    public MinionData GetActivePlayerSelectedDeployTroop() => GetActivePlayer() == Board.Players.Player1 ? SelectedDeployTroopPlayer1 : SelectedDeployTroopPlayer2;
+
 	public Minion[] GetPlayerMinions(Board.Players player) => [.. Minions.Where(m => m.Owner == player)];
+
 	public Fort[] GetPlayerForts(Board.Players player) => [.. Forts.Where(f => f.Owner == player)];
 
 	public void SelectMinion(Minion minion)
@@ -92,9 +98,7 @@ public partial class BoardState : Node
 
 	public void PassTurn()
 	{
-		isPlayer1Turn = !isPlayer1Turn;
-		Board.Players oldTurnOwner = Board.GetRival(GetActivePlayer());
-		Board.Players newTurnOwner = GetActivePlayer();
+		Board.Players oldTurnOwner = GetActivePlayer();
 		InputHandler.InteractionEnabled = false;
 		UnselectMinion();
 		SelectedCell = null;
@@ -107,6 +111,8 @@ public partial class BoardState : Node
 			if (fort.Owner == oldTurnOwner)
 				HarvestMana(fort);
 
+		isPlayer1Turn = !isPlayer1Turn;
+		Board.Players newTurnOwner = GetActivePlayer();
 		TurnStarted?.Invoke(newTurnOwner);
 	}
 

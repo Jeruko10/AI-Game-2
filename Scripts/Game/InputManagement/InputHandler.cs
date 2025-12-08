@@ -109,16 +109,15 @@ public partial class InputHandler : Node
             return;
         }
 
-        SpawnSelectedMinion(clickedCell);
+        Minion tempMinion = new(Board.State.GetActivePlayerSelectedDeployTroop(), clickedCell);
+
+        if (!GridNavigation.GetObstructorsForMinion(tempMinion).Contains(clickedCell)) // Cell is not blocked
+            SpawnSelectedMinion(clickedCell);
     }
 
     private static void SpawnSelectedMinion(Vector2I clickedCell)
     {
-        MinionData minionToDeploy;
-        if (Board.State.GetActivePlayer() != Board.Players.Player1)
-            minionToDeploy = Board.State.SelectedDeployTroopPlayer2;
-        else
-            minionToDeploy = Board.State.SelectedDeployTroopPlayer1;
+        MinionData minionToDeploy = Board.State.GetActivePlayerSelectedDeployTroop();
 
         if(minionToDeploy == null)
         {

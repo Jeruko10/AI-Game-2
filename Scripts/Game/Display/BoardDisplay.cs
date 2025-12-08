@@ -106,7 +106,7 @@ public partial class BoardDisplay : Node2D
 		Minion selectedMinion = Board.State.SelectedMinion;
 
 		// Draw damage zone
-		if (Board.State.AttackMode)
+		if (Board.State.AttackMode && selectedMinion != null)
 		{
 			Vector2I minionDir = Board.State.SelectedCell == null ? Vector2I.Up :
 			Board.Grid.GetCardinal(selectedMinion.Position, Board.State.SelectedCell.Value);

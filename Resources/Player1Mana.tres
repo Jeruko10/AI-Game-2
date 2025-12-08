@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Mana" load_steps=2 format=3 uid="uid://jplmy1ye1fyv"]
+
+[ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="1_d0yb0"]
+
+[resource]
+script = ExtResource("1_d0yb0")
+FireMana = 2
+WaterMana = 2
+PlantMana = 2
+metadata/_custom_type_script = "uid://dkojvf477tj8k"

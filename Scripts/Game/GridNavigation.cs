@@ -129,7 +129,7 @@ public static class GridNavigation
 		return [.. path];
 	}
 
-	static HashSet<Vector2I> GetObstructorsForMinion(Minion minion)
+	public static HashSet<Vector2I> GetObstructorsForMinion(Minion minion)
 	{
 		HashSet<Vector2I> obstructedCells = [];
 
