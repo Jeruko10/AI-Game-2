@@ -13,6 +13,21 @@ public partial class DominateMoveState : State, IMinionState
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
 
+        if (waypoints != null && waypoints.Count > 0)
+        {
+            Waypoint top = waypoints
+                .Where(waypoints => waypoints.Type != Waypoint.Types.Deploy)
+                .OrderByDescending(w => w.Priority)
+                .First();
+
+            if (top.Type != Waypoint.Types.Capture)
+            {
+                // Volvemos al estado padre (DominateState),
+                TransitionToParent();
+                return true;
+            }
+        }
+
         Vector2I pos = minion.Position;
         float structHere = influence.StructureValueMap[pos.X, pos.Y];
 

@@ -13,7 +13,6 @@ public partial class AttackState : State, IMinionState
         // por si las moscas
         if (waypoints == null || waypoints.Count == 0)
         {
-            GD.Print("me bengo");
             TransitionToChild("AttackMoveState");
             return true;
         }
@@ -23,8 +22,6 @@ public partial class AttackState : State, IMinionState
             .Where(waypoints => waypoints.Type != Waypoint.Types.Deploy)
             .OrderByDescending(w => w.Priority)
             .First();
-
-        GD.Print(top);
 
         switch (top.Type)
         {
