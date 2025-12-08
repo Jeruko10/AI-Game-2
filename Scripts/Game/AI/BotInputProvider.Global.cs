@@ -43,7 +43,7 @@ public partial class BotInputProvider : VirtualInputProvider
         {
             MinionData minionToDeploy = GetMinionWithManaLogic(waypoint);
             if (minionToDeploy == null)
-                continue; // No hay minion que podamos pagar
+                continue;
 
             Board.State.SelectedDeployTroopPlayer2 = minionToDeploy;
             await SimulateHumanClick(waypoint.Cell, true);

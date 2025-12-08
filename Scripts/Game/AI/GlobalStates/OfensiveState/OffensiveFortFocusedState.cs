@@ -52,40 +52,64 @@ public partial class OffensiveFortFocusedState : State, IGlobalState
 
     private static List<Waypoint> CreateFortMovementWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority, Element.Types preferredType)
     {
-        const int range = 4;
-        var origin = fort.Position;
+        output.Add(new Waypoint
+        {
+            Type = Waypoint.Types.Capture,
+            Cell = fort.Position,
+            ElementAffinity = preferredType,
+            Priority = basePriority + 20
+        });
+
+        const int range = 3;
+        const int maxWaypoints = 4; 
+        List<Vector2I> candidateCells = new();
 
         for (int dx = -range; dx <= range; dx++)
         {
             for (int dy = -range; dy <= range; dy++)
             {
-                Vector2I cell = new(origin.X + dx, origin.Y + dy);
+                var cell = new Vector2I(fort.Position.X + dx, fort.Position.Y + dy);
+
                 if (!Board.Grid.IsInsideGrid(cell)) continue;
                 if (Board.State.IsCellOccupied(cell)) continue;
+                if (Board.Grid.GetDistance(cell, fort.Position) > range) continue;
 
                 float inf = influence.GetInfluenceAt(cell);
+                if (inf > 0) continue; 
 
-                if (inf > 0) continue;
-
-                int dist = Board.Grid.GetDistance(cell, origin);
-                if (dist > range) continue;
-
-                int priority =
-                    basePriority
-                    - dist * 3
-                    + Mathf.RoundToInt(Math.Max(0f, -inf) * 10f);
-
-                output.Add(new Waypoint
-                {
-                    Type = Waypoint.Types.Capture,
-                    Cell = cell,
-                    ElementAffinity = preferredType,
-                    Priority = priority
-                });
+                candidateCells.Add(cell);
             }
         }
+
+        if (candidateCells.Count == 0)
+            return output;
+
+        RandomNumberGenerator rng = new();
+        rng.Randomize();
+        candidateCells = [.. candidateCells.OrderBy(_ => rng.Randi()).Take(maxWaypoints)];
+
+        foreach (var cell in candidateCells)
+        {
+            float inf = influence.GetInfluenceAt(cell);
+            int dist = Board.Grid.GetDistance(cell, fort.Position);
+
+            int priority =
+                basePriority
+                - dist * 3
+                + Mathf.RoundToInt(Math.Max(0f, -inf) * 10f);
+
+            output.Add(new Waypoint
+            {
+                Type = Waypoint.Types.Move,
+                Cell = cell,
+                ElementAffinity = preferredType,
+                Priority = priority
+            });
+        }
+
         return output;
     }
+
 
     private static List<Waypoint> CreateLowPriorityAttackWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority)
     {
