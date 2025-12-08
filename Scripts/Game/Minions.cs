@@ -45,6 +45,7 @@ public partial class Minions : Node
 		PlantKnightLv2,
 		FireKnightLv3,
 		WaterKnightLv3,
+        PlantKnightLv3
 	];
 
 	static Minions singleton;
