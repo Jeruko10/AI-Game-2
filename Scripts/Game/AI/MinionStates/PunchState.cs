@@ -35,36 +35,56 @@ public partial class PunchState : State, IMinionState
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)
     {
-        BoardState boardState = Board.State;
-        Grid2D grid = Board.Grid;
         List<Vector2I> clickedCells = [];
+        Vector2I[] directions = [Vector2I.Up, Vector2I.Down, Vector2I.Right, Vector2I.Left];
+        Vector2I bestDirection = Vector2I.Zero;
+        int bestDamage = int.MinValue;
 
-        Minion bestTarget = null;
-        Vector2I bestCell = default;
-        int bestHealth = int.MaxValue;
-
-        foreach (var cell in grid.GetAdjacents(minion.Position, includeDiagonals: false))
+        foreach (Vector2I direction in directions)
         {
-            var data = boardState.GetCellData(cell);
-            Minion enemy = data.Minion;
-            if (enemy == null || enemy.Owner == minion.Owner)
-                continue;
+            int score = GetAttackScore(minion, direction);
 
-            if (enemy.Health < bestHealth)
+            if (score > bestDamage)
             {
-                bestHealth = enemy.Health;
-                bestTarget = enemy;
-                bestCell = cell;
+                bestDamage = score;
+                bestDirection = direction;
             }
         }
 
-        if (bestTarget == null)
-            return clickedCells.ToArray();
+        if (bestDirection != Vector2I.Zero)
+        {
+            clickedCells.Add(minion.Position); //Click the minion 2 times
+            clickedCells.Add(minion.Position);
 
-        clickedCells.Add(minion.Position); //Click the minion 2 times
-        clickedCells.Add(minion.Position);
-        clickedCells.Add(bestCell); //Attack
-        return clickedCells.ToArray();
+            clickedCells.Add(minion.Position + bestDirection); //Attack
+        }
+
+        return [.. clickedCells];
     }
 
+    static int GetAttackScore(Minion minion, Vector2I direction)
+    {
+        int score = 0;
+        Vector2I[] damageArea = GridNavigation.RotatedDamageArea(minion.DamageArea, direction);
+
+        foreach (Vector2I cell in damageArea)
+        {
+            Vector2I worldCell = cell + minion.Position;
+
+            if (Board.Grid.IsInsideGrid(worldCell))
+            {
+                var cellData = Board.State.GetCellData(worldCell);
+                Minion victim = cellData.Minion;
+
+                if (victim == null) continue;
+
+                int sign = victim.Owner == Board.State.GetActivePlayer() ? -1 : 1; // If minion is friendly, points will be negative, otherwise positive
+                int damage = Board.State.GetAttackDamage(minion, victim);
+
+                score += damage * sign;
+            }
+        }
+
+        return score;
+    }
 }

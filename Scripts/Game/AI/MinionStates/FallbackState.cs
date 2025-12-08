@@ -63,17 +63,17 @@ public partial class FallbackState : State, IMinionState
             });
 
         if (safeCell == null)
-            return clickedCells.ToArray();
+            return [.. clickedCells];
 
         Vector2I[] path = GridNavigation.GetPathForMinion(minion, safeCell.Value);
         if (path == null || path.Length == 0)
-            return clickedCells.ToArray();
+            return [.. clickedCells];
 
 
         clickedCells.Add(path[0]); //Click the minion
         clickedCells.Add(path[path.Length-1]); //Click the last position
 
 
-        return clickedCells.ToArray();
+        return [.. clickedCells];
     }
 }

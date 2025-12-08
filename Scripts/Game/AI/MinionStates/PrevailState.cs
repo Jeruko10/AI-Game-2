@@ -79,6 +79,6 @@ public partial class PrevailState : State, IMinionState
         }
 
         // If there are not enemies, dont move
-        return clickedCells.ToArray();
+        return [.. clickedCells];
     }
 }

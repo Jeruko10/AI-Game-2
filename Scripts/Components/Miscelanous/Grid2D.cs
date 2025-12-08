@@ -101,21 +101,21 @@ public partial class Grid2D : Node2D
 			:
 			[new(1, 0), new(-1, 0), new(0, 1), new(0, -1)];
 
-		return directions.Select(dir => cell + dir).Where(IsInsideGrid).ToArray();
+		return [.. directions.Select(dir => cell + dir).Where(IsInsideGrid)];
 	}
 
 	/// <summary> Returns an array of cells in a specific row. </summary>
 	public Vector2I[] GetRow(int row)
 	{
 		if (row < 0 || row >= Size.Y) return [];
-		return Enumerable.Range(0, Size.X).Select(x => new Vector2I(x, row)).ToArray();
+		return [.. Enumerable.Range(0, Size.X).Select(x => new Vector2I(x, row))];
 	}
 
 	/// <summary> Gets an array of cells in a specific column. </summary>
 	public Vector2I[] GetColumn(int column)
 	{
 		if (column < 0 || column >= Size.X) return [];
-		return Enumerable.Range(0, Size.Y).Select(y => new Vector2I(column, y)).ToArray();
+		return [.. Enumerable.Range(0, Size.Y).Select(y => new Vector2I(column, y))];
 	}
 
 	/// <summary> Returns an array of all cells in the grid. </summary>
@@ -127,7 +127,7 @@ public partial class Grid2D : Node2D
 			for (int x = 0; x < Size.X; x++)
 				cells.Add(new Vector2I(x, y));
 
-		return cells.ToArray();
+		return [.. cells];
 	}
 
 	/// <summary> Returns an array of cells within a specified range from a center cell. </summary>

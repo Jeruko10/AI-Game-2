@@ -50,7 +50,7 @@ public static class GridNavigation
 		}
 
 		// Return all reachable cells except the starting one
-		return visited.Keys.Where(c => c != minion.Position).ToArray();
+		return [.. visited.Keys.Where(c => c != minion.Position)];
 	}
 
 	public static bool IsReachableByMinion(Minion minion, Vector2I cell)
@@ -160,6 +160,6 @@ public static class GridNavigation
 			rotatedArea.Add(new Vector2I(Mathf.RoundToInt(rotated.X), Mathf.RoundToInt(rotated.Y)));
 		}
 
-		return rotatedArea.ToArray();
+		return [.. rotatedArea];
 	}
 }

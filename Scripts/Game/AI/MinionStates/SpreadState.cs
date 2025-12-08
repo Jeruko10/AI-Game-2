@@ -102,15 +102,15 @@ public partial class SpreadState : State, IMinionState
             });
 
         if (target == null)
-            return clickedCells.ToArray();
+            return [.. clickedCells];
 
         Vector2I[] path = GridNavigation.GetPathForMinion(minion, target.Value);
         if (path == null || path.Length == 0)
-            return clickedCells.ToArray();
+            return [.. clickedCells];
 
         clickedCells.Add(path[0]); //Click the minion
         clickedCells.Add(path[path.Length-1]); //Click the last position
 
-        return clickedCells.ToArray();
+        return [.. clickedCells];
     }
 }

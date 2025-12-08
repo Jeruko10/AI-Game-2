@@ -14,12 +14,13 @@ public partial class AttackMoveState : State, IMinionState
         InfluenceMapManager influence = Board.State.influence;
         Grid2D grid = Board.Grid;
 
-        //4 DIRECTIONS NOT 8
+        //4 DIRECTIONS
 
         // If enemy nearby, change to punching punching
-        foreach (var cell in grid.GetAdjacents(minion.Position, includeDiagonals: false))
+        foreach (Vector2I cell in GetAllPossibleAttacks(minion))
         {
             var data = boardState.GetCellData(cell);
+
             if (data.Minion != null && data.Minion.Owner != minion.Owner)
             {
                 TransitionToSibling("PunchState");
@@ -81,17 +82,33 @@ public partial class AttackMoveState : State, IMinionState
         }
 
         if (target == null)
-            return clickedCells.ToArray();
+            return [.. clickedCells];
 
         Vector2I[] path = GridNavigation.GetPathForMinion(minion, target.Value);
         if (path == null || path.Length == 0)
-            return clickedCells.ToArray();
+            return [.. clickedCells];
 
         //change if you wanna click only the minion and the destination.
         clickedCells.Add(path[0]); //Click the minion
         clickedCells.Add(path[path.Length-1]); //Click the last position
 
-        return clickedCells.ToArray();
+        return [.. clickedCells];
     }
 
+    static Vector2I[] GetAllPossibleAttacks(Minion minion)
+    {
+        HashSet<Vector2I> cells = [];
+        Vector2I[] directions = [Vector2I.Up, Vector2I.Down, Vector2I.Right, Vector2I.Left];
+
+        foreach (Vector2I direction in directions)
+        {
+            Vector2I[] damageArea = GridNavigation.RotatedDamageArea(minion.DamageArea, direction);
+
+            foreach (Vector2I cell in damageArea)
+                if (Board.Grid.IsInsideGrid(cell))
+                    cells.Add(cell + minion.Position);
+        }
+
+        return [.. cells];
+    }
 }

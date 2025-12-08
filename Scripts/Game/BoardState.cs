@@ -12,6 +12,7 @@ public partial class BoardState : Node
 	[Export] Mana Player1StartingMana;
 	[Export] Mana Player2StartingMana;
     [Export] int manaPerHarvest = 3;
+    [Export] float elementalBonusFactor = 2f;
 
 	public Dictionary<Vector2I, Tile> Tiles { get; private set; } = [];
 	public List<Minion> Minions { get; private set; } = [];
@@ -187,14 +188,25 @@ public partial class BoardState : Node
 		foreach (Vector2I cell in damageArea)
 		{
 			Minion victim = GetCellData(cell + minion.Position).Minion;
-			if (victim != null) DamageMinion(victim, minion.Damage);
+			if (victim != null)
+            {
+                int totalDamage = GetAttackDamage(minion, victim);
+                DamageMinion(victim, totalDamage);
+            }
 		}
 		minion.Exhausted = true;
 		Board.State.UnselectMinion();
 		MinionAttack?.Invoke(minion, direction);
 	}
 
-	public void DamageMinion(Minion minion, int damage)
+    public int GetAttackDamage(Minion minion, Minion victim)
+    {
+        Element.Types weakElement = Element.GetAdvantage(minion.Element.Tag);
+        float multiplier = victim.Element.Tag == weakElement ? elementalBonusFactor : 1f;
+        return (int)Mathf.Round(minion.Damage * multiplier);
+    }
+
+    public void DamageMinion(Minion minion, int damage)
 	{
 		minion.Health -= damage;
 		if (minion.Health <= 0) KillMinion(minion);
