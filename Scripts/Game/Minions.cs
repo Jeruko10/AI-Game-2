@@ -41,7 +41,7 @@ public partial class Minions : Node
 		WaterKnightLv1,
 		PlantKnightLv1,
 		FireKnightLv2,
-		WaterKnightLv2,	
+		WaterKnightLv2,
 		PlantKnightLv2,
 		FireKnightLv3,
 		WaterKnightLv3,

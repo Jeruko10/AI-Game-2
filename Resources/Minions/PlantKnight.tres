@@ -12,7 +12,7 @@ metadata/_custom_type_script = "uid://dkojvf477tj8k"
 
 [resource]
 script = ExtResource("2_nrihp")
-Name = "Plant Knight"
+Name = "semen"
 Texture = ExtResource("1_nyx8i")
 Element = ExtResource("2_b4tsv")
 Cost = SubResource("Resource_b4tsv")
