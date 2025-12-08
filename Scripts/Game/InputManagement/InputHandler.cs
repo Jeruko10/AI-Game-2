@@ -95,7 +95,7 @@ public partial class InputHandler : Node
         if (GridNavigation.IsReachableByMinion(selectedMinion, clickedCell))
         {
             Vector2I[] minionPath = GridNavigation.GetPathForMinion(selectedMinion, clickedCell);
-            GD.Print(minionPath);
+            //GD.Print(minionPath);
             Board.State.MoveMinion(selectedMinion, minionPath);
         }
         else Board.State.UnselectMinion();

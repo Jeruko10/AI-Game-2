@@ -162,10 +162,10 @@ public partial class BoardState : Node
 	public void MoveMinion(Minion minion, Vector2I[] path)
 	{
 		minion.Selectable = false;
-        GD.Print(path);
+        //GD.Print(path);
 		foreach (Vector2I pathCell in path[..^1]) // Skip last one
 		{
-			GD.Print($"Moving through cell: {Tiles[pathCell]}");
+			//GD.Print($"Moving through cell: {Tiles[pathCell]}");
 			Tile tile = Tiles[pathCell];
 			minion.MovePoints -= (minion.Element.Tag == Element.Types.Water) ? 1 : tile.MoveCost;
 		}
