@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://g3v7s8i1j5gr"
-path="res://.godot/imported/WaterUnitTemplate.png-3d276e2156b2d5b253e1e7cfb40a1bd3.ctex"
+uid="uid://dvu62xtjaorkp"
+path="res://.godot/imported/WaterUnitLvl3.png-925eb619899e64d7dcd2a2e450b80c7c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/WaterUnitTemplate.png"
-dest_files=["res://.godot/imported/WaterUnitTemplate.png-3d276e2156b2d5b253e1e7cfb40a1bd3.ctex"]
+source_file="res://Sprites/WaterUnitLvl3.png"
+dest_files=["res://.godot/imported/WaterUnitLvl3.png-925eb619899e64d7dcd2a2e450b80c7c.ctex"]
 
 [params]
 

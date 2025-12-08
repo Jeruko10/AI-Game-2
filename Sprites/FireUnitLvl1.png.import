@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://eylrsa5hstfv"
-path="res://.godot/imported/PlantUnitTemplate.png-887bd4c6a102b60c47146407ae56483f.ctex"
+uid="uid://qoa7u3ngijva"
+path="res://.godot/imported/FireUnitLvl1.png-3c96dc79b024af514069f3b31e5b7576.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/PlantUnitTemplate.png"
-dest_files=["res://.godot/imported/PlantUnitTemplate.png-887bd4c6a102b60c47146407ae56483f.ctex"]
+source_file="res://Sprites/FireUnitLvl1.png"
+dest_files=["res://.godot/imported/FireUnitLvl1.png-3c96dc79b024af514069f3b31e5b7576.ctex"]
 
 [params]
 

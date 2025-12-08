@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_d0yb0")
-FireMana = 2
-WaterMana = 2
-PlantMana = 2
+FireMana = 418
+WaterMana = 303
+PlantMana = 508
 metadata/_custom_type_script = "uid://dkojvf477tj8k"

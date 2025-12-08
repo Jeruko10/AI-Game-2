@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgq2pph8bwjjd"
-path="res://.godot/imported/FireUnitTemplate.png-3852529c92d084746031b90a8437386b.ctex"
+uid="uid://cafae543ogw1p"
+path="res://.godot/imported/FireUnitLvl3.png-aed3b138c87d504d2e72ae548f81e338.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/FireUnitTemplate.png"
-dest_files=["res://.godot/imported/FireUnitTemplate.png-3852529c92d084746031b90a8437386b.ctex"]
+source_file="res://Sprites/FireUnitLvl3.png"
+dest_files=["res://.godot/imported/FireUnitLvl3.png-aed3b138c87d504d2e72ae548f81e338.ctex"]
 
 [params]
 
