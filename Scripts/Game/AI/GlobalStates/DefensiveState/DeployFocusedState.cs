@@ -133,7 +133,7 @@ public partial class DeployFocusedState : State, IGlobalState
                     Type = Waypoint.Types.Capture,
                     Cell = fort.Position,
                     ElementAffinity = Element.Types.None,
-                    Priority = ComputeCapturePriority(fort, enemyInf)
+                    Priority = ComputeCapturePriority(fort)
                 });
             }
         }
@@ -199,7 +199,6 @@ public partial class DeployFocusedState : State, IGlobalState
 
         foreach (var type in all)
         {
-            // buscamos el minion más barato de este tipo
             int cost = GetCheapestMinionCost(type, mana);
 
             if (cost >= 0 && cost < cheapestCost)
@@ -212,11 +211,29 @@ public partial class DeployFocusedState : State, IGlobalState
         return cheapestType;
     }
 
-    int ComputeCapturePriority(Fort fort, float enemyInf)
+    int ComputeCapturePriority(Fort fort)
     {
-        float t = Mathf.Clamp(1f - enemyInf, 0f, 1f);
-        return 20 + Mathf.RoundToInt(t * 40f);
+        float ally = 0f;
+        float enemy = 0f;
+        const int radius = 2;
+
+        for (int dx = -radius; dx <= radius; dx++)
+        for (int dy = -radius; dy <= radius; dy++)
+        {
+            Vector2I cell = new(fort.Position.X + dx, fort.Position.Y + dy);
+            if (!Board.Grid.IsInsideGrid(cell)) continue;
+
+            float inf = Board.State.influence.GetInfluenceAt(cell);
+
+            if (inf > 0) ally += inf;
+            else enemy += -inf;
+        }
+
+        float controlScore = Mathf.Clamp(ally - enemy, -5f, 5f);
+
+        return 20 + Mathf.RoundToInt((controlScore + 5f) / 10f * 40f);
     }
+
     static Vector2I? GetFortDeployableCell(Vector2I origin, InfluenceMapManager influence, List<Vector2I> exclude)
     {
         foreach (var c in Board.Grid.GetAdjacents(origin, true))

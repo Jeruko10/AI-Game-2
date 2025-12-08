@@ -30,8 +30,8 @@ color = Color(0.52906674, 0.5290667, 0.5290667, 1)
 layout_mode = 0
 offset_left = 1920.0
 offset_right = 2434.0
-offset_bottom = 1080.0
-color = Color(0.24057722, 0.24057725, 0.24057719, 1)
+offset_bottom = 1430.0
+color = Color(0.23921569, 0.23921569, 0.23921569, 0.6509804)
 
 [node name="FlowContainer" type="FlowContainer" parent="Fondo"]
 layout_mode = 0
