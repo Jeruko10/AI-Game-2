@@ -136,9 +136,12 @@ public static class GridNavigation
 		foreach (Vector2I cell in Board.Grid.GetAllCells())
 		{
 			var data = Board.State.GetCellData(cell);
+            bool tileExists = data.Tile != null;
+            bool wallOnCell = tileExists && data.Tile.Obstructs && minion.Element.Tag != Element.Types.Plant;
+            bool minionOnCell = data.Minion != null;
 
-			if ((data.Tile != null && data.Tile.Obstructs && minion.Element.Tag != Element.Types.Plant) || data.Minion != null)
-				    obstructedCells.Add(cell);
+			if (wallOnCell || minionOnCell)
+				obstructedCells.Add(cell);
 		}
 
 		return obstructedCells;

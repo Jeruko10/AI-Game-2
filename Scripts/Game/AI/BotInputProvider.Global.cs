@@ -9,7 +9,7 @@ namespace Game;
 
 public partial class BotInputProvider : VirtualInputProvider
 {
-    [Export] GlobalRootState RootState;
+    [Export] public GlobalRootState RootState;
     
     async Task PlayTurn()
     {
