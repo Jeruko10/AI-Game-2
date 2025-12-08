@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=32 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputManagement/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
@@ -16,173 +16,19 @@
 [ext_resource type="Script" uid="uid://bfw3swkq3rr1u" path="res://Scripts/Components/Miscelanous/ActualStateLabel.cs" id="8_i1pr2"]
 [ext_resource type="Script" uid="uid://bpoclqr2f21y2" path="res://Scripts/Game/Display/BoardDisplay.cs" id="13_8r6kd"]
 [ext_resource type="PackedScene" uid="uid://bcookw6uqteh7" path="res://Scenes/MinionDisplay.tscn" id="14_tfod6"]
+[ext_resource type="Resource" uid="uid://bvylj8fneatts" path="res://Resources/Minions/PlantKnight.tres" id="15_i4lct"]
 [ext_resource type="PackedScene" uid="uid://drjycecp44mo7" path="res://Scenes/FortDisplay.tscn" id="15_rajel"]
-[ext_resource type="Resource" uid="uid://bgc3ahlw6sdst" path="res://Resources/Elements/Fire.tres" id="16_jn8rg"]
 [ext_resource type="PackedScene" uid="uid://b87vvghkw306d" path="res://Scenes/TileDisplay.tscn" id="16_vvhu1"]
 [ext_resource type="Script" uid="uid://bib5h2me841oe" path="res://Scripts/Game/InputManagement/MouseInputProvider.cs" id="17_i0vto"]
 [ext_resource type="Script" uid="uid://u4ode5mopgro" path="res://Scripts/Game/Board.cs" id="17_lbihj"]
-[ext_resource type="Texture2D" uid="uid://bgq2pph8bwjjd" path="res://Sprites/FireUnitTemplate.png" id="17_umnjm"]
 [ext_resource type="Script" uid="uid://b48wu1iq57whg" path="res://Scripts/Game/AI/BotInputProvider.cs" id="18_3jf1l"]
-[ext_resource type="Script" uid="uid://b1f3oc3feespy" path="res://Scripts/Game/Resources/MinionData.cs" id="18_4eqlp"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
-[ext_resource type="Resource" uid="uid://cp1te5ttwo23a" path="res://Resources/Elements/Water.tres" id="19_18uti"]
 [ext_resource type="PackedScene" uid="uid://hjcj4ivpf450" path="res://Scenes/GlobalHFSM.tscn" id="19_iyesh"]
-[ext_resource type="Texture2D" uid="uid://g3v7s8i1j5gr" path="res://Sprites/WaterUnitTemplate.png" id="20_khy6b"]
-[ext_resource type="Resource" uid="uid://b1u2b1vwy56fi" path="res://Resources/Elements/Plant.tres" id="21_pti6k"]
-[ext_resource type="Texture2D" uid="uid://eylrsa5hstfv" path="res://Sprites/PlantUnitTemplate.png" id="22_lmarx"]
-[ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/waypointDisplayTscn.tscn" id="23_356ba"]
+[ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/WaypointDisplayTscn.tscn" id="23_356ba"]
 [ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
 [ext_resource type="Script" uid="uid://cyngg360t1vk" path="res://Scripts/Game/AI/InfluenceMapManager.cs" id="27_3jf1l"]
 [ext_resource type="PackedScene" uid="uid://cfx08ypbn55vo" path="res://Scenes/DeployScreen.tscn" id="29_i4lct"]
-
-[sub_resource type="Resource" id="Resource_jn8rg"]
-script = ExtResource("23_raj38")
-FireMana = 2
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_dctr5"]
-script = ExtResource("18_4eqlp")
-Name = "Llama"
-Texture = ExtResource("17_umnjm")
-Element = ExtResource("16_jn8rg")
-Cost = SubResource("Resource_jn8rg")
-Health = 120
-Damage = 100
-MovePoints = 3
-DamageArea = Array[Vector2i]([Vector2i(0, 2)])
-metadata/_custom_type_script = "uid://b1f3oc3feespy"
-
-[sub_resource type="Resource" id="Resource_7av8l"]
-script = ExtResource("23_raj38")
-FireMana = 4
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_mi7vx"]
-script = ExtResource("18_4eqlp")
-Name = "Hoguera"
-Texture = ExtResource("17_umnjm")
-Element = ExtResource("16_jn8rg")
-Cost = SubResource("Resource_7av8l")
-Health = 140
-Damage = 150
-MovePoints = 4
-DamageArea = Array[Vector2i]([Vector2i(1, 1), Vector2i(-1, 1)])
-metadata/_custom_type_script = "uid://b1f3oc3feespy"
-
-[sub_resource type="Resource" id="Resource_umnjm"]
-script = ExtResource("23_raj38")
-FireMana = 6
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_t2joc"]
-script = ExtResource("18_4eqlp")
-Name = "Nuke"
-Texture = ExtResource("17_umnjm")
-Element = ExtResource("16_jn8rg")
-Cost = SubResource("Resource_umnjm")
-Health = 1
-Damage = 250
-MovePoints = 4
-DamageArea = Array[Vector2i]([Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1), Vector2i(-1, 1), Vector2i(-1, -1)])
-metadata/_custom_type_script = "uid://b1f3oc3feespy"
-
-[sub_resource type="Resource" id="Resource_4eqlp"]
-script = ExtResource("23_raj38")
-WaterMana = 2
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_audqb"]
-script = ExtResource("18_4eqlp")
-Name = "Gota"
-Texture = ExtResource("20_khy6b")
-Element = ExtResource("19_18uti")
-Cost = SubResource("Resource_4eqlp")
-Health = 140
-MovePoints = 4
-DamageArea = Array[Vector2i]([Vector2i(0, 2), Vector2i(0, 3)])
-metadata/_custom_type_script = "uid://b1f3oc3feespy"
-
-[sub_resource type="Resource" id="Resource_18uti"]
-script = ExtResource("23_raj38")
-WaterMana = 4
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_7w24h"]
-script = ExtResource("18_4eqlp")
-Name = "Aqua"
-Texture = ExtResource("20_khy6b")
-Element = ExtResource("19_18uti")
-Cost = SubResource("Resource_18uti")
-Health = 180
-Damage = 80
-DamageArea = Array[Vector2i]([Vector2i(0, 2), Vector2i(0, 3)])
-metadata/_custom_type_script = "uid://b1f3oc3feespy"
-
-[sub_resource type="Resource" id="Resource_khy6b"]
-script = ExtResource("23_raj38")
-WaterMana = 6
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_6okg5"]
-script = ExtResource("18_4eqlp")
-Name = "El Pez"
-Texture = ExtResource("20_khy6b")
-Element = ExtResource("19_18uti")
-Cost = SubResource("Resource_khy6b")
-Health = 200
-Damage = 100
-MovePoints = 6
-DamageArea = Array[Vector2i]([Vector2i(0, 2), Vector2i(0, 3), Vector2i(1, 3), Vector2i(-1, 3)])
-metadata/_custom_type_script = "uid://b1f3oc3feespy"
-
-[sub_resource type="Resource" id="Resource_pti6k"]
-script = ExtResource("23_raj38")
-PlantMana = 2
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_e2w45"]
-script = ExtResource("18_4eqlp")
-Name = "Brote"
-Texture = ExtResource("22_lmarx")
-Element = ExtResource("21_pti6k")
-Cost = SubResource("Resource_pti6k")
-Health = 170
-MovePoints = 4
-DamageArea = Array[Vector2i]([Vector2i(0, 1), Vector2i(0, 2)])
-metadata/_custom_type_script = "uid://b1f3oc3feespy"
-
-[sub_resource type="Resource" id="Resource_lmarx"]
-script = ExtResource("23_raj38")
-PlantMana = 4
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_oo65k"]
-script = ExtResource("18_4eqlp")
-Name = "Flor"
-Texture = ExtResource("22_lmarx")
-Element = ExtResource("21_pti6k")
-Cost = SubResource("Resource_lmarx")
-Health = 200
-Damage = 60
-DamageArea = Array[Vector2i]([Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1)])
-metadata/_custom_type_script = "uid://b1f3oc3feespy"
-
-[sub_resource type="Resource" id="Resource_lkuj1"]
-script = ExtResource("23_raj38")
-FireMana = 7
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_smnwb"]
-script = ExtResource("18_4eqlp")
-Name = "Arbol"
-Texture = ExtResource("22_lmarx")
-Element = ExtResource("21_pti6k")
-Cost = SubResource("Resource_lkuj1")
-Health = 251
-Damage = 70
-DamageArea = Array[Vector2i]([Vector2i(0, 1), Vector2i(0, 2), Vector2i(1, 0), Vector2i(-1, 0), Vector2i(1, 1), Vector2i(-1, 1)])
-metadata/_custom_type_script = "uid://b1f3oc3feespy"
 
 [sub_resource type="Resource" id="Resource_raj38"]
 script = ExtResource("23_raj38")
@@ -404,15 +250,7 @@ metadata/_custom_type_script = "uid://c2vxjlf16t6t5"
 
 [node name="MinionLibrary" type="Node" parent="RefLibrary"]
 script = ExtResource("2_j5yw3")
-fireKnightDatalv1 = SubResource("Resource_dctr5")
-fireKnightDatalv2 = SubResource("Resource_mi7vx")
-fireKnightDatalv3 = SubResource("Resource_t2joc")
-waterKnightDatalv1 = SubResource("Resource_audqb")
-waterKnightDatalv2 = SubResource("Resource_7w24h")
-waterKnightDatalv3 = SubResource("Resource_6okg5")
-plantKnightDatalv1 = SubResource("Resource_e2w45")
-plantKnightDatalv2 = SubResource("Resource_oo65k")
-plantKnightDatalv3 = SubResource("Resource_smnwb")
+plantKnightDatalv1 = ExtResource("15_i4lct")
 metadata/_custom_type_script = "uid://cgdtthefjt0bb"
 
 [node name="InputHandler" type="Node" parent="."]
