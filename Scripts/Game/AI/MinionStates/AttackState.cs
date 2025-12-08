@@ -13,6 +13,7 @@ public partial class AttackState : State, IMinionState
         // por si las moscas
         if (waypoints == null || waypoints.Count == 0)
         {
+            GD.Print("me bengo");
             TransitionToChild("AttackMoveState");
             return true;
         }
@@ -21,6 +22,8 @@ public partial class AttackState : State, IMinionState
         Waypoint top = waypoints
             .OrderByDescending(w => w.Priority)
             .First();
+
+        GD.Print(top);
 
         switch (top.Type)
         {
@@ -36,9 +39,7 @@ public partial class AttackState : State, IMinionState
                 TransitionToSibling("DefendState");
                 break;
 
-            default: //por si las moscas
-                TransitionToChild("AttackMoveState");
-                break;
+            
         }
 
         return true;
