@@ -107,39 +107,13 @@ public partial class DeployFocusedState : State, IGlobalState
             });
         }
 
-        waypoints = SetCaptureWaypoints(waypoints);
+        waypoints.AddRange(OffensiveFortFocusedState.CreateFortMovementWaypoints());
 
         return waypoints;
     }
 
 
-    List<Waypoint> SetCaptureWaypoints(List<Waypoint> waypoints)
-    {
-        var forts = Board.State.Forts;
-        var influence = Board.State.influence;
-        const float lowThreshold = 0.25f;
 
-        foreach (var fort in forts)
-        {
-            if (fort.Owner == Board.Players.Player1)
-                continue;
-
-            float enemyInf = influence.GetInfluenceAt(fort.Position);
-
-            if (enemyInf <= lowThreshold)
-            {
-                waypoints.Add(new Waypoint
-                {
-                    Type = Waypoint.Types.Capture,
-                    Cell = fort.Position,
-                    ElementAffinity = Element.Types.None,
-                    Priority = ComputeCapturePriority(fort)
-                });
-            }
-        }
-
-        return waypoints;
-    }
 
 
 
@@ -213,8 +187,7 @@ public partial class DeployFocusedState : State, IGlobalState
 
     int ComputeCapturePriority(Fort fort)
     {
-        float ally = 0f;
-        float enemy = 0f;
+        float enemyInfluence = 0f;
         const int radius = 2;
 
         for (int dx = -radius; dx <= radius; dx++)
@@ -225,14 +198,17 @@ public partial class DeployFocusedState : State, IGlobalState
 
             float inf = Board.State.influence.GetInfluenceAt(cell);
 
-            if (inf > 0) ally += inf;
-            else enemy += -inf;
+            if (inf < 0)
+                enemyInfluence += -inf;
         }
 
-        float controlScore = Mathf.Clamp(ally - enemy, -5f, 5f);
+        enemyInfluence = Mathf.Clamp(enemyInfluence * 0.3f, 0f, 1f);
 
-        return 20 + Mathf.RoundToInt((controlScore + 5f) / 10f * 40f);
+        float t = 1f - enemyInfluence;
+
+        return 20 + Mathf.RoundToInt(t * 40f);
     }
+
 
     static Vector2I? GetFortDeployableCell(Vector2I origin, InfluenceMapManager influence, List<Vector2I> exclude)
     {
