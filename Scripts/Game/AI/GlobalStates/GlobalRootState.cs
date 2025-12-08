@@ -9,7 +9,6 @@ public partial class GlobalRootState : State, IGlobalState
 {
     public bool TryChangeState()
     {
-        GD.Print("GlobalRootState: Transitioning to OffensiveState.");
         // WE SHOULD NEVER BE IN THIS STATE DIRECTLY, since it does nothing and acts as folder for its substates. Please ALWAYS return true and transition to a child state.
 		TransitionToChild("OffensiveState");
         return true;

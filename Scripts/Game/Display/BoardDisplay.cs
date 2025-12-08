@@ -336,7 +336,6 @@ public partial class BoardDisplay : Node2D
 		await ToSignal(bannerTween, Tween.SignalName.Finished);
 
 		InputHandler.InteractionEnabled = true;
-		GD.Print("BoardDisplay: Turn banner animation finished.");
 	}
 
 	Vector2 CellToWorld(Vector2I cell) => Board.Grid.GridToWorld(cell) - GlobalPosition + Board.Grid.CellSize * Vector2.One / 2;

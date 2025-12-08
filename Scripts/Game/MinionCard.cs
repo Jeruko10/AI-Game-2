@@ -20,7 +20,7 @@ public partial class MinionCard : Button
 
     public override void _Process(double delta)
     {
-        if(Board.State.SelectedDeployTroop == minionData)
+        if(Board.State.SelectedDeployTroopPlayer1 == minionData)
         {
             controlSelected.Visible = true;
         }
@@ -46,8 +46,8 @@ public partial class MinionCard : Button
 
     void OnPressed()
     {
-        GD.Print($"minion type selected: {minionData}");
-        Board.State.SelectedDeployTroop = minionData;
+        //GD.Print($"minion type selected: {minionData}");
+        Board.State.SelectedDeployTroopPlayer1 = minionData;
     }   
 
     string GetTroopCost(MinionData troopType)

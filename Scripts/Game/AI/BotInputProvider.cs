@@ -47,10 +47,8 @@ public partial class BotInputProvider : VirtualInputProvider
 	async void OnTurnStarted(Board.Players newTurnOwner)
 	{
 		if (newTurnOwner != self) return;
-		GD.Print($"BotInputProvider: OnTurnStarted called. New turn owner: {newTurnOwner}");
 
 		await GetTree().DelayUntil(() => InputHandler.InteractionEnabled);
-		GD.Print("BotInputProvider: Interaction enabled, starting PlayTurn.");
 		await PlayTurn();
 	}
 }

@@ -61,7 +61,9 @@ public partial class PunchState : State, IMinionState
         if (bestTarget == null)
             return clickedCells.ToArray();
 
-        clickedCells.Add(bestCell);
+        clickedCells.Add(minion.Position); //Click the minion 2 times
+        clickedCells.Add(minion.Position);
+        clickedCells.Add(bestCell); //Attack
         return clickedCells.ToArray();
     }
 

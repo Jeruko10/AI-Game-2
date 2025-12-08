@@ -114,26 +114,18 @@ public partial class InputHandler : Node
 
     private static void SpawnSelectedMinion(Vector2I clickedCell)
     {
-        if(Board.State.SelectedDeployTroop == null) return;
-        Board.State.PlayMinion(Board.State.SelectedDeployTroop, clickedCell);
-    }
+        MinionData minionToDeploy;
+        if (Board.State.GetActivePlayer() != Board.Players.Player1)
+            minionToDeploy = Board.State.SelectedDeployTroopPlayer2;
+        else
+            minionToDeploy = Board.State.SelectedDeployTroopPlayer1;
 
-    static void SpawnRandomMinion(Vector2I cell)
-    {
-        MinionData[] templates =
+        if(minionToDeploy == null)
         {
-            Minions.FireKnight,
-            Minions.WaterKnight,
-            Minions.PlantKnight
-        };
-
-        MinionData randomTemplate = templates.GetRandomElement();
-        Mana availableMana = Board.State.GetPlayerMana(Board.State.GetActivePlayer());
-
-        if (Board.State.GetCellData(cell).Minion == null &&
-            randomTemplate.IsAffordable(availableMana))
-        {
-            Board.State.PlayMinion(randomTemplate, cell);
+            GD.PushWarning("No minion selected to deploy.");
+            return;
         }
+        
+        Board.State.PlayMinion(minionToDeploy, clickedCell);
     }
 }

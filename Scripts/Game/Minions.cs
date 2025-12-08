@@ -9,23 +9,42 @@ namespace Game;
 public partial class Minions : Node
 {
 	[ExportSubgroup("Fire")]
-	[Export] MinionData fireKnightData;
+	[Export] MinionData fireKnightDatalv1;
+	[Export] MinionData fireKnightDatalv2;
+	[Export] MinionData fireKnightDatalv3;
 
 	[ExportSubgroup("Water")]
-	[Export] MinionData waterKnightData;
+	[Export] MinionData waterKnightDatalv1;
+	[Export] MinionData waterKnightDatalv2;
+	[Export] MinionData waterKnightDatalv3;
 
 	[ExportSubgroup("Plant")]
-	[Export] MinionData plantKnightData;
+	[Export] MinionData plantKnightDatalv1;
+	[Export] MinionData plantKnightDatalv2;
+	[Export] MinionData plantKnightDatalv3;
 
-	public static MinionData FireKnight => singleton.fireKnightData;
-	public static MinionData WaterKnight => singleton.waterKnightData;
-	public static MinionData PlantKnight => singleton.plantKnightData;
+	public static MinionData FireKnightLv1 => singleton.fireKnightDatalv1;
+	public static MinionData WaterKnightLv1 => singleton.waterKnightDatalv1;
+	public static MinionData PlantKnightLv1 => singleton.plantKnightDatalv1;
+
+	public static MinionData FireKnightLv2 => singleton.fireKnightDatalv2;
+	public static MinionData WaterKnightLv2 => singleton.waterKnightDatalv2;
+	public static MinionData PlantKnightLv2 => singleton.plantKnightDatalv2;
+
+	public static MinionData FireKnightLv3 => singleton.fireKnightDatalv3;
+	public static MinionData WaterKnightLv3 => singleton.waterKnightDatalv3;
+	public static MinionData PlantKnightLv3 => singleton.plantKnightDatalv3;
 
 	public static MinionData[] AllMinionDatas =>
     [
-        FireKnight,
-		WaterKnight,
-		PlantKnight
+        FireKnightLv1,
+		WaterKnightLv1,
+		PlantKnightLv1,
+		FireKnightLv2,
+		WaterKnightLv2,	
+		PlantKnightLv2,
+		FireKnightLv3,
+		WaterKnightLv3,
 	];
 
 	static Minions singleton;

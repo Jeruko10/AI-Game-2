@@ -101,7 +101,7 @@ public partial class InfluenceMapManager : Node2D
 			}
 		}
 
-		GD.Print($"La casillita at (3,3): {TroopInfluence[3,3]}");
+		//GD.Print($"La casillita at (3,3): {TroopInfluence[3,3]}");
 	}
 
 	// =========================

@@ -70,8 +70,8 @@ public partial class DominateMoveState : State, IMinionState
         if (path == null || path.Length == 0)
             return clickedCells.ToArray();
 
-        for (int i = 1; i < path.Length; i++)
-            clickedCells.Add(path[i]);
+        clickedCells.Add(path[0]); //Click the minion
+        clickedCells.Add(path[path.Length-1]); //Click the last position
 
         return clickedCells.ToArray();
     }
