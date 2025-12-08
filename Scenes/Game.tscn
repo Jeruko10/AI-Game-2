@@ -51,6 +51,21 @@ metadata/_edit_lock_ = true
 position = Vector2(1471, 826)
 zoom = Vector2(0.618, 0.618)
 
+[node name="RefLibrary" type="Node" parent="."]
+
+[node name="TileLibrary" type="Node" parent="RefLibrary"]
+script = ExtResource("1_gl6un")
+groundTile = ExtResource("2_3so38")
+wallTile = ExtResource("3_3cx6b")
+fireTile = ExtResource("4_wxwew")
+waterTile = ExtResource("5_acvyw")
+metadata/_custom_type_script = "uid://c2vxjlf16t6t5"
+
+[node name="MinionLibrary" type="Node" parent="RefLibrary"]
+script = ExtResource("2_j5yw3")
+plantKnightDatalv1 = ExtResource("15_i4lct")
+metadata/_custom_type_script = "uid://cgdtthefjt0bb"
+
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1000
 
@@ -248,21 +263,6 @@ offset_bottom = 1703.1084
 theme_override_font_sizes/font_size = 36
 text = "Actual Minion State: "
 horizontal_alignment = 1
-
-[node name="RefLibrary" type="Node" parent="."]
-
-[node name="TileLibrary" type="Node" parent="RefLibrary"]
-script = ExtResource("1_gl6un")
-groundTile = ExtResource("2_3so38")
-wallTile = ExtResource("3_3cx6b")
-fireTile = ExtResource("4_wxwew")
-waterTile = ExtResource("5_acvyw")
-metadata/_custom_type_script = "uid://c2vxjlf16t6t5"
-
-[node name="MinionLibrary" type="Node" parent="RefLibrary"]
-script = ExtResource("2_j5yw3")
-plantKnightDatalv1 = ExtResource("15_i4lct")
-metadata/_custom_type_script = "uid://cgdtthefjt0bb"
 
 [node name="InputHandler" type="Node" parent="."]
 script = ExtResource("1_3cx6b")

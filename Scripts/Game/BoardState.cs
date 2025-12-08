@@ -21,8 +21,8 @@ public partial class BoardState : Node
 	public Vector2I? SelectedCell { get; set; }
 	public Minion SelectedMinion { get; private set; }
 	public bool AttackMode { get; private set; }
-	public MinionData SelectedDeployTroopPlayer1 { get; set; }
-	public MinionData SelectedDeployTroopPlayer2 { get; set; }
+	public MinionData SelectedDeployTroopPlayer1 { get; set; } = Game.Minions.FireKnightLv1;
+	public MinionData SelectedDeployTroopPlayer2 { get; set; } = Game.Minions.FireKnightLv1;
 	public event Action<Board.Players> TurnStarted;
 	public event Action<Minion> MinionDeath;
 	public event Action<Minion, int> MinionDamaged;
@@ -60,6 +60,7 @@ public partial class BoardState : Node
 		Player1Mana = Player1StartingMana;
 		Player2Mana = Player2StartingMana;
 
+
 		PassTurn();
 		GodotExtensions.CallDeferred(CreateBoard);
 	}
@@ -67,7 +68,10 @@ public partial class BoardState : Node
 
 	public Board.Players GetActivePlayer() => isPlayer1Turn ? Board.Players.Player1 : Board.Players.Player2;
 
+    public MinionData GetActivePlayerSelectedDeployTroop() => GetActivePlayer() == Board.Players.Player1 ? SelectedDeployTroopPlayer1 : SelectedDeployTroopPlayer2;
+
 	public Minion[] GetPlayerMinions(Board.Players player) => [.. Minions.Where(m => m.Owner == player)];
+
 	public Fort[] GetPlayerForts(Board.Players player) => [.. Forts.Where(f => f.Owner == player)];
 
 	public void SelectMinion(Minion minion)
