@@ -50,7 +50,7 @@ public partial class PrevailState : State, IMinionState
     {
         BoardState boardState = Board.State;
         Grid2D grid = Board.Grid;
-        List<Vector2I> clickedCells = new();
+        List<Vector2I> clickedCells = [];
 
         // No moving here
         Minion bestTarget = null;

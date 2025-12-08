@@ -41,7 +41,7 @@ public partial class AttackMoveState : State, IMinionState
     {
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
-        List<Vector2I> clickedCells = new();
+        List<Vector2I> clickedCells = [];
 
         // First the attack
         var attackPoints = waypoints

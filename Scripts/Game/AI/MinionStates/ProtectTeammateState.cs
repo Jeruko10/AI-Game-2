@@ -68,7 +68,7 @@ public partial class ProtectTeammateState : State, IMinionState
     {
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
-        List<Vector2I> clickedCells = new();
+        List<Vector2I> clickedCells = [];
 
         // Looking the highest priority defend point
         var defendPoint = waypoints?

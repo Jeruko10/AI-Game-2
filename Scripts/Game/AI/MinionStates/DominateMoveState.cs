@@ -28,13 +28,13 @@ public partial class DominateMoveState : State, IMinionState
     {
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
-        List<Vector2I> clickedCells = new();
+        List<Vector2I> clickedCells = [];
 
         // Take the highest capture point if more than one
         var capturePoints = waypoints?
             .Where(w => w.Type == Waypoint.Types.Capture)
             .OrderByDescending(w => w.Priority)
-            .ToList() ?? new();
+            .ToList() ?? [];
 
         Vector2I? target = null;
 

@@ -52,7 +52,7 @@ public partial class SpreadState : State, IMinionState
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
         Grid2D grid = Board.Grid;
-        List<Vector2I> clickedCells = new();
+        List<Vector2I> clickedCells = [];
 
         // Waypoint defensivo principal, si existe
         var defendPoint = waypoints?

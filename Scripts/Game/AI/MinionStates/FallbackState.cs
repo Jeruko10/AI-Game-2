@@ -42,7 +42,7 @@ public partial class FallbackState : State, IMinionState
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
 
-        List<Vector2I> clickedCells = new();
+        List<Vector2I> clickedCells = [];
 
         // Looking for a cell with high influence of my friends and low influence from Alonso troops
         Vector2I? safeCell = influence.FindBestCell(

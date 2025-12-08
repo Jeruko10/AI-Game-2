@@ -38,7 +38,7 @@ public partial class KamikazeState : State, IMinionState
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
 
-        List<Vector2I> clickedCells = new();
+        List<Vector2I> clickedCells = [];
 
         // Looking for juicy cells
         Vector2I? target = influence.FindBestCell(

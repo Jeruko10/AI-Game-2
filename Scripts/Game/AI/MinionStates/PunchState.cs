@@ -37,7 +37,7 @@ public partial class PunchState : State, IMinionState
     {
         BoardState boardState = Board.State;
         Grid2D grid = Board.Grid;
-        List<Vector2I> clickedCells = new();
+        List<Vector2I> clickedCells = [];
 
         Minion bestTarget = null;
         Vector2I bestCell = default;
