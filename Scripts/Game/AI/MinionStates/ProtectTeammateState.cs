@@ -43,8 +43,8 @@ public partial class ProtectTeammateState : State, IMinionState
 
             if (defendPoint != null)
             {
-                int dist = Mathf.Abs(defendPoint.Cell.X - defendPoint.Cell.X) 
-                + Mathf.Abs(defendPoint.Cell.Y - defendPoint.Cell.Y);
+                int dist = Mathf.Abs(minion.Position.X - defendPoint.Cell.X)
+                + Mathf.Abs(minion.Position.Y - defendPoint.Cell.Y);
 
                 float t  = influence.TroopInfluence[minion.Position.X, minion.Position.Y];
                 float enemy = Mathf.Max(0f, t);
