@@ -34,24 +34,50 @@ public partial class BotInputProvider : VirtualInputProvider
 
     private async Task SimulateDeploy(List<Waypoint> waypoints)
     {
-        List<Waypoint> deployWaypoints = [.. waypoints.Where(wp => wp.Type == Waypoint.Types.Deploy)];
-        deployWaypoints.Sort((a, b) => b.Priority.CompareTo(a.Priority));
-        foreach (Waypoint waypoint in deployWaypoints)
+        var deployWaypoints = waypoints
+            .Where(wp => wp.Type == Waypoint.Types.Deploy)
+            .OrderByDescending(wp => wp.Priority)
+            .ToList();
+
+        foreach (var waypoint in deployWaypoints)
         {
-            Board.State.SelectedDeployTroopPlayer2 = GetMinionToDeploy(waypoint.ElementAffinity);
+            MinionData minionToDeploy = GetMinionWithManaLogic(waypoint);
+            if (minionToDeploy == null)
+                continue; // No hay minion que podamos pagar
+
+            Board.State.SelectedDeployTroopPlayer2 = minionToDeploy;
             await SimulateHumanClick(waypoint.Cell, true);
         }
     }
 
-    private static MinionData GetMinionToDeploy(Element.Types elementAffinity)
+    private MinionData GetMinionWithManaLogic(Waypoint waypoint)
     {
-        foreach (MinionData minionData in Minions.AllMinionDatas)
-        {
-            if (minionData.Element.Tag == elementAffinity)
-                return minionData;
-        }
+        var preferred = GetMinionToDeploy(waypoint.ElementAffinity);
+        if (preferred != null && CanPay(preferred))
+            return preferred;
+
+        var disadvantage = GetMinionToDeploy(Element.GetDisadvantage(waypoint.ElementAffinity));
+        if (disadvantage != null && CanPay(disadvantage))
+            return disadvantage;
+
+        var advantage = GetMinionToDeploy(Element.GetAdvantage(waypoint.ElementAffinity));
+        if (advantage != null && CanPay(advantage))
+            return advantage;
+
         return null;
     }
+
+    private bool CanPay(MinionData data)
+    {
+        return Board.State.Player2Mana >= data.Cost;
+    }
+
+    private static MinionData GetMinionToDeploy(Element.Types elementAffinity)
+    {
+        return Minions.AllMinionDatas
+            .FirstOrDefault(m => m.Element.Tag == elementAffinity);
+    }
+
 
     IGlobalState ChangeGlobalState()
     {
