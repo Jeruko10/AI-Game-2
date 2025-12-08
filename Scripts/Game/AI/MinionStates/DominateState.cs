@@ -17,6 +17,7 @@ public partial class DominateState : State, IMinionState
         }
 
         Waypoint top = waypoints
+            .Where(waypoints => waypoints.Type != Waypoint.Types.Deploy)
             .OrderByDescending(w => w.Priority)
             .First();
 

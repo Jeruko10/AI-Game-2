@@ -40,6 +40,7 @@ public partial class AttackMoveState : State, IMinionState
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)
     {
+
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
         List<Vector2I> clickedCells = [];
@@ -82,15 +83,21 @@ public partial class AttackMoveState : State, IMinionState
         }
 
         if (target == null)
+        {
             return [.. clickedCells];
+        }
 
         Vector2I[] path = GridNavigation.GetPathForMinion(minion, target.Value);
         if (path == null || path.Length == 0)
+        {
             return [.. clickedCells];
+        }
 
         //change if you wanna click only the minion and the destination.
         clickedCells.Add(path[0]); //Click the minion
-        clickedCells.Add(path[path.Length-1]); //Click the last position
+        if(path.Length>1) clickedCells.Add(path[path.Length-1]); //Click the last position
+        else clickedCells.Add(path[1]);
+
 
         return [.. clickedCells];
     }
@@ -108,6 +115,8 @@ public partial class AttackMoveState : State, IMinionState
                 if (Board.Grid.IsInsideGrid(cell))
                     cells.Add(cell + minion.Position);
         }
+
+
 
         return [.. cells];
     }
