@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://tytjfp0a04oh"]
+[gd_scene load_steps=39 format=3 uid="uid://tytjfp0a04oh"]
 
 [ext_resource type="Script" uid="uid://bv23wi5pjg5mj" path="res://Scripts/Game/InputManagement/InputHandler.cs" id="1_3cx6b"]
 [ext_resource type="Script" uid="uid://c2vxjlf16t6t5" path="res://Scripts/Game/Tiles.cs" id="1_gl6un"]
@@ -16,33 +16,28 @@
 [ext_resource type="Script" uid="uid://bfw3swkq3rr1u" path="res://Scripts/Components/Miscelanous/ActualStateLabel.cs" id="8_i1pr2"]
 [ext_resource type="Script" uid="uid://bpoclqr2f21y2" path="res://Scripts/Game/Display/BoardDisplay.cs" id="13_8r6kd"]
 [ext_resource type="PackedScene" uid="uid://bcookw6uqteh7" path="res://Scenes/MinionDisplay.tscn" id="14_tfod6"]
-[ext_resource type="Resource" uid="uid://bvylj8fneatts" path="res://Resources/Minions/PlantKnight.tres" id="15_i4lct"]
+[ext_resource type="Resource" uid="uid://dk7gdy7w6fo17" path="res://Resources/Minions/FireKnightLvl1.tres" id="15_4eqlp"]
 [ext_resource type="PackedScene" uid="uid://drjycecp44mo7" path="res://Scenes/FortDisplay.tscn" id="15_rajel"]
+[ext_resource type="Resource" uid="uid://c5alhqjibtmwl" path="res://Resources/Minions/FireKnightLvl2.tres" id="16_18uti"]
 [ext_resource type="PackedScene" uid="uid://b87vvghkw306d" path="res://Scenes/TileDisplay.tscn" id="16_vvhu1"]
 [ext_resource type="Script" uid="uid://bib5h2me841oe" path="res://Scripts/Game/InputManagement/MouseInputProvider.cs" id="17_i0vto"]
+[ext_resource type="Resource" uid="uid://cer7m02aw66qp" path="res://Resources/Minions/FireKnightLvl3.tres" id="17_khy6b"]
 [ext_resource type="Script" uid="uid://u4ode5mopgro" path="res://Scripts/Game/Board.cs" id="17_lbihj"]
 [ext_resource type="Script" uid="uid://b48wu1iq57whg" path="res://Scripts/Game/AI/BotInputProvider.cs" id="18_3jf1l"]
+[ext_resource type="Resource" uid="uid://cfa111onyuv4d" path="res://Resources/Minions/WaterKnightLvl1.tres" id="18_pti6k"]
 [ext_resource type="Script" uid="uid://cwd71a6sseflj" path="res://Scripts/Game/BoardState.cs" id="18_raj38"]
 [ext_resource type="Script" uid="uid://dq36qu2o3hfpu" path="res://Scripts/Components/Miscelanous/Grid2D.cs" id="19_8e0uq"]
 [ext_resource type="PackedScene" uid="uid://hjcj4ivpf450" path="res://Scenes/GlobalHFSM.tscn" id="19_iyesh"]
+[ext_resource type="Resource" uid="uid://cxftphed8p2db" path="res://Resources/Minions/WaterKnightLvl2.tres" id="19_lmarx"]
+[ext_resource type="Resource" uid="uid://b2txlcvg3lr4" path="res://Resources/Minions/WaterKnightLvl3.tres" id="20_7av8l"]
+[ext_resource type="Resource" uid="uid://bjeer64p8th1b" path="res://Resources/Minions/PlantKnightLvl1.tres" id="21_dctr5"]
+[ext_resource type="Resource" uid="uid://xiugp3yfskx7" path="res://Resources/Minions/PlantKnightLvl2.tres" id="22_mi7vx"]
 [ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/WaypointDisplayTscn.tscn" id="23_356ba"]
-[ext_resource type="Script" uid="uid://dkojvf477tj8k" path="res://Scripts/Game/Resources/Mana.cs" id="23_raj38"]
+[ext_resource type="Resource" uid="uid://dvd3i54f7xcsp" path="res://Resources/Minions/PlantKnightLvl3.tres" id="23_t2joc"]
 [ext_resource type="Script" uid="uid://cyngg360t1vk" path="res://Scripts/Game/AI/InfluenceMapManager.cs" id="27_3jf1l"]
 [ext_resource type="PackedScene" uid="uid://cfx08ypbn55vo" path="res://Scenes/DeployScreen.tscn" id="29_i4lct"]
-
-[sub_resource type="Resource" id="Resource_raj38"]
-script = ExtResource("23_raj38")
-FireMana = 2
-WaterMana = 2
-PlantMana = 2
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
-
-[sub_resource type="Resource" id="Resource_8e0uq"]
-script = ExtResource("23_raj38")
-FireMana = 2
-WaterMana = 2
-PlantMana = 2
-metadata/_custom_type_script = "uid://dkojvf477tj8k"
+[ext_resource type="Resource" uid="uid://jplmy1ye1fyv" path="res://Resources/Player1Mana.tres" id="35_18uti"]
+[ext_resource type="Resource" uid="uid://drpchxx040qer" path="res://Resources/Player2Mana.tres" id="36_khy6b"]
 
 [node name="Game" type="Node2D"]
 metadata/_edit_lock_ = true
@@ -50,21 +45,6 @@ metadata/_edit_lock_ = true
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(1471, 826)
 zoom = Vector2(0.618, 0.618)
-
-[node name="RefLibrary" type="Node" parent="."]
-
-[node name="TileLibrary" type="Node" parent="RefLibrary"]
-script = ExtResource("1_gl6un")
-groundTile = ExtResource("2_3so38")
-wallTile = ExtResource("3_3cx6b")
-fireTile = ExtResource("4_wxwew")
-waterTile = ExtResource("5_acvyw")
-metadata/_custom_type_script = "uid://c2vxjlf16t6t5"
-
-[node name="MinionLibrary" type="Node" parent="RefLibrary"]
-script = ExtResource("2_j5yw3")
-plantKnightDatalv1 = ExtResource("15_i4lct")
-metadata/_custom_type_script = "uid://cgdtthefjt0bb"
 
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1000
@@ -264,6 +244,29 @@ theme_override_font_sizes/font_size = 36
 text = "Actual Minion State: "
 horizontal_alignment = 1
 
+[node name="RefLibrary" type="Node" parent="."]
+
+[node name="TileLibrary" type="Node" parent="RefLibrary"]
+script = ExtResource("1_gl6un")
+groundTile = ExtResource("2_3so38")
+wallTile = ExtResource("3_3cx6b")
+fireTile = ExtResource("4_wxwew")
+waterTile = ExtResource("5_acvyw")
+metadata/_custom_type_script = "uid://c2vxjlf16t6t5"
+
+[node name="MinionLibrary" type="Node" parent="RefLibrary"]
+script = ExtResource("2_j5yw3")
+fireKnightDatalv1 = ExtResource("15_4eqlp")
+fireKnightDatalv2 = ExtResource("16_18uti")
+fireKnightDatalv3 = ExtResource("17_khy6b")
+waterKnightDatalv1 = ExtResource("18_pti6k")
+waterKnightDatalv2 = ExtResource("19_lmarx")
+waterKnightDatalv3 = ExtResource("20_7av8l")
+plantKnightDatalv1 = ExtResource("21_dctr5")
+plantKnightDatalv2 = ExtResource("22_mi7vx")
+plantKnightDatalv3 = ExtResource("23_t2joc")
+metadata/_custom_type_script = "uid://cgdtthefjt0bb"
+
 [node name="InputHandler" type="Node" parent="."]
 script = ExtResource("1_3cx6b")
 metadata/_custom_type_script = "uid://bv23wi5pjg5mj"
@@ -322,8 +325,8 @@ metadata/_custom_type_script = "uid://u4ode5mopgro"
 
 [node name="BoardState" type="Node" parent="Board/BoardData"]
 script = ExtResource("18_raj38")
-Player1StartingMana = SubResource("Resource_raj38")
-Player2StartingMana = SubResource("Resource_8e0uq")
+Player1StartingMana = ExtResource("35_18uti")
+Player2StartingMana = ExtResource("36_khy6b")
 metadata/_custom_type_script = "uid://cwd71a6sseflj"
 
 [node name="BoardGrid" type="Node2D" parent="Board/BoardData"]

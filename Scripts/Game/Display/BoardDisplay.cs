@@ -102,46 +102,46 @@ public partial class BoardDisplay : Node2D
 
 	void UpdateGizmos()
 	{
-		// Board.Grid.ClearAll();
-		// Minion selectedMinion = Board.State.SelectedMinion;
+		Board.Grid.ClearAll();
+		Minion selectedMinion = Board.State.SelectedMinion;
 
-		// // Draw damage zone
-		// if (Board.State.AttackMode && selectedMinion != null)
-		// {
-		// 	Vector2I minionDir = Board.State.SelectedCell == null ? Vector2I.Up :
-		// 	Board.Grid.GetCardinal(selectedMinion.Position, Board.State.SelectedCell.Value);
+		// Draw damage zone
+		if (Board.State.AttackMode && selectedMinion != null)
+		{
+			Vector2I minionDir = Board.State.SelectedCell == null ? Vector2I.Up :
+			Board.Grid.GetCardinal(selectedMinion.Position, Board.State.SelectedCell.Value);
 
-		// 	Vector2I[] rotatedZone = GridNavigation.RotatedDamageArea(selectedMinion.DamageArea, minionDir);
+			Vector2I[] rotatedZone = GridNavigation.RotatedDamageArea(selectedMinion.DamageArea, minionDir);
 
-		// 	foreach (Vector2I offset in rotatedZone)
-		// 	{
-		// 		Vector2I cellGlobal = selectedMinion.Position + offset;
-		// 		Board.Grid.ColorCell(cellGlobal, damageZoneColor);
-		// 	}
-		// 	return;
-		// }
+			foreach (Vector2I offset in rotatedZone)
+			{
+				Vector2I cellGlobal = selectedMinion.Position + offset;
+				Board.Grid.ColorCell(cellGlobal, damageZoneColor);
+			}
+			return;
+		}
 		
-		// // Draw cell hover
-		// Vector2I? hoveredCell = Board.State.SelectedCell;
-		// if (hoveredCell != null) Board.Grid.ColorCell(hoveredCell.Value, selectedCellColor);
-		// if (selectedMinion == null) return;
+		// Draw cell hover
+		Vector2I? hoveredCell = Board.State.SelectedCell;
+		if (hoveredCell != null) Board.Grid.ColorCell(hoveredCell.Value, selectedCellColor);
+		if (selectedMinion == null) return;
 
-		// // Draw movement range
-		// Vector2I[] movementRange = GridNavigation.GetReachableCells(selectedMinion);
+		// Draw movement range
+		Vector2I[] movementRange = GridNavigation.GetReachableCells(selectedMinion);
 
-		// foreach (Vector2I cell in movementRange)
-		// 	Board.Grid.ColorCell(cell, movementRangeColor);
+		foreach (Vector2I cell in movementRange)
+			Board.Grid.ColorCell(cell, movementRangeColor);
 
-		// // Draw movement path
-		// if (hoveredCell == null) return;
+		// Draw movement path
+		if (hoveredCell == null) return;
 		
-		// Vector2I[] pathToHoveredCell = GridNavigation.GetPathForMinion(selectedMinion, hoveredCell.Value);
-		// Vector2I pathEnd = (pathToHoveredCell.Length > 0) ? pathToHoveredCell[^1] : selectedMinion.Position;
+		Vector2I[] pathToHoveredCell = GridNavigation.GetPathForMinion(selectedMinion, hoveredCell.Value);
+		Vector2I pathEnd = (pathToHoveredCell.Length > 0) ? pathToHoveredCell[^1] : selectedMinion.Position;
 
-		// if (!movementRange.Contains(pathEnd)) return;
+		if (!movementRange.Contains(pathEnd)) return;
 
-		// foreach (Vector2I cell in pathToHoveredCell)
-		// 	Board.Grid.ColorCell(cell, movementPathColor);
+		foreach (Vector2I cell in pathToHoveredCell)
+			Board.Grid.ColorCell(cell, movementPathColor);
 	}
 
 	void OnTileAdded(Tile tile, Vector2I cell)

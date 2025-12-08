@@ -27,7 +27,7 @@ public partial class SelectorScreen : Control
     {
         foreach (var troopType in Minions.AllMinionDatas)
         {
-            var troopCardInstance = troopCardScene.Instantiate() as MinionCard;
+            MinionCard troopCardInstance = troopCardScene.Instantiate() as MinionCard;
             if (troopCardInstance == null) GD.PushError("CardScene is not provided in SelectorScreen");
 
             troopCardInstance.SetUpButton(troopType);
