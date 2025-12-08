@@ -45,70 +45,98 @@ public partial class OffensiveFortFocusedState : State, IGlobalState
             waypoints = CreateFortMovementWaypoints(waypoints, fort, influence, fortBasePriority, preferredType);
 
             waypoints = CreateLowPriorityAttackWaypoints(waypoints, fort, influence, fortBasePriority - 25);
+
+            //waypoints = CreateDeployWaypoints()
         }
 
         return waypoints;
     }
 
-    private static List<Waypoint> CreateFortMovementWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority, Element.Types preferredType)
+    private static List<Waypoint> CreateFortMovementWaypoints(
+    List<Waypoint> output,
+    Fort fort,
+    InfluenceMapManager influence,
+    int basePriority,
+    Element.Types preferredType)
     {
+        float allyInfluence = 0f;
+        float enemyInfluence = 0f;
+
+        const int analyzeRadius = 2;
+
+        for (int dx = -analyzeRadius; dx <= analyzeRadius; dx++)
+        for (int dy = -analyzeRadius; dy <= analyzeRadius; dy++)
+        {
+            Vector2I cell = new(fort.Position.X + dx, fort.Position.Y + dy);
+            if (!Board.Grid.IsInsideGrid(cell)) continue;
+
+            float inf = influence.GetInfluenceAt(cell);
+
+            if (inf > 0) allyInfluence += inf;
+            else enemyInfluence += -inf;
+        }
+
+        float controlScore = allyInfluence - enemyInfluence;
+        int influenceBonus = Mathf.RoundToInt(controlScore * 10f);
+
         output.Add(new Waypoint
         {
             Type = Waypoint.Types.Capture,
             Cell = fort.Position,
             ElementAffinity = preferredType,
-            Priority = basePriority + 20
+            Priority = basePriority + 20 + influenceBonus
         });
 
         const int range = 3;
-        const int maxWaypoints = 4; 
-        List<Vector2I> candidateCells = new();
+        const int maxWaypoints = 4;
+        List<(Vector2I cell, int score)> candidates = new();
 
         for (int dx = -range; dx <= range; dx++)
+        for (int dy = -range; dy <= range; dy++)
         {
-            for (int dy = -range; dy <= range; dy++)
-            {
-                var cell = new Vector2I(fort.Position.X + dx, fort.Position.Y + dy);
+            var cell = new Vector2I(fort.Position.X + dx, fort.Position.Y + dy);
 
-                if (!Board.Grid.IsInsideGrid(cell)) continue;
-                if (Board.State.IsCellOccupied(cell)) continue;
-                if (Board.Grid.GetDistance(cell, fort.Position) > range) continue;
+            if (!Board.Grid.IsInsideGrid(cell)) continue;
+            if (Board.State.IsCellOccupied(cell)) continue;
+            if (Board.Grid.GetDistance(cell, fort.Position) > range) continue;
 
-                float inf = influence.GetInfluenceAt(cell);
-                if (inf > 0) continue; 
-
-                candidateCells.Add(cell);
-            }
-        }
-
-        if (candidateCells.Count == 0)
-            return output;
-
-        RandomNumberGenerator rng = new();
-        rng.Randomize();
-        candidateCells = [.. candidateCells.OrderBy(_ => rng.Randi()).Take(maxWaypoints)];
-
-        foreach (var cell in candidateCells)
-        {
             float inf = influence.GetInfluenceAt(cell);
+            float ally = Mathf.Max(0f, inf);
+            float enemy = Mathf.Max(0f, -inf);
+
             int dist = Board.Grid.GetDistance(cell, fort.Position);
 
-            int priority =
+            int score =
                 basePriority
-                - dist * 3
-                + Mathf.RoundToInt(Math.Max(0f, -inf) * 10f);
+                - dist * 4
+                + Mathf.RoundToInt(ally * 6f)
+                - Mathf.RoundToInt(enemy * 8f)
+                + Mathf.RoundToInt(controlScore * 4f);
 
+            candidates.Add((cell, score));
+        }
+
+        if (candidates.Count == 0)
+            return output;
+
+        var best = candidates
+            .OrderByDescending(c => c.score)
+            .Take(maxWaypoints);
+
+        foreach (var (cell, score) in best)
+        {
             output.Add(new Waypoint
             {
                 Type = Waypoint.Types.Move,
                 Cell = cell,
                 ElementAffinity = preferredType,
-                Priority = priority
+                Priority = score
             });
         }
 
         return output;
     }
+
 
 
     private static List<Waypoint> CreateLowPriorityAttackWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority)
