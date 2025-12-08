@@ -38,6 +38,7 @@ public partial class MinionCard : Button
         CustomMinimumSize = new Vector2(Size.X, Size.Y);
 
         silhouette.Texture = minionData.Texture;
+        GD.Print(minionData);
         nameLabel.Text = minionData.Name;
         priceLabel.Text = GetTroopCost(minionData);
         iconElementType.Texture = minionData.Element.Symbol;

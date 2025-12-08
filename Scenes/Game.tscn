@@ -47,18 +47,23 @@ metadata/_custom_type_script = "uid://dkojvf477tj8k"
 [node name="Game" type="Node2D"]
 metadata/_edit_lock_ = true
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(1471, 826)
+zoom = Vector2(0.618, 0.618)
+
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -1000
 
 [node name="ColorRect" type="ColorRect" parent="BackgroundLayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = -0.4
+anchor_top = -0.39166668
+anchor_right = 1.9739584
+anchor_bottom = 1.9722222
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.17611885, 0.16417989, 0.23555094, 1)
 metadata/_edit_use_anchors_ = true
-metadata/_edit_lock_ = true
 
 [node name="InterfaceLayer" type="CanvasLayer" parent="."]
 layer = 100
@@ -68,19 +73,22 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 1115.6855
+offset_bottom = 627.573
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_use_anchors_ = true
+scale = Vector2(0.63247657, 0.63247657)
 
 [node name="ManaCounters" type="HBoxContainer" parent="InterfaceLayer/HUD"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.054166667
-anchor_top = 0.912963
-anchor_right = 0.26770833
-anchor_bottom = 0.98703706
+anchor_left = 0.035147008
+anchor_top = 0.9323844
+anchor_right = 0.24868867
+anchor_bottom = 1.0064584
+offset_top = -17.391968
+offset_bottom = -17.391968
 alignment = 1
-metadata/_edit_use_anchors_ = true
 
 [node name="FireMana" type="HBoxContainer" parent="InterfaceLayer/HUD/ManaCounters"]
 layout_mode = 2
@@ -216,13 +224,16 @@ metadata/_edit_lock_ = true
 
 [node name="DeployScreen" parent="InterfaceLayer/HUD" instance=ExtResource("29_i4lct")]
 layout_mode = 1
+offset_left = 1128.8955
+offset_right = 526.50146
+offset_bottom = -627.69116
 
 [node name="ActualState" type="Label" parent="InterfaceLayer/HUD"]
 layout_mode = 0
-offset_left = 549.0
-offset_top = 986.0
-offset_right = 1233.0
-offset_bottom = 1066.0
+offset_left = 1129.0001
+offset_top = 1621.5269
+offset_right = 1813.0001
+offset_bottom = 1701.5269
 theme_override_font_sizes/font_size = 36
 text = "Actual IA State: "
 horizontal_alignment = 1
@@ -230,10 +241,10 @@ script = ExtResource("8_i1pr2")
 
 [node name="MinionState" type="Label" parent="InterfaceLayer/HUD"]
 layout_mode = 0
-offset_left = 1233.0
-offset_top = 986.0
-offset_right = 1917.0
-offset_bottom = 1066.0
+offset_left = 2034.9998
+offset_top = 1623.1084
+offset_right = 2719.0
+offset_bottom = 1703.1084
 theme_override_font_sizes/font_size = 36
 text = "Actual Minion State: "
 horizontal_alignment = 1
@@ -282,8 +293,7 @@ waypointDisplayTscn = ExtResource("23_356ba")
 fireManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/FireMana/Amount")
 waterManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/WaterMana/Amount")
 plantManaCounter = NodePath("../../InterfaceLayer/HUD/ManaCounters/PlantMana/Amount")
-GamePace = 2.0
-turnInformerAnimationSpeed = 0.5
+turnInformerAnimationSpeed = 0.8
 minionMoveAnimationSpeed = 6.58
 minionDeathAnimationSpeed = 5.0
 minionsRestoreDelay = 0.6
@@ -300,6 +310,7 @@ damageZoneColor = Color(1, 0, 0, 0.15294118)
 minionTextureScale = 0.7
 fortTextureScale = 1.7
 metadata/_custom_type_script = "uid://bpoclqr2f21y2"
+metadata/_edit_lock_ = true
 
 [node name="BoardData" type="Node" parent="Board" node_paths=PackedStringArray("gridReference", "stateReference", "player1", "player2")]
 script = ExtResource("17_lbihj")
@@ -318,7 +329,7 @@ metadata/_custom_type_script = "uid://cwd71a6sseflj"
 [node name="BoardGrid" type="Node2D" parent="Board/BoardData"]
 position = Vector2(104, 57)
 script = ExtResource("19_8e0uq")
-Size = Vector2i(17, 9)
+Size = Vector2i(27, 15)
 CellSize = 100.0
 gridColor = Color(0.79607844, 0.79607844, 0.79607844, 0.24705882)
 metadata/_custom_type_script = "uid://dq36qu2o3hfpu"

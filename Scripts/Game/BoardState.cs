@@ -307,47 +307,62 @@ public partial class BoardState : Node
         return true;
     }
 
-	void CreateBoard() // TODO: Replace this method's content and create interesting way of designing the board
-	{
-		int width = 100;
-		int height = 9;
+    string[] map =
+    {
+        "XXXXXXXX...#####....XX.....",
+        "X...XX###..#####....XX.....",
+        "X.F.XXXX............##..F..",
+        "X...XXXXXX...F..######.....",
+        "XXXXXXXXXX..........##.....",
+        "XXXX##XXXX#######...#####~~",
+        "XXXX##XXXX#.....#...#####~~",
+        "..........#.....#~~~~~~~~~~",
+        "......#...#..F..#~~~~~~~~~~",
+        "......#.............XXXXXXX",
+        "~~#####......#......XXXXXXX",
+        "~~~~~##...#.....#...XXXXXXX",
+        "~...~##...#..F..#...XXX...X",
+        "~.F.~##...#~~~~~#...XXX.F.X",
+        "~...~~~~~~~~~~~~~...XXX...X"
+    };
 
-		Vector2I[] fortPositions =
-		[
-			new(2, 2),   
-			new(14, 6)   
-		];
+    void CreateBoard() => CreateBoardFromAscii(map);
 
-		foreach (Vector2I cell in Board.Grid.GetAllCells())
-		{
-			Tile tile;
+    void CreateBoardFromAscii(string[] asciiMap)
+    {
+        int height = asciiMap.Length;
+        int width = asciiMap[0].Length;
 
-			if (cell.X == 0 || cell.X == width - 1 || cell.Y == 0 || cell.Y == height - 1)
-			{
-				tile = Game.Tiles.Wall;
-			}
-			// Río central vertical
-			else if (cell.X == 8 || cell.X == 9)
-			{
-				tile = Game.Tiles.Water;
-			}
-			else if (cell.Y >= 5 && cell.X >= 11)
-			{
-				tile = Game.Tiles.Fire;
-			}
-			else
-			{
-				tile = Game.Tiles.Ground;
-			}
+        for (int y = 0; y < height; y++)
+        {
+            string row = asciiMap[y];
 
-			AddTile(tile, cell);
+            for (int x = 0; x < width; x++)
+            {
+                char c = row[x];
+                Vector2I cell = new(x, y);
 
-			if (fortPositions.Contains(cell))
-				AddFort(new(cell));
-		}
+                Tile tile = DecodeTile(c);
+                AddTile(tile, cell);
 
+                if (c == 'F')
+                    AddFort(new Fort(cell));
+            }
+        }
 
-		influence.Initialize(this);
-	}
+        influence.Initialize(this);
+    }
 
+    static Tile DecodeTile(char c)
+    {
+        return c switch
+        {
+            '.' => Game.Tiles.Ground,
+            '#' => Game.Tiles.Wall,
+            '~' => Game.Tiles.Water,
+            'X' => Game.Tiles.Fire,
+            'F' => Game.Tiles.Ground, // Tile under a fort
+            _   => Game.Tiles.Ground
+        };
+    }
 }

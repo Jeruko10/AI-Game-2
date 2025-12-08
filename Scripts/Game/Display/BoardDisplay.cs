@@ -330,8 +330,8 @@ public partial class BoardDisplay : Node2D
 
 		label.Text = $"{turnOwner}'s Turn";
 		bannerTween = CreateTween();
-		bannerTween.TweenDelegate(v => turnInformer.Position = new(v, turnInformer.Position.Y), -2577f, 2557f, 1 / (turnInformerAnimationSpeed * GamePace))
-		.SetEase(Tween.EaseType.OutIn).SetTrans(Tween.TransitionType.Elastic);
+		bannerTween.TweenDelegate(v => turnInformer.Position = new(v, turnInformer.Position.Y), -2577f, 2557 * 1.2f, 1 / (turnInformerAnimationSpeed * GamePace))
+		.SetEase(Tween.EaseType.OutIn).SetTrans(Tween.TransitionType.Cubic);
 
 		await ToSignal(bannerTween, Tween.SignalName.Finished);
 

@@ -19,6 +19,7 @@ overlayRect = NodePath("OverLay")
 troopCardScene = ExtResource("2_v3ixr")
 
 [node name="OverLay" type="ColorRect" parent="."]
+visible = false
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_right = 1920.0
