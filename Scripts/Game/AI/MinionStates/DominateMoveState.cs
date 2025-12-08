@@ -10,7 +10,6 @@ public partial class DominateMoveState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
 
         Vector2I pos = minion.Position;
@@ -72,6 +71,8 @@ public partial class DominateMoveState : State, IMinionState
 
         clickedCells.Add(path[0]); //Click the minion
         clickedCells.Add(path[path.Length-1]); //Click the last position
+
+        GD.Print($"DominateMoveState: Moving minion {minion.Name} from {minion.Position} to {target} via path length {path.Length}");
 
         return clickedCells.ToArray();
     }

@@ -45,6 +45,9 @@ public partial class DeployFocusedState : State, IGlobalState
         foreach (var c in noMan)
             if (BoardState.IsCellDeployable(c))
                 candidates.Add(c);
+        // Mezclar candidatos sin alterar su valor estratégico
+        var rng = new Random();
+        candidates = [.. candidates.OrderBy(_ => rng.Next())];
 
         int need = toCreate - candidates.Count;
         if (need > 0)
@@ -93,9 +96,7 @@ public partial class DeployFocusedState : State, IGlobalState
             int nearFortMinDist = myForts.Length != 0 ? myForts.Min(f => Board.Grid.GetDistance(cell, f.Position)) : int.MaxValue;
             int priority = 30 + Mathf.RoundToInt(safety * 50f) + Mathf.Clamp(10 - nearFortMinDist, 0, 8);
 
-            Element.Types chosenType = preferredDeployType;
-            if (predominantEnemy == Element.Types.None)
-                chosenType = Element.GetTypeFromMostMana(myMana);
+            Element.Types chosenType = GetElementDeploy();
 
             waypoints.Add(new Waypoint
             {
@@ -106,11 +107,116 @@ public partial class DeployFocusedState : State, IGlobalState
             });
         }
 
+        waypoints = SetCaptureWaypoints(waypoints);
+
         return waypoints;
     }
 
+
+    List<Waypoint> SetCaptureWaypoints(List<Waypoint> waypoints)
+    {
+        var forts = Board.State.Forts;
+        var influence = Board.State.influence;
+        const float lowThreshold = 0.25f;
+
+        foreach (var fort in forts)
+        {
+            if (fort.Owner == Board.Players.Player1)
+                continue;
+
+            float enemyInf = influence.GetInfluenceAt(fort.Position);
+
+            if (enemyInf <= lowThreshold)
+            {
+                waypoints.Add(new Waypoint
+                {
+                    Type = Waypoint.Types.Capture,
+                    Cell = fort.Position,
+                    ElementAffinity = Element.Types.None,
+                    Priority = ComputeCapturePriority(fort, enemyInf)
+                });
+            }
+        }
+
+        return waypoints;
+    }
+
+
+
     /* ========== HELPERS ========== */
 
+    Element.Types GetElementDeploy()
+    {
+        var enemyType = Board.State.GetPlayerDominantElement(Board.Players.Player1);
+        var myMana = Board.State.GetPlayerMana(Board.Players.Player2);
+
+        if (enemyType == Element.Types.None)
+            return GetCheapestAvailableType(myMana);
+
+        Element.Types counter = Element.GetDisadvantage(enemyType);
+        if (CanDeployAnyMinionOf(counter, myMana))
+            return counter;
+
+        if (CanDeployAnyMinionOf(enemyType, myMana))
+            return enemyType;
+
+        Element.Types weak = Element.GetAdvantage(enemyType);
+        if (CanDeployAnyMinionOf(weak, myMana))
+            return weak;
+
+        return Element.Types.None;
+    }
+
+    bool CanDeployAnyMinionOf(Element.Types type, Mana mana)
+    {
+        if (type == Element.Types.None) 
+            return false;
+
+        foreach (var m in Minions.AllMinionDatas)
+        {
+            if (m.Element.Tag != type)
+                continue;
+
+            if (HasEnoughMana(m.Cost, mana))
+                return true;
+        }
+
+        return false;
+    }
+
+
+    Element.Types GetCheapestAvailableType(Mana mana)
+    {
+        Element.Types[] all =
+        {
+            Element.Types.Fire,
+            Element.Types.Water,
+            Element.Types.Plant
+        };
+
+        Element.Types cheapestType = Element.Types.None;
+        int cheapestCost = int.MaxValue;
+
+        foreach (var type in all)
+        {
+            // buscamos el minion más barato de este tipo
+            int cost = GetCheapestMinionCost(type, mana);
+
+            if (cost >= 0 && cost < cheapestCost)
+            {
+                cheapestCost = cost;
+                cheapestType = type;
+            }
+        }
+
+        return cheapestType;
+    }
+
+    int ComputeCapturePriority(Fort fort, float enemyInf)
+    {
+        float t = Mathf.Clamp(1f - enemyInf, 0f, 1f);
+        return 20 + Mathf.RoundToInt(t * 40f);
+    }
     static Vector2I? GetFortDeployableCell(Vector2I origin, InfluenceMapManager influence, List<Vector2I> exclude)
     {
         foreach (var c in Board.Grid.GetAdjacents(origin, true))
@@ -127,6 +233,34 @@ public partial class DeployFocusedState : State, IGlobalState
     {
         return mana.FireMana > 0 || mana.WaterMana > 0 || mana.PlantMana > 0;
     }
+
+    bool HasEnoughMana(Mana cost, Mana available)
+    {
+        return available.FireMana  >= cost.FireMana &&
+            available.WaterMana >= cost.WaterMana &&
+            available.PlantMana >= cost.PlantMana;
+    }
+
+    int GetCheapestMinionCost(Element.Types type, Mana mana)
+    {
+        int best = int.MaxValue;
+
+        foreach (var m in Minions.AllMinionDatas)
+        {
+            if (m.Element.Tag != type)
+                continue;
+
+            if (HasEnoughMana(m.Cost, mana))
+            {
+                int sum = m.Cost.FireMana + m.Cost.WaterMana + m.Cost.PlantMana;
+                if (sum < best)
+                    best = sum;
+            }
+        }
+
+        return (best == int.MaxValue) ? -1 : best;
+    }
+
 
 
 }
