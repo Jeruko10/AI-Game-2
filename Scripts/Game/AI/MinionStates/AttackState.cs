@@ -20,6 +20,7 @@ public partial class AttackState : State, IMinionState
 
         // take the waypoint with highest priority
         Waypoint top = waypoints
+            .Where(waypoints => waypoints.Type != Waypoint.Types.Deploy)
             .OrderByDescending(w => w.Priority)
             .First();
 
