@@ -11,6 +11,7 @@ public partial class BoardState : Node
 {
 	[Export] Mana Player1StartingMana;
 	[Export] Mana Player2StartingMana;
+    [Export] int manaPerHarvest = 3;
 
 	public Dictionary<Vector2I, Tile> Tiles { get; private set; } = [];
 	public List<Minion> Minions { get; private set; } = [];
@@ -219,9 +220,9 @@ public partial class BoardState : Node
 	void HarvestMana(Fort fort)
 	{
 		Mana earned =
-			fort.Element.Tag == Element.Types.Fire ? new Mana(1, 0, 0) :
-			fort.Element.Tag == Element.Types.Water ? new Mana(0, 1, 0) :
-			new Mana(0, 0, 1); // Plant mana
+			fort.Element.Tag == Element.Types.Fire ? new Mana(manaPerHarvest, 0, 0) :
+			fort.Element.Tag == Element.Types.Water ? new Mana(0, manaPerHarvest, 0) :
+			new Mana(0, 0, manaPerHarvest); // Plant mana
 
 		GetPlayerMana(GetActivePlayer()).Obtain(earned);
 		FortHarvested?.Invoke(fort);

@@ -32,16 +32,16 @@
 
 [sub_resource type="Resource" id="Resource_raj38"]
 script = ExtResource("23_raj38")
-FireMana = 10
-WaterMana = 10
-PlantMana = 10
+FireMana = 2
+WaterMana = 2
+PlantMana = 2
 metadata/_custom_type_script = "uid://dkojvf477tj8k"
 
 [sub_resource type="Resource" id="Resource_8e0uq"]
 script = ExtResource("23_raj38")
-FireMana = 10
-WaterMana = 10
-PlantMana = 10
+FireMana = 2
+WaterMana = 2
+PlantMana = 2
 metadata/_custom_type_script = "uid://dkojvf477tj8k"
 
 [node name="Game" type="Node2D"]
