@@ -42,73 +42,62 @@ public partial class OffensiveFortFocusedState : State, IGlobalState
             bool isNeutral = fort.Owner == null;
             int fortBasePriority = isNeutral ? 90 : 60;
 
-            waypoints = CreateFortMovementWaypoints(waypoints, fort, influence, fortBasePriority, preferredType);
+            waypoints = CreateFortMovementWaypoints();
 
             waypoints = CreateLowPriorityAttackWaypoints(waypoints, fort, influence, fortBasePriority - 25);
+
+            //waypoints = CreateDeployWaypoints()
         }
 
         return waypoints;
     }
 
-    private static List<Waypoint> CreateFortMovementWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority, Element.Types preferredType)
+    public static List<Waypoint> CreateFortMovementWaypoints()
     {
-        output.Add(new Waypoint
-        {
-            Type = Waypoint.Types.Capture,
-            Cell = fort.Position,
-            ElementAffinity = preferredType,
-            Priority = basePriority + 20
-        });
+        List<Waypoint> output = [];
 
-        const int range = 3;
-        const int maxWaypoints = 4; 
-        List<Vector2I> candidateCells = new();
+        var allForts = Board.State.Forts;
 
-        for (int dx = -range; dx <= range; dx++)
-        {
-            for (int dy = -range; dy <= range; dy++)
-            {
-                var cell = new Vector2I(fort.Position.X + dx, fort.Position.Y + dy);
+        var enemyOrNeutralForts = allForts
+            .Where(f => f.Owner != Board.Players.Player2)
+            .ToList();
 
-                if (!Board.Grid.IsInsideGrid(cell)) continue;
-                if (Board.State.IsCellOccupied(cell)) continue;
-                if (Board.Grid.GetDistance(cell, fort.Position) > range) continue;
-
-                float inf = influence.GetInfluenceAt(cell);
-                if (inf > 0) continue; 
-
-                candidateCells.Add(cell);
-            }
-        }
-
-        if (candidateCells.Count == 0)
+        if (enemyOrNeutralForts.Count == 0)
             return output;
 
-        RandomNumberGenerator rng = new();
-        rng.Randomize();
-        candidateCells = [.. candidateCells.OrderBy(_ => rng.Randi()).Take(maxWaypoints)];
+        var influence = Board.State.influence;
 
-        foreach (var cell in candidateCells)
+        foreach (var fort in enemyOrNeutralForts)
         {
-            float inf = influence.GetInfluenceAt(cell);
-            int dist = Board.Grid.GetDistance(cell, fort.Position);
+            Vector2I pos = fort.Position;
 
-            int priority =
-                basePriority
-                - dist * 3
-                + Mathf.RoundToInt(Math.Max(0f, -inf) * 10f);
+            float infAtFort = influence.GetInfluenceAt(pos);
 
+            float localInfluenceScore = 0f;
+            const int radius = 2;
+
+            for (int dx = -radius; dx <= radius; dx++)
+            for (int dy = -radius; dy <= radius; dy++)
+            {
+                Vector2I c = new(pos.X + dx, pos.Y + dy);
+                if (!Board.Grid.IsInsideGrid(c)) continue;
+                localInfluenceScore += influence.GetInfluenceAt(c);
+            }
+            int priority = Mathf.RoundToInt(-localInfluenceScore * 5f);
+            priority += 20;
             output.Add(new Waypoint
             {
-                Type = Waypoint.Types.Move,
-                Cell = cell,
-                ElementAffinity = preferredType,
-                Priority = priority
+                Type = Waypoint.Types.Capture,
+                Cell = pos,
+                Priority = priority,
+                ElementAffinity = Element.Types.None
             });
         }
 
         return output;
     }
+
+
 
 
     private static List<Waypoint> CreateLowPriorityAttackWaypoints(List<Waypoint> output, Fort fort, InfluenceMapManager influence, int basePriority)

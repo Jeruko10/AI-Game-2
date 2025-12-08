@@ -80,17 +80,28 @@ public static class GridNavigation
 		Dictionary<Vector2I, Vector2I> cameFrom = new() { [start] = start };
 		Dictionary<Vector2I, int> costSoFar = new() { [start] = 0 };
 
+		// Mejor nodo alcanzable hacia el destino (por si no llegamos)
+		Vector2I best = start;
+		int bestHeuristic = Board.Grid.GetDistance(start, destination);
+
 		while (frontier.Count > 0)
 		{
 			Vector2I current = frontier.Dequeue();
 
+			int hCurrent = Board.Grid.GetDistance(current, destination);
+			if (hCurrent < bestHeuristic)
+			{
+				bestHeuristic = hCurrent;
+				best = current;
+			}
+
 			if (current == destination) break;
 
-			// cost to leave the current cell (use current tile)
-            int leaveCost;
-
-            if (minion.Element.Tag == Element.Types.Water) leaveCost = 1; // Water element ignores terrain move costs
-			else leaveCost = Board.State.Tiles.TryGetValue(current, out Tile currentTile) ? currentTile.MoveCost : 1;
+			int leaveCost;
+			if (minion.Element.Tag == Element.Types.Water)
+				leaveCost = 1;
+			else
+				leaveCost = Board.State.Tiles.TryGetValue(current, out Tile currentTile) ? currentTile.MoveCost : 1;
 
 			foreach (Vector2I neighbor in Board.Grid.GetAdjacents(current))
 			{
@@ -99,24 +110,27 @@ public static class GridNavigation
 
 				int newCost = costSoFar[current] + leaveCost;
 
-				// respect minion move points
+				// respetar MovePoints
 				if (newCost > minion.MovePoints) continue;
 
-				if (!costSoFar.TryGetValue(neighbor, out int best) || newCost < best)
+				if (!costSoFar.TryGetValue(neighbor, out int bestCost) || newCost < bestCost)
 				{
 					costSoFar[neighbor] = newCost;
-					int priority = newCost + Board.Grid.GetDistance(neighbor, destination); // heuristic
+					int priority = newCost + Board.Grid.GetDistance(neighbor, destination);
 					frontier.Enqueue(neighbor, priority);
 					cameFrom[neighbor] = current;
 				}
 			}
 		}
 
-		if (!cameFrom.ContainsKey(destination)) return [];
+		// Si hemos llegado al destino, usamos destino.
+		// Si no, usamos el mejor nodo alcanzable (más cercano al destino).
+		Vector2I end = cameFrom.ContainsKey(destination) ? destination : best;
 
-		// Reconstruct path including origin and destination
+		if (!cameFrom.ContainsKey(end)) return [];
+
 		List<Vector2I> path = [];
-		Vector2I step = destination;
+		Vector2I step = end;
 
 		while (true)
 		{
@@ -128,6 +142,7 @@ public static class GridNavigation
 		path.Reverse();
 		return [.. path];
 	}
+
 
 	public static HashSet<Vector2I> GetObstructorsForMinion(Minion minion)
 	{

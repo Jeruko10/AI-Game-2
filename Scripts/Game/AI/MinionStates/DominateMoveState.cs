@@ -10,6 +10,7 @@ public partial class DominateMoveState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
+        BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
 
         Vector2I pos = minion.Position;
@@ -17,12 +18,19 @@ public partial class DominateMoveState : State, IMinionState
 
         if (structHere > 0f)
         {
-            TransitionToSibling("PrevailState");
-            return true;
+            var data = boardState.GetCellData(pos);
+            bool ownedByMe = data.Fort != null && data.Fort.Owner == minion.Owner;
+
+            if (!ownedByMe)
+            {
+                TransitionToSibling("PrevailState");
+                return true;
+            }
         }
 
         return false;
     }
+
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)
     {
@@ -38,11 +46,24 @@ public partial class DominateMoveState : State, IMinionState
 
         Vector2I? target = null;
 
-        if (capturePoints.Count > 0)
+        foreach (var wp in capturePoints)
         {
-            target = capturePoints[0].Cell;
+            var data = boardState.GetCellData(wp.Cell);
+
+            // aquí decides qué significa "conquistada"
+            bool ownedByMe = data.Fort != null
+                            && data.Fort.Owner == minion.Owner;
+
+            if (!ownedByMe)
+            {
+                target = wp.Cell;
+                break;          // usamos la primera no conquistada
+            }
         }
-        else
+
+
+
+        if (target == null)
         {
             // if not found, calculate one urself u son of a Alonso
             target = influence.FindBestCell(
@@ -70,7 +91,9 @@ public partial class DominateMoveState : State, IMinionState
             return [.. clickedCells];
 
         clickedCells.Add(path[0]); //Click the minion
-        clickedCells.Add(path[path.Length-1]); //Click the last position
+        if(path.Length>1) clickedCells.Add(path[path.Length-1]); //Click the last position
+        else clickedCells.Add(path[1]);
+        
 
         GD.Print($"DominateMoveState: Moving minion {minion.Name} from {minion.Position} to {target} via path length {path.Length}");
 

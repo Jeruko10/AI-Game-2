@@ -14,13 +14,22 @@ public partial class PrevailState : State, IMinionState
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
 
-        // If the minion is already in a fort, do not move
         Vector2I pos = minion.Position;
         float structHere = influence.StructureValueMap[pos.X, pos.Y];
+
         if (structHere <= 0f)
         {
             TransitionToSibling("DominateMoveState");
             return true;
+        }
+
+        var data = boardState.GetCellData(pos);
+        bool ownedByMe = data.Fort != null && data.Fort.Owner == minion.Owner;
+
+        if (ownedByMe)
+        {
+            // fort asegurado: no spamear transiciones, nos quedamos aquí
+            return false;
         }
 
         // If the highest priority is another thing, change state

@@ -107,40 +107,10 @@ public partial class DeployFocusedState : State, IGlobalState
             });
         }
 
-        waypoints = SetCaptureWaypoints(waypoints);
+        waypoints.AddRange(OffensiveFortFocusedState.CreateFortMovementWaypoints());
 
         return waypoints;
     }
-
-
-    List<Waypoint> SetCaptureWaypoints(List<Waypoint> waypoints)
-    {
-        var forts = Board.State.Forts;
-        var influence = Board.State.influence;
-        const float lowThreshold = 0.25f;
-
-        foreach (var fort in forts)
-        {
-            if (fort.Owner == Board.Players.Player1)
-                continue;
-
-            float enemyInf = influence.GetInfluenceAt(fort.Position);
-
-            if (enemyInf <= lowThreshold)
-            {
-                waypoints.Add(new Waypoint
-                {
-                    Type = Waypoint.Types.Capture,
-                    Cell = fort.Position,
-                    ElementAffinity = Element.Types.None,
-                    Priority = ComputeCapturePriority(fort, enemyInf)
-                });
-            }
-        }
-
-        return waypoints;
-    }
-
 
 
     /* ========== HELPERS ========== */
@@ -199,7 +169,6 @@ public partial class DeployFocusedState : State, IGlobalState
 
         foreach (var type in all)
         {
-            // buscamos el minion más barato de este tipo
             int cost = GetCheapestMinionCost(type, mana);
 
             if (cost >= 0 && cost < cheapestCost)
@@ -212,11 +181,31 @@ public partial class DeployFocusedState : State, IGlobalState
         return cheapestType;
     }
 
-    int ComputeCapturePriority(Fort fort, float enemyInf)
+    int ComputeCapturePriority(Fort fort)
     {
-        float t = Mathf.Clamp(1f - enemyInf, 0f, 1f);
+        float enemyInfluence = 0f;
+        const int radius = 2;
+
+        for (int dx = -radius; dx <= radius; dx++)
+        for (int dy = -radius; dy <= radius; dy++)
+        {
+            Vector2I cell = new(fort.Position.X + dx, fort.Position.Y + dy);
+            if (!Board.Grid.IsInsideGrid(cell)) continue;
+
+            float inf = Board.State.influence.GetInfluenceAt(cell);
+
+            if (inf < 0)
+                enemyInfluence += -inf;
+        }
+
+        enemyInfluence = Mathf.Clamp(enemyInfluence * 0.3f, 0f, 1f);
+
+        float t = 1f - enemyInfluence;
+
         return 20 + Mathf.RoundToInt(t * 40f);
     }
+
+
     static Vector2I? GetFortDeployableCell(Vector2I origin, InfluenceMapManager influence, List<Vector2I> exclude)
     {
         foreach (var c in Board.Grid.GetAdjacents(origin, true))
