@@ -80,33 +80,43 @@ public static class GridNavigation
 		Dictionary<Vector2I, Vector2I> cameFrom = new() { [start] = start };
 		Dictionary<Vector2I, int> costSoFar = new() { [start] = 0 };
 
+		int realMovePoints = ignoreMovePoints ? int.MaxValue : minion.MovePoints;
+
 		while (frontier.Count > 0)
 		{
 			Vector2I current = frontier.Dequeue();
-
 			if (current == destination) break;
 
-			// cost to leave the current cell (use current tile)
-            int leaveCost;
-			int realMovePoints = ignoreMovePoints ? int.MaxValue : minion.MovePoints;
-
-            if (minion.Element.Tag == Element.Types.Water) leaveCost = 1; // Water element ignores terrain move costs
-			else leaveCost = Board.State.Tiles.TryGetValue(current, out Tile currentTile) ? currentTile.MoveCost : 1;
+			
+			int leaveCost;
+			if (minion.Element.Tag == Element.Types.Water)
+				leaveCost = 1;
+			else
+				leaveCost = Board.State.Tiles.TryGetValue(current, out Tile currentTile) ? currentTile.MoveCost : 1;
 
 			foreach (Vector2I neighbor in Board.Grid.GetAdjacents(current))
 			{
 				if (!Board.Grid.IsInsideGrid(neighbor)) continue;
 				if (blockedCells.Contains(neighbor)) continue;
 
-				int newCost = costSoFar[current] + leaveCost;
+				
+				int hazard = 0;
+				if (Board.State.Tiles.TryGetValue(neighbor, out Tile neighborTile))
+				{
+					if (neighborTile.Damage > 0 && minion.Element.Tag != Element.Types.Fire)          // cambia por tu flag real
+						hazard += 20;               // cuanto mayor, más lo evita
+					
+				}
 
-				// respect minion move points
-				if (newCost > realMovePoints) continue;
+				int newCost = costSoFar[current] + leaveCost + hazard;
 
-				if (!costSoFar.TryGetValue(neighbor, out int best) || newCost < best)
+				
+				if (!ignoreMovePoints && newCost > realMovePoints) continue;
+
+				if (!costSoFar.TryGetValue(neighbor, out int bestCost) || newCost < bestCost)
 				{
 					costSoFar[neighbor] = newCost;
-					int priority = newCost + Board.Grid.GetDistance(neighbor, destination); // heuristic
+					int priority = newCost + Board.Grid.GetDistance(neighbor, destination);
 					frontier.Enqueue(neighbor, priority);
 					cameFrom[neighbor] = current;
 				}
@@ -115,10 +125,9 @@ public static class GridNavigation
 
 		if (!cameFrom.ContainsKey(destination)) return [];
 
-		// Reconstruct path including origin and destination
+		
 		List<Vector2I> path = [];
 		Vector2I step = destination;
-
 		while (true)
 		{
 			path.Add(step);
@@ -129,6 +138,7 @@ public static class GridNavigation
 		path.Reverse();
 		return [.. path];
 	}
+
 
 	public static Vector2I[] GetPathForMinion(Minion minion, Vector2I destination)
     {

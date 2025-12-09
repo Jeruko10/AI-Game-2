@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://chetshhkxjqc4" path="res://Sprites/Circle.png" id="2_ca5ap"]
 
 [node name="Waypoint" type="Node2D" node_paths=PackedStringArray("Sprite", "SquashAnimator")]
+visible = false
 script = ExtResource("1_ca5ap")
 Sprite = NodePath("SquashStretch2D/Sprite2D")
 SquashAnimator = NodePath("SquashStretch2D")
