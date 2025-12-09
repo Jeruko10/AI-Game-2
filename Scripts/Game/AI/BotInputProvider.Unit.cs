@@ -32,6 +32,7 @@ public partial class BotInputProvider : VirtualInputProvider
     IMinionState ChangeMinionState(Minion minion, List<Waypoint> waypoints)
     {
         int iterations = 0, maxIterations = 10;
+        List<string> lastStates = [];
 
         // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
         do
@@ -40,6 +41,7 @@ public partial class BotInputProvider : VirtualInputProvider
 
             State activeLeafState = minion.RootState.GetDeepestActiveState();
             actualMinionStateLabel.Text = $"Estado del Minion: {activeLeafState.StateName}";
+            lastStates.Add(activeLeafState.StateName);
 
             if (activeLeafState is IMinionState) minionState = activeLeafState as IMinionState;
             else
@@ -49,6 +51,15 @@ public partial class BotInputProvider : VirtualInputProvider
             }
         }
         while (minionState.TryChangeState(minion, waypoints) && iterations < maxIterations);
+
+        if (iterations >= maxIterations)
+        {
+            string iteratedStates = "";
+            foreach (string state in lastStates)
+                iteratedStates += $"{state} -> ";
+
+            GD.PushError($"State loop detected, emergency exit at iteration number {iterations}. Iterated over: {iteratedStates}.");
+        }
 
         return minionState;
     }
