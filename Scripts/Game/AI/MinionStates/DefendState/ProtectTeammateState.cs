@@ -5,21 +5,14 @@ using System.Linq;
 
 namespace Game;
 
-/// Minion positions himself to protect an ally or defensive waypoint.
+/// Minion moves to a good defensive position near a defend waypoint.
 public partial class ProtectTeammateState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-
-        if(GridNavigation.GetAllPossibleAttacks(minion).Length > 0)
-        {
-            TransitionToParent();
-            return true;
-        }
-
-
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
+
 
         if (waypoints != null && waypoints.Count > 0)
         {
@@ -38,36 +31,36 @@ public partial class ProtectTeammateState : State, IMinionState
                 TransitionToSibling("DominateState");
                 return true;
             }
-
-            return false;
         }
 
-        // If already good position, no worries, we calculate one
-        if (waypoints != null)
+
+        var defendPoint = waypoints?
+            .Where(w => w.Type == Waypoint.Types.Move || w.Type == Waypoint.Types.Move)
+            .OrderByDescending(w => w.Priority)
+            .FirstOrDefault();
+
+        if (defendPoint == null)
+            return false; // sin punto a defender, no cambiamos aquí
+
+
+        int dist =
+            Mathf.Abs(minion.Position.X - defendPoint.Cell.X) +
+            Mathf.Abs(minion.Position.Y - defendPoint.Cell.Y);
+
+        bool closeEnough = dist <= 2;
+
+
+        Vector2I pos = minion.Position;
+        float totalInfluence = influence.TroopInfluence[pos.X, pos.Y];
+        float enemy = Mathf.Max(0f, totalInfluence);
+        float ally = Mathf.Max(0f, -totalInfluence);
+
+        bool notTooDangerous = enemy <= ally * 1.2f; 
+
+        if (closeEnough && notTooDangerous)
         {
-            var defendPoint = waypoints
-                .Where(w => w.Type == Waypoint.Types.Move)
-                .OrderByDescending(w => w.Priority)
-                .FirstOrDefault();
-
-            if (defendPoint != null)
-            {
-                int dist = Mathf.Abs(minion.Position.X - defendPoint.Cell.X)
-                + Mathf.Abs(minion.Position.Y - defendPoint.Cell.Y);
-
-                float t  = influence.TroopInfluence[minion.Position.X, minion.Position.Y];
-                float enemy = Mathf.Max(0f, t);
-                float ally  = Mathf.Max(0f, -t);
-
-                bool closeEnough = dist <= 2;
-                bool notTooDangerous = enemy <= ally * 1.2f;
-
-                if (closeEnough && notTooDangerous)
-                {
-                    TransitionToSibling("SpreadState");
-                    return true;
-                }
-            }
+            TransitionToSibling("SpreadState");
+            return true;
         }
 
         return false;
@@ -79,65 +72,38 @@ public partial class ProtectTeammateState : State, IMinionState
         InfluenceMapManager influence = Board.State.influence;
         List<Vector2I> clickedCells = [];
 
-        // Looking the highest priority defend point
+
         var defendPoint = waypoints?
-            .Where(w => w.Type == Waypoint.Types.Move)
+            .Where(w => w.Type == Waypoint.Types.Move || w.Type == Waypoint.Types.Move)
             .OrderByDescending(w => w.Priority)
             .FirstOrDefault();
 
-        Vector2I? target = null;
+        if (defendPoint == null)
+            return [.. clickedCells];
 
-        if (defendPoint != null)
-        {
-            // If not found, look for one near the waypoint
-            target = influence.FindBestCell(
-                cell =>
-                {
-                    var data = boardState.GetCellData(cell);
-                    if (data.Tile == null) return false;
-                    if (influence.MoveCostMap[cell.X, cell.Y] == float.PositiveInfinity) return false;
 
-                    int dist = Mathf.Abs(cell.X - defendPoint.Cell.X) 
-                    + Mathf.Abs(cell.Y - defendPoint.Cell.Y);
+        Vector2I? target = influence.FindBestCell(
+            cell =>
+            {
+                var data = boardState.GetCellData(cell);
+                if (data.Tile == null) return false;
+                if (influence.MoveCostMap[cell.X, cell.Y] == float.PositiveInfinity) return false;
 
-                    return dist <= 4; // i hate this manhattan guy
-                },
-                cell =>
-                {
-                    float t      = influence.TroopInfluence[cell.X, cell.Y];
-                    float enemy  = Mathf.Max(0f, t);
-                    float ally   = Mathf.Max(0f, -t);
-                    
-                    // Near the point + allies covering + some enemies
-                    int dist = Mathf.Abs(cell.X - defendPoint.Cell.X) 
-                    + Mathf.Abs(cell.Y - defendPoint.Cell.Y);
+                int dist =
+                    Mathf.Abs(cell.X - defendPoint.Cell.X) +
+                    Mathf.Abs(cell.Y - defendPoint.Cell.Y);
 
-                    float distScore = -dist;
+                return dist <= 4; 
+            },
+            cell =>
+            {
+                float total = influence.TroopInfluence[cell.X, cell.Y];
+                float enemy = Mathf.Max(0f, total);
+                float ally = Mathf.Max(0f, -total);
 
-                    return ally * 1.5f
-                         + enemy * 0.5f
-                         + distScore * 1.0f;
-                });
-        }
 
-        // if not defensive point, fallback mode
-        if (target == null)
-        {
-            target = influence.FindBestCell(
-                cell =>
-                {
-                    var data = boardState.GetCellData(cell);
-                    return data.Tile != null &&
-                           influence.MoveCostMap[cell.X, cell.Y] < float.PositiveInfinity;
-                },
-                cell =>
-                {
-                    float t      = influence.TroopInfluence[cell.X, cell.Y];
-                    float enemy  = Mathf.Max(0f, t);
-                    float ally   = Mathf.Max(0f, -t);
-                    return ally - enemy;
-                });
-        }
+                return enemy * 1.0f - ally * 0.3f;
+            });
 
         if (target == null)
             return [.. clickedCells];
@@ -146,8 +112,12 @@ public partial class ProtectTeammateState : State, IMinionState
         if (path == null || path.Length == 0)
             return [.. clickedCells];
 
-        clickedCells.Add(path[0]); //Click the minion
-        clickedCells.Add(path[path.Length-1]); //Click the last position
+
+        clickedCells.Add(minion.Position);
+
+
+        for (int i = 1; i < path.Length; i++)
+            clickedCells.Add(path[i]);
 
         return [.. clickedCells];
     }

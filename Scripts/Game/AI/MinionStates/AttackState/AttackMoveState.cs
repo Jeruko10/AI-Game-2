@@ -26,12 +26,11 @@ public partial class AttackMoveState : State, IMinionState
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)
     {
-
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
         List<Vector2I> clickedCells = [];
 
-        // First the attack
+
         var attackPoints = waypoints
             .Where(w => w.Type == Waypoint.Types.Attack)
             .OrderByDescending(w => w.Priority)
@@ -45,7 +44,6 @@ public partial class AttackMoveState : State, IMinionState
         }
         else
         {
-            // Backup if there are no attack waypoints (at first it is not needed)
             target = influence.FindBestCell(
                 cell =>
                 {
@@ -56,7 +54,7 @@ public partial class AttackMoveState : State, IMinionState
                 cell =>
                 {
                     float total   = influence.TroopInfluence[cell.X, cell.Y];
-                    float enemy   = Mathf.Max(0f,  total);
+                    float enemy   = Mathf.Max(0f, total);
                     float ally    = Mathf.Max(0f, -total);
                     float structV = influence.StructureValueMap[cell.X, cell.Y];
                     float moveC   = influence.MoveCostMap[cell.X, cell.Y];
@@ -69,20 +67,45 @@ public partial class AttackMoveState : State, IMinionState
         }
 
         if (target == null)
-        {
             return [.. clickedCells];
-        }
+
+        // DEBUG
+        GD.Print($"[AttackMove] minion at {minion.Position}, target = {target}");
+        var reachable = GridNavigation.GetReachableCells(minion);
+        GD.Print($"[AttackMove] reachable count = {reachable.Length}");
+
 
         Vector2I[] path = GridNavigation.GetPathForMinion(minion, target.Value);
+
+
         if (path == null || path.Length == 0)
         {
-            return [.. clickedCells];
+            if (reachable.Length == 0)
+                return [.. clickedCells];
+
+            Vector2I best = reachable[0];
+            int bestDist = Board.Grid.GetDistance(best, target.Value);
+
+            foreach (var cell in reachable)
+            {
+                int d = Board.Grid.GetDistance(cell, target.Value);
+                if (d < bestDist)
+                {
+                    bestDist = d;
+                    best = cell;
+                }
+            }
+
+            GD.Print($"[AttackMove] fallback best reachable = {best}");
+
+            path = GridNavigation.GetPathForMinion(minion, best);
+            if (path == null || path.Length == 0)
+                return [.. clickedCells];
         }
 
-        //change if you wanna click only the minion and the destination.
-        clickedCells.Add(path[0]); //Click the minion
-        if(path.Length>1) clickedCells.Add(path[path.Length-1]); //Click the last position
-        else clickedCells.Add(path[1]);
+
+        clickedCells.Add(minion.Position);
+        clickedCells.Add(path[path.Length-1]);
 
         return [.. clickedCells];
     }

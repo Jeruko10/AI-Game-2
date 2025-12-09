@@ -121,7 +121,7 @@ public partial class InfluenceMapManager : Node2D
 	// =========================
 	// MAPA DE ESTRUCTURAS
 	// =========================
-	public void RebuildStructureValueMap()
+	public void RebuildStructureValueMap() 
 	{
 		for (int y = 0; y < height; y++)
 		for (int x = 0; x < width; x++)
@@ -133,7 +133,7 @@ public partial class InfluenceMapManager : Node2D
 			if (!IsInside(pos))
 				continue;
 
-			StructureValueMap[pos.X, pos.Y] = 1f;
+			StructureValueMap[pos.X, pos.Y] = 0.3f; //MODIFICACION
 		}
 	}
 
