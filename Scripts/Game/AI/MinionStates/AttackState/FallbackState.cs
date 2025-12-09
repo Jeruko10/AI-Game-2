@@ -72,8 +72,6 @@ public partial class FallbackState : State, IMinionState
 
         clickedCells.Add(path[0]); //Click the minion
         clickedCells.Add(path[path.Length-1]); //Click the last position
-        clickedCells.AddRange(GridNavigation.GetPunchStrategy(minion));
-
 
         return [.. clickedCells];
     }

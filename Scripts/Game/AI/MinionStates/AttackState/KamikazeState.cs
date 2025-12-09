@@ -48,7 +48,6 @@ public partial class KamikazeState : State, IMinionState
         // THE WHOLE PATH AS CLICKED CELLS, CHANGE TO ONLY THE FIRST AND LAST ONE IF NEEDED
         clickedCells.Add(path[0]); //Click the minion
         clickedCells.Add(path[path.Length-1]); //Click the last position
-        clickedCells.AddRange(GridNavigation.GetPunchStrategy(minion));
 
         return [.. clickedCells];
     }
