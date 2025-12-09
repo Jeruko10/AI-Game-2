@@ -8,6 +8,7 @@ namespace Game;
 
 public partial class BotInputProvider : VirtualInputProvider
 {
+    [Export] Label actualMinionStateLabel;
     public IMinionState minionState;
     /// <summary>Iterates over state transitions until a state demands no transition, then plays the strategy returned by the chosen state.</summary>
 	async Task PlayMinionStrategy(Minion minion, List<Waypoint> waypoints)
@@ -30,11 +31,16 @@ public partial class BotInputProvider : VirtualInputProvider
 
     IMinionState ChangeMinionState(Minion minion, List<Waypoint> waypoints)
     {
+        int iterations = 0, maxIterations = 10;
+
         // BE AWARE OF POSSIBLE INFINITE LOOPS CRASHING THE EDITOR: We iterate over state transitions until a state demands no transition.
         do
         {
+            iterations++;
+
             State activeLeafState = minion.RootState.GetDeepestActiveState();
-            
+            actualMinionStateLabel.Text = $"Estado del Minion: {activeLeafState.StateName}";
+
             if (activeLeafState is IMinionState) minionState = activeLeafState as IMinionState;
             else
             {
@@ -42,7 +48,7 @@ public partial class BotInputProvider : VirtualInputProvider
                 return null;
             }
         }
-        while (minionState.TryChangeState(minion, waypoints));
+        while (minionState.TryChangeState(minion, waypoints) && iterations < maxIterations);
 
         return minionState;
     }

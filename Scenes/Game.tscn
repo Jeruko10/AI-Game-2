@@ -275,12 +275,13 @@ metadata/_custom_type_script = "uid://bv23wi5pjg5mj"
 script = ExtResource("17_i0vto")
 metadata/_custom_type_script = "uid://bib5h2me841oe"
 
-[node name="BotInputProvider" type="Node2D" parent="InputHandler" node_paths=PackedStringArray("RootState")]
+[node name="BotInputProvider" type="Node2D" parent="InputHandler" node_paths=PackedStringArray("RootState", "actualMinionStateLabel")]
 script = ExtResource("18_3jf1l")
 self = 1
 playSpeed = 0.79
 courtesyDelay = 0.75
 RootState = NodePath("HFSM")
+actualMinionStateLabel = NodePath("../../InterfaceLayer/HUD/MinionState")
 
 [node name="HFSM" parent="InputHandler/BotInputProvider" instance=ExtResource("19_iyesh")]
 

@@ -10,7 +10,6 @@ public partial class MinionRootState : State, IMinionState
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
         // WE SHOULD NEVER BE IN THIS STATE DIRECTLY, since it does nothing and acts as folder for its substates. Please ALWAYS return true and transition to a child state.
-        //De tanto escribir se me olvido que esto era una cosa bro
         TransitionToChild("AttackState");
         return true;
     }
