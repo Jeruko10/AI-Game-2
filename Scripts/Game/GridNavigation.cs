@@ -64,7 +64,7 @@ public static class GridNavigation
 		return GetReachableCells(minion).Contains(cell);
 	}
 
-	public static Vector2I[] GetPathForMinion(Minion minion, Vector2I destination)
+	static Vector2I[] GetMinionAStar(Minion minion, Vector2I destination, bool ignoreMovePoints = false)
 	{
 		if (minion == null) return [];
 
@@ -88,6 +88,7 @@ public static class GridNavigation
 
 			// cost to leave the current cell (use current tile)
             int leaveCost;
+			int realMovePoints = ignoreMovePoints ? int.MaxValue : minion.MovePoints;
 
             if (minion.Element.Tag == Element.Types.Water) leaveCost = 1; // Water element ignores terrain move costs
 			else leaveCost = Board.State.Tiles.TryGetValue(current, out Tile currentTile) ? currentTile.MoveCost : 1;
@@ -100,7 +101,7 @@ public static class GridNavigation
 				int newCost = costSoFar[current] + leaveCost;
 
 				// respect minion move points
-				if (newCost > minion.MovePoints) continue;
+				if (newCost > realMovePoints) continue;
 
 				if (!costSoFar.TryGetValue(neighbor, out int best) || newCost < best)
 				{
@@ -129,6 +130,25 @@ public static class GridNavigation
 		return [.. path];
 	}
 
+	public static Vector2I[] GetPathForMinion(Minion minion, Vector2I destination)
+    {
+        if(IsReachableByMinion(minion, destination))
+        {
+            return GetMinionAStar(minion, destination);
+		}
+
+		Vector2I[] pathIgnoringMovePoints = GetMinionAStar(minion, destination, ignoreMovePoints: true);
+		Vector2I[] reversedPath = [.. pathIgnoringMovePoints.Reverse()];
+
+		foreach (var cell in reversedPath)
+        {
+            if(IsReachableByMinion(minion, cell))
+			{
+				return GetMinionAStar(minion, cell);
+			}
+        }
+		return [];
+    }
 
 	public static HashSet<Vector2I> GetObstructorsForMinion(Minion minion)
 	{
