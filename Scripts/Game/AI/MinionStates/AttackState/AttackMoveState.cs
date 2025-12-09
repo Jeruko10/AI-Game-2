@@ -14,20 +14,6 @@ public partial class AttackMoveState : State, IMinionState
         InfluenceMapManager influence = Board.State.influence;
         Grid2D grid = Board.Grid;
 
-        //4 DIRECTIONS
-
-        // If enemy nearby, change to punching punching
-        foreach (Vector2I cell in GetAllPossibleAttacks(minion))
-        {
-            var data = boardState.GetCellData(cell);
-
-            if (data.Minion != null && data.Minion.Owner != minion.Owner)
-            {
-                TransitionToSibling("PunchState");
-                return true;
-            }
-        }
-
         // Low health, dont go sir
         if (minion.Health <= minion.MaxHealth * 0.3f)
         {
