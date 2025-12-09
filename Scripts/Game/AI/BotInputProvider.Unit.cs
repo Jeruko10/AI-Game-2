@@ -27,6 +27,12 @@ public partial class BotInputProvider : VirtualInputProvider
 
             await SimulateHumanClick(cell);
         }
+
+        // Afterpunch if not exhausted
+        if (minion.Exhausted) return;
+
+        foreach (Vector2I cell in GridNavigation.GetPunchStrategy(minion))
+            await SimulateHumanClick(cell);
 	}
 
     IMinionState ChangeMinionState(Minion minion, List<Waypoint> waypoints)

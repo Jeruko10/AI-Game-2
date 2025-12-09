@@ -235,9 +235,10 @@ public static class GridNavigation
     public static Vector2I[] GetPunchStrategy(Minion minion)
     {
         List<Vector2I> clickedCells = [];
+
         Vector2I[] directions = [Vector2I.Up, Vector2I.Down, Vector2I.Right, Vector2I.Left];
         Vector2I bestDirection = Vector2I.Zero;
-        int bestDamage = int.MinValue;
+        int bestDamage = 0;
 
         foreach (Vector2I direction in directions)
         {
