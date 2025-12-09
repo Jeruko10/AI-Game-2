@@ -84,7 +84,6 @@ public partial class AttackMoveState : State, IMinionState
         if(path.Length>1) clickedCells.Add(path[path.Length-1]); //Click the last position
         else clickedCells.Add(path[1]);
 
-
         return [.. clickedCells];
     }
 

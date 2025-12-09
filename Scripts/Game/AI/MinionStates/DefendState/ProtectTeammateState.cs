@@ -27,9 +27,15 @@ public partial class ProtectTeammateState : State, IMinionState
                 .OrderByDescending(w => w.Priority)
                 .First();
 
-            if (top.Type == Waypoint.Types.Attack || top.Type == Waypoint.Types.Capture)
+            if (top.Type == Waypoint.Types.Attack)
             {
-                TransitionToParent();
+                TransitionToSibling("AttackState");
+                return true;
+            }
+
+            if (top.Type == Waypoint.Types.Capture)
+            {
+                TransitionToSibling("DominateState");
                 return true;
             }
 
@@ -140,8 +146,8 @@ public partial class ProtectTeammateState : State, IMinionState
         if (path == null || path.Length == 0)
             return [.. clickedCells];
 
-        clickedCells.Add(path[0]);
-        clickedCells.Add(path[path.Length-1]);
+        clickedCells.Add(path[0]); //Click the minion
+        clickedCells.Add(path[path.Length-1]); //Click the last position
 
         return [.. clickedCells];
     }
