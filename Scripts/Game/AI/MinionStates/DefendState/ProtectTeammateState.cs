@@ -10,10 +10,17 @@ public partial class ProtectTeammateState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
+
+        if(GridNavigation.GetAllPossibleAttacks(minion).Length > 0)
+        {
+            TransitionToParent();
+            return true;
+        }
+
+
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
 
-        // If not move waypoints, change state
         if (waypoints != null && waypoints.Count > 0)
         {
             Waypoint top = waypoints
@@ -31,6 +38,8 @@ public partial class ProtectTeammateState : State, IMinionState
                 TransitionToSibling("DominateState");
                 return true;
             }
+
+            return false;
         }
 
         // If already good position, no worries, we calculate one

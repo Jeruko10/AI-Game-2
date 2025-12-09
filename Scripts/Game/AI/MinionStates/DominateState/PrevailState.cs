@@ -11,47 +11,17 @@ public partial class PrevailState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        BoardState boardState = Board.State;
-        InfluenceMapManager influence = Board.State.influence;
-
-        Vector2I pos = minion.Position;
-        float structHere = influence.StructureValueMap[pos.X, pos.Y];
-
-        if (structHere <= 0f)
+        if(GridNavigation.GetAllPossibleAttacks(minion).Length > 0)
         {
-            TransitionToSibling("DominateMoveState");
+            TransitionToParent();
             return true;
         }
 
-        var data = boardState.GetCellData(pos);
-        bool ownedByMe = data.Fort != null && data.Fort.Owner == minion.Owner;
-
-        if (ownedByMe)
+        if(minion.Health <= minion.MaxHealth * 0.3f)
         {
-            // fort asegurado: no spamear transiciones, nos quedamos aquí
-            return false;
+            TransitionToParent();
+            return true;
         }
-
-        // If the highest priority is another thing, change state
-        if (waypoints != null && waypoints.Count > 0)
-        {
-            Waypoint top = waypoints
-                .OrderByDescending(w => w.Priority)
-                .First();
-
-            if (top.Type == Waypoint.Types.Attack)
-            {
-                TransitionToSibling("AttackState");
-                return true;
-            }
-            if (top.Type == Waypoint.Types.Move) //assuming (creo que se dice asi en ingles) move como defend
-            {
-                TransitionToSibling("DefendState");
-                return true;
-            }
-        }
-
-        // IF THERE IS AN ENEMY NEARBY, WE COULD CHANGE TO PUNCHSTATE OR SOMETHING
         return false;
     }
 

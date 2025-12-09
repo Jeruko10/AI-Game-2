@@ -177,4 +177,59 @@ public static class GridNavigation
 
 		return [.. rotatedArea];
 	}
+
+	public static Vector2I[] GetAllPossibleAttacks(Minion minion)
+    {
+        HashSet<Vector2I> cells = [];
+        Vector2I[] directions = [Vector2I.Up, Vector2I.Down, Vector2I.Right, Vector2I.Left];
+
+        foreach (Vector2I direction in directions)
+        {
+            Vector2I[] damageArea = RotatedDamageArea(minion.DamageArea, direction);
+
+            foreach (Vector2I cell in damageArea)
+                if (Board.Grid.IsInsideGrid(cell))
+                    cells.Add(cell + minion.Position);
+        }
+        return [.. cells];
+    }
+
+	public static Minion[] GetCloseEnemyMinions(Minion minion)
+	{
+		List<Minion> enemies = [];
+		Vector2I pos = minion.Position;
+		int maxDistance = 2;
+
+		for (int dx = -maxDistance; dx <= maxDistance; dx++)
+		{
+			for (int dy = -maxDistance; dy <= maxDistance; dy++)
+			{
+				if (dx == 0 && dy == 0) continue;
+
+				Vector2I cell = new(pos.X + dx, pos.Y + dy);
+
+				if (!Board.Grid.IsInsideGrid(cell)) continue;
+
+				int manhattanDist = Math.Abs(dx) + Math.Abs(dy);
+				if (manhattanDist > maxDistance || manhattanDist < 1) continue;
+
+				var data = Board.State.GetCellData(cell);
+				if (data.Minion != null && data.Minion.Owner != Board.State.GetActivePlayer())
+				{
+					enemies.Add(data.Minion);
+				}
+			}
+		}
+
+		return [.. enemies];
+	}
+
+	public static Minion GetTopLowHealthAlly()
+	{
+		var allies = Board.State.GetPlayerMinions(Board.State.GetActivePlayer())
+			.OrderBy(m => m.Health);
+
+		return allies.FirstOrDefault();
+	}
+ 
 }

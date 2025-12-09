@@ -17,7 +17,7 @@ public partial class AttackMoveState : State, IMinionState
         //4 DIRECTIONS
 
         // If enemy nearby, change to punching punching
-        foreach (Vector2I cell in GetAllPossibleAttacks(minion))
+        foreach (Vector2I cell in GridNavigation.GetAllPossibleAttacks(minion))
         {
             var data = boardState.GetCellData(cell);
 
@@ -102,22 +102,5 @@ public partial class AttackMoveState : State, IMinionState
         return [.. clickedCells];
     }
 
-    static Vector2I[] GetAllPossibleAttacks(Minion minion)
-    {
-        HashSet<Vector2I> cells = [];
-        Vector2I[] directions = [Vector2I.Up, Vector2I.Down, Vector2I.Right, Vector2I.Left];
 
-        foreach (Vector2I direction in directions)
-        {
-            Vector2I[] damageArea = GridNavigation.RotatedDamageArea(minion.DamageArea, direction);
-
-            foreach (Vector2I cell in damageArea)
-                if (Board.Grid.IsInsideGrid(cell))
-                    cells.Add(cell + minion.Position);
-        }
-
-
-
-        return [.. cells];
-    }
 }

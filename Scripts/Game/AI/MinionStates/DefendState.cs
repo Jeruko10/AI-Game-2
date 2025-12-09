@@ -10,10 +10,13 @@ public partial class DefendState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        // WE SHOULD NEVER BE IN THIS STATE DIRECTLY, since it does nothing and acts as folder for its substates.
-        // Please ALWAYS return true and transition to a child or sibling state.
+        if(GridNavigation.GetAllPossibleAttacks(minion).Length > 0)
+        {
+            TransitionToSibling("AttackState");
+            return true;
+        }
 
-        if (waypoints == null || waypoints.Count == 0)
+        if(Board.Grid.GetDistance(minion.Position, GridNavigation.GetTopLowHealthAlly().Position) <= 8)
         {
             TransitionToChild("ProtectTeammateState");
             return true;

@@ -10,6 +10,23 @@ public partial class DominateMoveState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
+        if(minion.Health <= minion.MaxHealth * 0.3f)
+        {
+            TransitionToParent();
+            return true;
+        }
+        
+        var waypoint = waypoints
+            .Where(w => w.Type == Waypoint.Types.Capture)
+            .OrderByDescending(w => w.Priority)
+            .FirstOrDefault();
+        
+        if(waypoint == null)
+        {
+            TransitionToParent();
+            return true;
+        }
+
         BoardState boardState = Board.State;
         InfluenceMapManager influence = Board.State.influence;
 
@@ -22,7 +39,6 @@ public partial class DominateMoveState : State, IMinionState
 
             if (top.Type != Waypoint.Types.Capture)
             {
-                // Volvemos al estado padre (DominateState),
                 TransitionToParent();
                 return true;
             }
@@ -76,8 +92,6 @@ public partial class DominateMoveState : State, IMinionState
             }
         }
 
-
-
         if (target == null)
         {
             // if not found, calculate one urself u son of a Alonso
@@ -105,12 +119,13 @@ public partial class DominateMoveState : State, IMinionState
         if (path == null || path.Length == 0)
             return [.. clickedCells];
 
+        GD.Print($"DominateMoveState: Moving minion {minion.Name} from {minion.Position} to {target} via path length {path.Length}");
+
         clickedCells.Add(path[0]); //Click the minion
         if(path.Length>1) clickedCells.Add(path[path.Length-1]); //Click the last position
         else clickedCells.Add(path[1]);
         
 
-        GD.Print($"DominateMoveState: Moving minion {minion.Name} from {minion.Position} to {target} via path length {path.Length}");
 
         return [.. clickedCells];
     }

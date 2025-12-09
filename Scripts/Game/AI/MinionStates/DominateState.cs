@@ -5,14 +5,20 @@ using System.Linq;
 
 namespace Game;
 
-/// <summary>Minion focuses on dominating forts.</summary>
+/// <summary> Minion focuses on dominating forts. </summary>
 public partial class DominateState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        if (waypoints == null || waypoints.Count == 0)
+        if(GridNavigation.GetAllPossibleAttacks(minion).Length > 0)
         {
-            TransitionToChild("DominateMoveState");
+            TransitionToSibling("AttackState");
+            return true;
+        }
+
+        if(Board.Grid.GetDistance(minion.Position, GridNavigation.GetTopLowHealthAlly().Position) <= 8)
+        {
+            TransitionToSibling("DefendState");
             return true;
         }
 
@@ -31,11 +37,11 @@ public partial class DominateState : State, IMinionState
                 TransitionToSibling("AttackState");
                 break;
 
-            case Waypoint.Types.Move: //asumo move como defensa
+            case Waypoint.Types.Move:
                 TransitionToSibling("DefendState");
                 break;
 
-            default: //por si las moscas
+            default:
                 TransitionToChild("DominateMoveState");
                 break;
         }

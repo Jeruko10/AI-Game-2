@@ -10,14 +10,12 @@ public partial class AttackState : State, IMinionState
 {
     public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
     {
-        // por si las moscas
         if (waypoints == null || waypoints.Count == 0)
         {
             TransitionToChild("AttackMoveState");
             return true;
         }
 
-        // take the waypoint with highest priority
         Waypoint top = waypoints
             .Where(waypoints => waypoints.Type != Waypoint.Types.Deploy)
             .OrderByDescending(w => w.Priority)
@@ -33,7 +31,7 @@ public partial class AttackState : State, IMinionState
                 TransitionToSibling("DominateState");
                 break;
 
-            case Waypoint.Types.Move: //asumo move como defensa
+            case Waypoint.Types.Move:
                 TransitionToSibling("DefendState");
                 break;
 
