@@ -56,7 +56,6 @@ public partial class PrevailState : State, IMinionState
             clickedCells.Add(minion.Position); //Click the minion
             clickedCells.Add(bestCell); //Click the last position
         }
-        clickedCells.AddRange(GridNavigation.GetPunchStrategy(minion));
 
         // If there are not enemies, dont move
         return [.. clickedCells];

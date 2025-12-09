@@ -20,16 +20,12 @@ public partial class SpreadState : State, IMinionState
                 .OrderByDescending(w => w.Priority)
                 .First();
 
-            if (top.Type == Waypoint.Types.Attack)
+            if (top.Type == Waypoint.Types.Attack || top.Type == Waypoint.Types.Capture)
             {
-                TransitionToSibling("AttackState");
+                TransitionToParent();
                 return true;
             }
-            if (top.Type == Waypoint.Types.Capture)
-            {
-                TransitionToSibling("DominateState");
-                return true;
-            }
+
         }
 
         // Si aparece mucho peligro cerca, volver a ProtectTeammateState
@@ -110,7 +106,6 @@ public partial class SpreadState : State, IMinionState
 
         clickedCells.Add(path[0]); //Click the minion
         clickedCells.Add(path[path.Length-1]); //Click the last position
-        clickedCells.AddRange(GridNavigation.GetPunchStrategy(minion));
 
         return [.. clickedCells];
     }

@@ -32,7 +32,7 @@
 [ext_resource type="Resource" uid="uid://b2txlcvg3lr4" path="res://Resources/Minions/ElPez.tres" id="20_7av8l"]
 [ext_resource type="Resource" uid="uid://bjeer64p8th1b" path="res://Resources/Minions/Hoja.tres" id="21_dctr5"]
 [ext_resource type="Resource" uid="uid://xiugp3yfskx7" path="res://Resources/Minions/GuerreroPlanta.tres" id="22_mi7vx"]
-[ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/WaypointDisplayTscn.tscn" id="23_356ba"]
+[ext_resource type="PackedScene" uid="uid://b5li2o273p167" path="res://Scenes/waypointDisplayTscn.tscn" id="23_356ba"]
 [ext_resource type="Resource" uid="uid://dvd3i54f7xcsp" path="res://Resources/Minions/Treant.tres" id="23_t2joc"]
 [ext_resource type="Script" uid="uid://cyngg360t1vk" path="res://Scripts/Game/AI/InfluenceMapManager.cs" id="27_3jf1l"]
 [ext_resource type="PackedScene" uid="uid://cfx08ypbn55vo" path="res://Scenes/DeployScreen.tscn" id="29_i4lct"]

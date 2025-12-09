@@ -226,10 +226,18 @@ public static class GridNavigation
 
 	public static Minion GetTopLowHealthAlly()
 	{
-		var allies = Board.State.GetPlayerMinions(Board.State.GetActivePlayer())
-			.OrderBy(m => m.Health);
+		var allies = Board.State.GetPlayerMinions(Board.State.GetActivePlayer());
 
-		return allies.FirstOrDefault();
+		foreach (var ally in allies)
+		{
+			if (ally.Health >= ally.MaxHealth) continue;
+			if(ally.Health <= ally.MaxHealth * 0.3f)
+			{
+				return ally;
+			}
+		}
+
+		return allies[0];
 	}
  
     public static Vector2I[] GetPunchStrategy(Minion minion)
