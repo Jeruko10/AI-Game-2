@@ -8,30 +8,7 @@ namespace Game;
 /// Minion plays extremely agressively, he does not care about dying because the player can replace him afterwards.
 public partial class KamikazeState : State, IMinionState
 {
-    public bool TryChangeState(Minion minion, List<Waypoint> waypoints)
-    {
-        BoardState boardState = Board.State;
-        Grid2D grid = Board.Grid;
-
-        //if healthy enough not boom boom
-        if (minion.Health > minion.MaxHealth * 0.25f)
-        {
-            TransitionToSibling("AttackMoveState");
-            return true;
-        }
-
-        foreach (var cell in grid.GetAdjacents(minion.Position, includeDiagonals: false))
-        {
-            var data = boardState.GetCellData(cell);
-            if (data.Minion != null && data.Minion.Owner != minion.Owner)
-            {
-                TransitionToSibling("PunchState");
-                return true;
-            }
-        }
-
-        return false;
-    }
+    public bool TryChangeState(Minion minion, List<Waypoint> waypoints) => false;
 
     public Vector2I[] GetStrategy(Minion minion, List<Waypoint> waypoints)
     {

@@ -232,4 +232,58 @@ public static class GridNavigation
 		return allies.FirstOrDefault();
 	}
  
+    public static Vector2I[] GetPunchStrategy(Minion minion)
+    {
+        List<Vector2I> clickedCells = [];
+        Vector2I[] directions = [Vector2I.Up, Vector2I.Down, Vector2I.Right, Vector2I.Left];
+        Vector2I bestDirection = Vector2I.Zero;
+        int bestDamage = int.MinValue;
+
+        foreach (Vector2I direction in directions)
+        {
+            int score = GetAttackScore(minion, direction);
+
+            if (score > bestDamage)
+            {
+                bestDamage = score;
+                bestDirection = direction;
+            }
+        }
+
+        if (bestDirection != Vector2I.Zero)
+        {
+            clickedCells.Add(minion.Position); //Click the minion 2 times
+            clickedCells.Add(minion.Position);
+
+            clickedCells.Add(minion.Position + bestDirection); //Attack
+        }
+
+        return [.. clickedCells];
+    }
+
+    static int GetAttackScore(Minion minion, Vector2I direction)
+    {
+        int score = 0;
+        Vector2I[] damageArea = RotatedDamageArea(minion.DamageArea, direction);
+
+        foreach (Vector2I cell in damageArea)
+        {
+            Vector2I worldCell = cell + minion.Position;
+
+            if (Board.Grid.IsInsideGrid(worldCell))
+            {
+                var cellData = Board.State.GetCellData(worldCell);
+                Minion victim = cellData.Minion;
+
+                if (victim == null) continue;
+
+                int sign = victim.Owner == Board.State.GetActivePlayer() ? -1 : 1; // If minion is friendly, points will be negative, otherwise positive
+                int damage = Board.State.GetAttackDamage(minion, victim);
+
+                score += damage * sign;
+            }
+        }
+
+        return score;
+    }
 }
