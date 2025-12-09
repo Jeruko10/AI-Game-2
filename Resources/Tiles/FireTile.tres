@@ -7,5 +7,5 @@
 script = ExtResource("1_wvb4q")
 Texture = ExtResource("1_q8060")
 MoveCost = 1
-Damage = 30
+Damage = 40
 metadata/_custom_type_script = "uid://pppabphqhcv4"
