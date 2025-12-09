@@ -116,7 +116,7 @@ public partial class DominateMoveState : State, IMinionState
             return [.. clickedCells];
 
         Vector2I[] path = GridNavigation.GetPathForMinion(minion, target.Value);
-        if (path == null || path.Length == 0)
+        if (path == null || path.Length <= 1)
             return [.. clickedCells];
 
         GD.Print($"DominateMoveState: Moving minion {minion.Name} from {minion.Position} to {target} via path length {path.Length}");
