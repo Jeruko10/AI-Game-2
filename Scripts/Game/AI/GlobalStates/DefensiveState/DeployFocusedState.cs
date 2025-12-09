@@ -242,7 +242,7 @@ public partial class DeployFocusedState : State, IGlobalState
             if (HasEnoughMana(m.Cost, mana))
             {
                 int sum = m.Cost.FireMana + m.Cost.WaterMana + m.Cost.PlantMana;
-                if (sum < best)
+                if (sum > best)
                     best = sum;
             }
         }

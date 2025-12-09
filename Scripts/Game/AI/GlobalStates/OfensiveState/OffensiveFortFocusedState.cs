@@ -11,6 +11,11 @@ public partial class OffensiveFortFocusedState : State, IGlobalState
 {
     public bool TryChangeState()
     {
+        if(Board.State.GetPlayerMinions(Board.Players.Player2).Length > Board.State.GetPlayerMinions(Board.Players.Player1).Length +1)
+        {
+            TransitionToParent(); 
+            return true;
+        }
         if(Board.State.GetPlayerForts(Board.Players.Player2).Length > Board.State.GetPlayerForts(Board.Players.Player1).Length)
         {
             TransitionToSibling("KillFocusedState");

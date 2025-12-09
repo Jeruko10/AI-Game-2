@@ -44,7 +44,7 @@ public partial class DominateState : State, IMinionState
                 break;
 
             case Waypoint.Types.Move:
-                TransitionToSibling("DefendState");
+                TransitionToSibling("AttackState");
                 break;
 
             default:
